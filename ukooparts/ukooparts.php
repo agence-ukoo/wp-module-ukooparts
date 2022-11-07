@@ -3,7 +3,7 @@
 /*
 Plugin Name: Ukooparts
 Plugin URI: https://www.ukoo.fr/
-Description: La description !
+Description: Ukooparts for WooCommerce !
 Version 0.1
 Author: Ukoo
 Author URI: https://www.ukoo.fr/
