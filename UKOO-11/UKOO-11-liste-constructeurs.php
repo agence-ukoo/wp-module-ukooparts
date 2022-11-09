@@ -23,9 +23,10 @@ function displayManufacturers() {
     print_r($constructeurs);
 
     
-    // foreach($constructeurs as $constructeur) 
-    //     echo ("<h4>$constructeur[0]['brand']</h4>");
-    //     echo ($constructeur[0]['logo']);
+
+    foreach($constructeurs as $constructeur) 
+        echo ("<h4>$constructeur[0]['brand']</h4>");
+        echo ($constructeur[0]['logo']);
         
 }
 ?>
