@@ -1,3 +1,26 @@
+
+<?php /*
+Plugin Name: Ukooparts
+Plugin URI: https://www.ukoo.fr/
+Description: Ukooparts for WooCommerce !
+Version 0.1
+Author: Ukoo
+Author URI: https://www.ukoo.fr/
+ */
+
+if (!defined('ABSPATH')) exit();
+
+define('UKOOPARTS_PLUGIN_DIR',plugin_dir_path(__FILE__));
+
+require UKOOPARTS_PLUGIN_DIR . 'vendor/autoload.php';
+
+$plugin = new Ukoo\Ukooparts\UkooPartsPlugin(__FILE__);
+
+
+add_action('wp_header','dropliste');
+?>
+
+
 <!DOCTYPE html>
 <head>
     <meta charset="utf-8" />
@@ -5,19 +28,6 @@
 </head>
 <body>
     
-<?php
-try{
-    $db = new PDO('mysql:host=localhost;dbname=ukooparts','root','');
-    $db -> exec('SET NAMES "UTF8"');
-}catch(PDOException $e){
-    echo 'Erreur:'.$e ->getMessage();
-    die();
-}
-?>
-
-
-
-
 <section class="dropall">
 <div class = 'droplist'>
 <?php $marques ?>
@@ -39,8 +49,8 @@ try{
 
 <div class = 'droplist'>
 <form action="droplist.php">
-  <label for="cylindré">Cylindré</label>
-  <select name="cylindré" id="cylindré">
+  <label for="cylindre">Cylindré</label>
+  <select name="cylindre" id="cylindre">
     <option value="">cylindré</option>
     <option value=""></option>
     <option value=""></option>
@@ -49,15 +59,10 @@ try{
 </form>
 </div>
 
-<?php 
-$sql ='SELECT model FROM PREFIX_ukooparts_engine';
-$ah = $db->query($sql)->fetchAll();
-echo $ah['model']
-?>
 <div class = 'droplist'>
 <form action="droplist.php">
-  <label for="modèles">Modèles</label>
-  <select name="modèles" id="modèles">
+  <label for="modeles">Modèles</label>
+  <select name="modeles" id="modeles">
     <option value="">modèles</option>
     <option value=""></option>
     <option value=""></option>
@@ -68,4 +73,28 @@ echo $ah['model']
 </section>
 
 </body>
+
+<?php add_action( 'wp_header','droplist'); ?>
+
+
+
+<?php 
+//base de donne en cour
+
+try{
+    $db = new PDO('mysql:host=localhost;dbname=test','root','');
+    $db -> exec('SET NAMES "UTF8"');
+}catch(PDOException $e){
+    echo 'Erreur:'.$e ->getMessage();
+    die();
+}
+
+// $reponse = $db->query('SELECT model FROM PREFIX_ukooparts_engine');
+// while ($donnees = $reponse->fetch())
+// {
+//        echo $donnees['model'] ;
+// }
+
+?>
+
 
