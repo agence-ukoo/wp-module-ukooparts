@@ -49,10 +49,9 @@ try{
 </form>
 </div>
 
-
 <?php 
- $sql ='SELECT model FROM PREFIX_ukooparts_engine';
- $ah = $db->query($sql)->fetchAll();
+$sql ='SELECT model FROM PREFIX_ukooparts_engine';
+$ah = $db->query($sql)->fetchAll();
 echo $ah['model']
 ?>
 <div class = 'droplist'>
