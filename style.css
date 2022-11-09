@@ -1,0 +1,13 @@
+.droplist{
+    height: 100%;
+    width: 100%;
+    padding: 4px;
+}
+
+.dropall{
+    display: flex;
+    background-color: hsl(0, 65%, 48%);
+    height: 50px;
+    width: 500px;
+    padding: 4px;
+}
