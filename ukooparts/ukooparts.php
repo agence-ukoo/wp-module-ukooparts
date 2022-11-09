@@ -22,3 +22,21 @@ add_action('wp_head', 'test');
 function test(): void{
 
 }
+
+
+
+// function to create pages
+function create_page($title, $content, $status){
+    $page_array = array(
+        'post_title' => $title,
+        'post_content' => $content,
+        'post_status' => $status,
+        'post_type' => 'page'
+    );
+    $new_page = get_page_by_title( $title, OBJECT, 'page');
+    if (  !isset( $new_page ) ) {
+        wp_insert_post($page_array, false);
+	}
+}
+// call the function to create a page title "moto"
+create_page('moto', 'all the motos are here', 'publish');
