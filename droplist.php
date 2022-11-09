@@ -1,26 +1,3 @@
-
-<?php /*
-Plugin Name: Ukooparts
-Plugin URI: https://www.ukoo.fr/
-Description: Ukooparts for WooCommerce !
-Version 0.1
-Author: Ukoo
-Author URI: https://www.ukoo.fr/
- */
-
-if (!defined('ABSPATH')) exit();
-
-define('UKOOPARTS_PLUGIN_DIR',plugin_dir_path(__FILE__));
-
-require UKOOPARTS_PLUGIN_DIR . 'vendor/autoload.php';
-
-$plugin = new Ukoo\Ukooparts\UkooPartsPlugin(__FILE__);
-
-
-add_action('wp_header','dropliste');
-?>
-
-
 <!DOCTYPE html>
 <head>
     <meta charset="utf-8" />
@@ -28,6 +5,9 @@ add_action('wp_header','dropliste');
 </head>
 <body>
     
+
+
+
 <section class="dropall">
 <div class = 'droplist'>
 <?php $marques ?>
@@ -45,7 +25,6 @@ add_action('wp_header','dropliste');
 </form>
 </div>
 
-<?php $cylindre ?>
 
 <div class = 'droplist'>
 <form action="droplist.php">
