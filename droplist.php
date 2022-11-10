@@ -39,8 +39,8 @@ try{
 
 <div class = 'droplist'>
 <form action="droplist.php">
-  <label for="cylindré">Cylindré</label>
-  <select name="cylindré" id="cylindré">
+  <label for="cylindre">Cylindré</label>
+  <select name="cylindre" id="cylindre">
     <option value="">cylindré</option>
     <option value=""></option>
     <option value=""></option>
@@ -56,8 +56,8 @@ echo $ah['model']
 ?>
 <div class = 'droplist'>
 <form action="droplist.php">
-  <label for="modèles">Modèles</label>
-  <select name="modèles" id="modèles">
+  <label for="modeles">Modèles</label>
+  <select name="modeles" id="modeles">
     <option value="">modèles</option>
     <option value=""></option>
     <option value=""></option>
