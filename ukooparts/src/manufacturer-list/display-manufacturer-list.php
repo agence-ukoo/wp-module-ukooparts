@@ -20,16 +20,24 @@ function displayManufacturers() {
         // test utilisation d'un loop pour display les infos d'un array
     $constructeurs = json_decode(file_get_contents('http://localhost/ukooparts/wp-content/plugins/UKOO-11/array_constructeurs.php'));
     
-    print_r($constructeurs);
+     print_r($constructeurs);
 
+    ?>
+
+ <?php foreach($constructeurs as $constructeur) { ?>
+    <h4> <?php  echo ($constructeur['brand']); ?> </h4>
+    <img src=<?php  echo ($constructeur['logo']) ?> /> ;
+<?php } ?>
+
+
+    <!-- // foreach($constructeurs as $constructeur) : 
+    //     echo ("<h4>" . constructeur['brand'] . "</h4>");
+    //     echo('<img src="' . $constructeur['logo'] . '"/>');
     
+    // endforeach;
+ -->
 
-    foreach($constructeurs as $constructeur) 
-        echo ("<h4>$constructeur[0]['brand']</h4>");
-        echo ($constructeur[0]['logo']);
-        
-}
-?>
+  <?php } ?>
 
 <?php
 

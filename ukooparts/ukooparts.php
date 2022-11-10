@@ -17,8 +17,18 @@ require UKOOPARTS_PLUGIN_DIR . 'vendor/autoload.php';
 
 $plugin = new Ukoo\Ukooparts\UkooPartsPlugin(__FILE__);
 
-add_action('wp_head', 'test');
+    // génération d'une page dans wordpress
+function create_page($title, $content, $status){
+    $page_array = array(
+        'post_title' => $title,
+        'post_content' => $content,
+        'post_status' => $status,
+        'post_type' => 'page'
+    );
 
-function test(): void{
-
+    $new_page = get_page_by_title( $title, OBJECT, 'page');
+    if (  !isset( $new_page ) ) {
+        wp_insert_post($page_array, false);
+    }
 }
+create_page('Our manufacturers', 'Manufacturers list A-Z', 'publish');
