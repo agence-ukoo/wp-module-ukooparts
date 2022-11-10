@@ -53,8 +53,6 @@
 
 </body>
 
-<?php add_action( 'wp_header','droplist'); ?>
-
 
 
 <?php 
@@ -68,12 +66,27 @@ try{
     die();
 }
 
-// $reponse = $db->query('SELECT model FROM PREFIX_ukooparts_engine');
-// while ($donnees = $reponse->fetch())
-// {
-//        echo $donnees['model'] ;
-// }
+$reponse = $db->query('SELECT model FROM PREFIX_ukooparts_engine');
+ while ($donnees = $reponse->fetch())
+ {
+        echo '<select> <option>'.$donnees['model'].'</option> </select>' ;
+ }
+
+  $reponse = $db->query('SELECT name FROM PREFIX_ukooparts_manufacturer');
+ while ($donnees = $reponse->fetch())
+  {
+       echo '<select> <option>'.$donnees['name'].'</option> </select>' ;
+  }
+
+
+ $reponse = $db->query('SELECT * FROM test');
+  while ($donnees = $reponse->fetch())
+  {
+         echo '<select> <option>'.$donnees[''].'</option> </select>' ;
+  }
 
 ?>
+
+
 
 
