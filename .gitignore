@@ -2,12 +2,12 @@ ukooparts/node_modules
 .idea
 
 #WORDPRESS : Les autre fichiers du folder plugin
-akismet
-duplicator
-woocommerce
-woocommerce-payments
-hello.php
-index.php
+/akismet
+/duplicator
+/woocommerce
+/woocommerce-payments
+/hello.php
+/index.php
 
 # Created by https://www.toptal.com/developers/gitignore/api/symfony,phpstorm
 # Edit at https://www.toptal.com/developers/gitignore?templates=symfony,phpstorm
