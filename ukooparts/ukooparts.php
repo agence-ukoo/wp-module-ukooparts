@@ -56,7 +56,7 @@ create_manufacturers_page('manufacturers', 'all the manufacturers are here', 'pu
 
 /////////////////////////////Adam/////////////////////////////////////////////////
 
-add_action('wp_header', 'dropdown_view');
+/*add_action('wp_header', 'dropdown_view');
 function create_dropList($title, $content, $status){
     $page_array = array(
         'post_title' => $title,
@@ -114,7 +114,7 @@ create_dropList('droplist test', '<section class="dropall">
 </div>
 </section>',
 'publish'
-);
+);*/
 
 
 
