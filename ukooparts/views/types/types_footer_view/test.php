@@ -130,10 +130,6 @@ function typesCss(){
 
     }
 
-    iconSelectTypeVehicule{
-
-    }
-
 	</style>
 	";
 }
