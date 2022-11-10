@@ -9,9 +9,11 @@ class UkooPartsPlugin
 
     public function __construct(string  $file){
         add_action( 'plugins_loaded', array( $this, 'init' ) );
+        add_action( 'init', array( $this, 'create_post_type' ) );
 
         register_activation_hook($file, [$this, 'PluginActivation']);
         add_action('admin_notices', [$this, 'NoticeActivation']);
+
     }
 
     public function init(): void {
@@ -70,6 +72,30 @@ class UkooPartsPlugin
         include_once($file);
 
         echo  ob_get_clean();
+    }
+
+    public function create_post_type(): void{
+        register_post_type( 'ukooparts',
+            array(
+                'label' => esc_html__('Ukooparts', 'wetreep-custom-reviews'),
+                'description' => esc_html__('Ukooparts Admin Menu', 'wetreep-custom-reviews'),
+                'public' => true,
+                'has_archive' => true,
+                'rewrite' => array( 'slug' => 'reviews' ),
+                'supports' => array( 'title', 'editor'),
+                'menu_icon' => 'dashicons-welcome-view-site',
+                'menu_position' => 25,
+                'hierarchical' => true,
+                'show_in_rest' => true,
+                'show_ui' => true,
+                'show_in_menu' => true,
+                'show_in_admin_bar' => true,
+                'can_export' => true,
+                'has_archive' => false,
+                'publicly_queryable' => true,
+            ),
+
+        );
     }
 }
 
