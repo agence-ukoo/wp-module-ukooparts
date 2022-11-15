@@ -59,7 +59,7 @@ try{
   <label for="year">année</label>
   <select>
 <?php
-    foreach ($db->query('SELECT  FROM PREFIX_ukooparts_engine') as $row) {
+    foreach ($db->query('SELECT  FROM PREFIX_ukooparts_compatibility') as $row) {
         echo '<option value="' . $row['year'] . '">'. $row['year'] . ' </option>';
     }   
 ?>
