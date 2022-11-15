@@ -344,5 +344,10 @@ function typesCss(){
 add_action('wp_footer', 'typesCss');
 add_action('wp_footer', 'types');
 
+function shortcode_cadeaux(): string{
+    return "<h2>Bienvenue dans cette surperbe liste de cadeaux ! !</h2>";
+}
+add_shortcode('cadeaux', 'shortcode_cadeaux');
+
 
 
