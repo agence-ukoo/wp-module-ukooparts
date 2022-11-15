@@ -240,20 +240,29 @@ function types(){
     <div id="container">
         <div id="containerListTypeVehicule">
             <div class="linkImglistTypeVehicule">
+            <a class="linkTypeVehicule" href="#">
                 <img class="iconSelectTypeVehicule" src="http://imagenspng.com/wp-content/uploads/desenhos-motos-Imagem-png-para-imprimir-gratis-768x768.png" alt="">
-                <p><a class="linkTypeVehicule" href="#">Pièces moto</a></p>
+                <p>Pièces moto</p>
+            </a>
             </div>
             <div class="linkImglistTypeVehicule">
+            <a class="linkTypeVehicule" href="#">
                 <img class="iconSelectTypeVehicule" src="http://imagenspng.com/wp-content/uploads/desenhos-motos-Imagem-png-para-imprimir-gratis-768x768.png" alt="">
-                <p><a class="linkTypeVehicule" href="#">Pièces scooter</a></p>
+                <p>Pièces scooter</p>
+            </a>
             </div>
             <div class="linkImglistTypeVehicule">
+            <a class="linkTypeVehicule" href="#">
                 <img class="iconSelectTypeVehicule" src="http://imagenspng.com/wp-content/uploads/desenhos-motos-Imagem-png-para-imprimir-gratis-768x768.png" alt="">
-                <p><a class="linkTypeVehicule" href="#">Pièces quad et SSV</a></p>
+                <p>Pièces quad et SSV</p>
+            </a>
             </div>
             <div class="linkImglistTypeVehicule">
+            <a class="linkTypeVehicule" href="#">
                 <img class="iconSelectTypeVehicule" src="http://imagenspng.com/wp-content/uploads/desenhos-motos-Imagem-png-para-imprimir-gratis-768x768.png" alt="">
-                <p><a class="linkTypeVehicule" href="#">Pièces tout terrain</a></p>
+                <p>Pièces tout terrain</p>
+            </a>
+
             </div>
         </div>
     </div>
@@ -340,3 +349,14 @@ function typesCss(){
 	</style>
 	";
 }
+
+add_action('wp_footer', 'typesCss');
+add_action('wp_footer', 'types');
+
+function shortcode_cadeaux(): string{
+    return "<h2>Bienvenue dans cette surperbe liste de cadeaux ! !</h2>";
+}
+add_shortcode('cadeaux', 'shortcode_cadeaux');
+
+
+
