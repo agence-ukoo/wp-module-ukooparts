@@ -166,12 +166,6 @@ function typesCss1(){
     margin-left: auto
 
 }
-#yamaha{
-    border: 1px solid blue;
-   
-
-}
-
     #titre {
         position: relative;
         overflow: hidden;
@@ -345,4 +339,24 @@ add_action('wp_footer', 'typesCss');
 add_action('wp_footer', 'types');
 
 
+////////////////////////////////ilyes/////////////////////////////////////////////////////
+add_action('wp_footer', 'fiche');
 
+function fiche(){
+
+    try{
+        $db = new PDO('mysql:host=localhost;dbname=ukooparts','root','');
+        $db -> exec('SET NAMES "UTF8"');
+        $fiche= $db->query('SELECT description FROM PREFIX_ukooparts_manufacturer_lang')-> fetchAll();
+        print_r($fiche);
+
+    }catch(PDOException $e){
+        echo 'Erreur:'.$e ->getMessage();
+        die();
+    }
+
+   
+}
+add_action('wp_footer', 'fiche');
+
+?>
