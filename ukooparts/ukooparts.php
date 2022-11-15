@@ -360,3 +360,60 @@ add_shortcode('cadeaux', 'shortcode_cadeaux');
 
 
 
+// yuan
+    function redirect_accessoire() {
+        $letters=
+        ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W', 'X','Y','Z'];
+        $db = new PDO('mysql:host=localhost;dbname=test','root','root');
+        $db -> exec('SET NAMES "UTF8"');
+        $models = $db->query("SELECT engine.model, manu.name
+            FROM PREFIX_ukooparts_engine AS engine
+            INNER JOIN PREFIX_ukooparts_manufacturer AS manu
+            ON manu.id_ukooparts_manufacturer = engine.id_ukooparts_manufacturer
+            WHERE  manu.id_ukooparts_manufacturer=11 ORDER BY model ASC;");
+        $total = $db->query("SELECT COUNT(*) as total FROM PREFIX_ukooparts_engine WHERE id_ukooparts_manufacturer = 11;");
+
+
+    //---------------    
+        // $html= '';
+        
+        // $listModels = [];
+        // foreach($models as $model){
+        //     for($i = 0; $i < count($letters); $i++){
+        //         $html = $html.'<div>'.$letters[$i].'</div>';
+        //         if($model['model'][0] == $letters[$i]){
+        //             array_push($listModels, ($model['model']));
+        //         }
+        //     }
+        // }
+
+        //----------------
+        $html= '<div>';
+        
+        foreach($models as $model){
+            $html = $html.$model['name'].' '.$model['model'].',  ';
+        }
+        $html = $html.'</div>';
+
+        // print_r($listModels);
+  //------------------      
+        // foreach($letters as $letter){
+            
+        //     $listModels = [];
+        //     foreach($models as $model){
+        //         print_r($model['model'][0]);
+        //         if($model['model'][0] == 'B'){
+        //             array_push($listModels, ($model['model']));
+        //         }
+        //     }
+        //     $html = $html.'<div>'.$letter.'</div>';
+        // } 
+
+
+
+        
+    return $html;
+        
+    }
+
+    add_shortcode('accessoire', 'redirect_accessoire');
