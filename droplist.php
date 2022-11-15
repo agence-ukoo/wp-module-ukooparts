@@ -1,4 +1,15 @@
 <!DOCTYPE html>
+
+<style>
+.dropall{
+    width: 100%;
+    height: 50px;
+    text-align: center;
+    display: flex;
+    background-color: grey;
+}
+</style>
+
 <head>
     <meta charset="utf-8" />
     <link rel="stylesheet" />
@@ -17,7 +28,6 @@ try{
 <section class="dropall">
 <div class = 'droplist'>
 <?php $marques ?>
-<form action="droplist.php">
   <label for="Marque">Marque</label>
   <select>
 <?php
@@ -31,11 +41,10 @@ try{
 
 
 <div class = 'droplist'>
-<form action="droplist.php">
   <label for="cylindre">Cylindré</label>
   <select>
 <?php
-    foreach ($db->query('SELECT displacement FROM PREFIX_ukooparts_engine') as $row) {
+    foreach ($db->query('SELECT displacement FROM PREFIX_ukooparts_engine WHERE id_ukooparts_engine = name FROM PREFIX_ukooparts_manufacturer') as $row) {
         echo '<option value="' . $row['displacement'] . '">'. $row['displacement'] . ' </option>';
     }   
 ?>
@@ -44,18 +53,17 @@ try{
 </div>
 
 <div class = 'droplist'>
-<form action="droplist.php">
   <label for="model">Modèles</label>
   <select>
 <?php
-    foreach ($db->query('SELECT model FROM PREFIX_ukooparts_engine') as $row) {
+    foreach ($db->query('SELECT model FROM PREFIX_ukooparts_engine ') as $row) {
         echo '<option value="' . $row['model'] . '">'. $row['model'] . ' </option>';
     }   
 ?>
 </select>
+</div>
 
 <div class = 'droplist'>
-<form action="droplist.php">
   <label for="year">année</label>
   <select>
 <?php
@@ -64,13 +72,11 @@ try{
     }   
 ?>
 </select>
-
-</form>
 </div>
+
 </section>
 
 </body>
-
 
 
 
