@@ -354,9 +354,32 @@ add_action('wp_footer', 'typesCss');
 add_action('wp_footer', 'types');
 
 function shortcode_cadeaux(): string{
-    return "<h2>Bienvenue dans cette surperbe liste de cadeaux ! !</h2>";
+    return "<h2>Bienvenue dans cette superbe liste de cadeaux ! !</h2>";
 }
 add_shortcode('cadeaux', 'shortcode_cadeaux');
+
+
+
+function shortcode_topmoto(): string{
+    try{
+        $db = new PDO('mysql:host=localhost;dbname=ukooparts','root','');
+        $db -> exec('SET NAMES "UTF8"');
+        $motoData = $db->query("SELECT * FROM PREFIX_ukooparts_engine_lang LIMIT 50")->fetchAll(PDO::FETCH_ASSOC);
+
+        $string = "";
+        foreach ($motoData as $moto) {
+            $string .= "<div id='bloc_moto'>";
+            $string .= "<h3>" . $moto["meta_title"] . "</h3>";
+            $string .= "</div>";
+        }
+        return $string;
+    }catch(PDOException $e){
+        echo 'Erreur:'.$e ->getMessage();
+        die();
+    }
+    return "<div>Aucune moto trouvé</div>";
+}
+add_shortcode('topmoto', 'shortcode_topmoto');
 
 
 
