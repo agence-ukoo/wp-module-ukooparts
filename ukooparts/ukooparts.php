@@ -76,6 +76,7 @@ function shortcode_manufacturers() : string {
         }
 
 
+        add_shortcode('manufacturers', 'shortcode_manufacturers');
 
 
 
