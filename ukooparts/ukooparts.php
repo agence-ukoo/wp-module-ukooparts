@@ -61,9 +61,9 @@ function shortcode_manufacturers() : string {
     $stmt = $pdo->prepare($req);
     $stmt->execute();
     $manufacturers = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    echo "<h2>Liste des constructeurs - par ordre alphabétique</h2>";
+    echo "<h2>Liste des constructeurs</h2>";
     // print_r($manufacturers);
-    $html = '<h3>TEST</h3><div>';
+    $html = '<h3></h3><div>';
 
     foreach($manufacturers as $manufacturer) :
         
