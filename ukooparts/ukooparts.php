@@ -385,3 +385,30 @@ add_shortcode('cadeaux', 'shortcode_cadeaux');
 
 
 
+// yuan
+    function redirect_accessoire() {
+        $db = new PDO('mysql:host=localhost;dbname=test','root','root');
+        $db -> exec('SET NAMES "UTF8"');
+        $models = ($db->query("SELECT engine.model, manu.name
+            FROM PREFIX_ukooparts_engine AS engine
+            INNER JOIN PREFIX_ukooparts_manufacturer AS manu
+            ON manu.id_ukooparts_manufacturer = engine.id_ukooparts_manufacturer
+                WHERE  manu.id_ukooparts_manufacturer=11 ORDER BY model ASC;"))->fetchAll();
+        
+        $html= '';
+        $first_letter = $models[0]['model'][0];
+        $html = $html.'<h3>'.$first_letter.'</h3><div>';
+        foreach($models as $model){       
+            if($model['model'][0] != $first_letter){
+                $first_letter = $model['model'][0];
+                $html = $html.'</div><h3>'.$first_letter.'</h3><div>';
+            }else{
+                $html = $html.$model['name'].' '.$model['model'].',  ';
+            }
+        }
+        $html = $html.'</div>';
+    return $html;
+        
+    }
+
+    add_shortcode('accessoire', 'redirect_accessoire');

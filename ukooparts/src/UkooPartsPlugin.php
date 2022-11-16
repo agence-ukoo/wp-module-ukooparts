@@ -162,6 +162,7 @@ class UkooPartsPlugin
         return array(
             $this->create_ukooparts_post('cadeaux','Liste des cadeaux !', '[cadeaux]'),
             $this->create_ukooparts_post('manufacturers','Liste des constructeurs', '[manufacturers]'),
+            $this->create_ukooparts_post('accessoire','accessoires', '[accessoire]'),
         );
     }
     
