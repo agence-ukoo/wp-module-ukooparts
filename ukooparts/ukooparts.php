@@ -354,23 +354,42 @@ add_shortcode('cadeaux', 'shortcode_cadeaux');
 
 
 ////////////////////////////////ilyes/////////////////////////////////////////////////////
-add_action('wp_footer', 'fiche');
 
-function fiche(){
-
+function shortcode_descriptif(): void{
+    
     try{
         $db = new PDO('mysql:host=localhost;dbname=ukooparts','root','');
         $db -> exec('SET NAMES "UTF8"');
-        $fiche= $db->query('SELECT description FROM PREFIX_ukooparts_manufacturer_lang')-> fetchAll();
-        print_r($fiche);
-
     }catch(PDOException $e){
         echo 'Erreur:'.$e ->getMessage();
         die();
     }
+    if(isset($_GET['descriptif_id']) && isset($_GET['lang_id'])){
+    
+        $lang_id = $_GET['lang_id'];
+        $descriptif_id = $_GET['descriptif_id'];
 
-   
+            $query = $db -> query( "SELECT LANG.description AS description, ENGIN.model AS model,ENGIN.id_ukooparts_engine AS id, ENGIN.year_start AS start, ENGIN.year_end AS end, ENGIN.image AS image, MANU.name AS manufacturer, CONCAT(MANU.name, ' ', ENGIN.model) AS title, CONCAT(ENGIN.year_start, '-', ENGIN.year_end) AS years  
+            FROM  PREFIX_ukooparts_engine ENGIN 
+            inner join PREFIX_ukooparts_engine_lang LANG 
+            on LANG.id_ukooparts_engine = ENGIN.id_ukooparts_engine
+            INNER JOIN PREFIX_ukooparts_manufacturer MANU 
+            ON ENGIN.id_ukooparts_manufacturer = MANU.id_ukooparts_manufacturer WHERE ENGIN.id_ukooparts_engine = $descriptif_id AND LANG.id_lang = $lang_id");
+            
+            
+            
+                foreach($query as $row)
+                {
+                   echo("<h1>" . $row['title'] . "</h1> 
+                        <h2>" . $row['years'] . "</h2>
+                        <p>" . $row['description'] . "</p>"
+                        );
+
+                }
+            
+        }      
 }
-add_action('wp_footer', 'fiche');
+add_shortcode('descriptif', 'shortcode_descriptif');
+
 
 ?>

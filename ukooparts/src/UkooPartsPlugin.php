@@ -161,6 +161,8 @@ class UkooPartsPlugin
     function get_ukooparts_post():array{
         return array(
             $this->create_ukooparts_post('cadeaux','Liste des cadeaux !', '[cadeaux]'),
+            $this->create_ukooparts_post('fiche-descriptif','fiche descriptif', '[descriptif]'),
+
         );
     }
 }
