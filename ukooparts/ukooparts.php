@@ -418,10 +418,6 @@ function shortcode_descriptif(): void{
 add_shortcode('descriptif', 'shortcode_descriptif');
 
 
-?>
-
-
-
 
 // yuan
     function shortcode_models() {
@@ -444,7 +440,7 @@ add_shortcode('descriptif', 'shortcode_descriptif');
             }else{
                 $html = $html.$model['name'].' '.$model['model'].',  ';
             }
-        }
+            ?>      }
         $html = $html.'</div>';
     return $html;
     }
