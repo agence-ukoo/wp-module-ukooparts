@@ -1,0 +1,391 @@
+.participant-item {
+    display: flex;
+    align-items: center;
+}
+
+.participant-item .participant-item-avatar {
+    margin-right: 16px;
+}
+
+.participant-item .participant-item-avatar img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+}
+
+.participant-item .participant-item-name h6 {
+    font-family: Jost;
+    font-size: 20px;
+    font-weight: 400;
+    margin-bottom: 0;
+}
+
+.reviews-head-container{
+    display: flex;
+    justify-content: space-between;
+}
+
+#global-review-dialog {
+    display: none;
+}
+
+.global-reviews-trip-list{
+    width: 400px;
+    list-style-type: none;
+    padding-left: 0
+}
+
+.trip-item, .participant-form-item {
+    padding: 10px 0 10px 15px !important;
+}
+
+.trip-item p, .participant-form-item p {
+    margin-bottom: 5px
+}
+
+.trip-item-content p, .participant-form-item-content p {
+    margin-bottom: 0;
+}
+
+.trip-item-content, .participant-form-item-content {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.cm-textarea {
+    color: inherit !important;
+    display: block !important;
+    min-width: 100% !important;
+    max-width: 100% !important;
+    outline: none !important;
+    border: none !important;
+    margin: 0px !important;
+    box-sizing: border-box !important;
+    background-color: transparent !important;
+    color: rgb(34, 34, 34) !important;
+    background-color: rgb(255, 255, 255) !important;
+    border-radius: 8px !important;
+    box-shadow: rgb(176 176 176) 0px 0px 0px 1px inset !important;
+    appearance: none !important;
+    padding: 8px !important;
+    font-family: JOST !important;
+    font-size: 16px !important;
+    line-height: 20px !important;
+    font-weight: 400 !important;
+    resize: none;
+    height:120px;
+}
+
+.trip-item-review-rating, .participant-form-item-rating {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 12px;
+    margin-bottom: 12px;
+}
+
+.participants-tab-header .rating-info {
+    font-size: 11px;
+    margin-bottom: 0;
+}
+
+.participants-list {
+    margin-bottom: 84px;
+}
+
+.done-container {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 84px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #fff;
+    border-top: 1px solid #eeeeee;
+}
+
+.done-container button {
+    width: 40%;
+}
+
+.trip-item-content .gl-button, .participant-form-item-content .gl-button {
+    margin-top: 0 !important;
+}
+
+.gl-button:disabled {
+    background-color: #f1f1f1;
+    cursor: not-allowed;
+    color: #bbb;
+    border-color: #333;
+}
+
+.gl-button:disabled:hover {
+    background-color: #f1f1f1;
+    color: #bbb;
+    border-color: #333;
+}
+
+.participants-tab .participants-tab-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.participants-tab .gl-button {
+    margin-top: 0 !important;
+}
+
+.trip-item-content .already-reviewed {
+    margin-bottom: 16px;
+}
+
+.review-form-error {
+    font-size: 14px;
+    margin-top: 8px;
+    color: #ff0000;
+    font-weight: 300;
+}
+
+.step-app {
+    /* width: 400px; */
+}
+
+.step-app>.step-steps {
+    display: none !important;
+}
+
+#global-review-dialog .step-app>.step-content {
+    border: none;
+    padding: 0;
+}
+
+.archive.author .author-reviews .reviews-list li.author-review {
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.05);
+}
+
+/* Start jQuery ui style for accordion */
+.ui-accordion .ui-accordion-header {
+cursor: pointer;
+position: relative;
+margin-top: 1px;
+zoom: 1;
+}
+.ui-accordion .ui-accordion-li-fix {
+display: inline;
+}
+.ui-accordion .ui-accordion-header-active {
+border-bottom: 0 !important;
+}
+.ui-accordion .ui-accordion-header a {
+display: block;
+font-size: 1em;
+padding: .5em .5em .5em .7em;
+}
+/* IE7-/Win - Fix extra vertical space in lists */
+.ui-accordion a {
+zoom: 1;
+}
+.ui-accordion-icons .ui-accordion-header a {
+padding-left: 2.2em;
+}
+.ui-accordion .ui-accordion-header .ui-icon {
+position: absolute;
+left: .5em;
+top: 50%;
+margin-top: -8px;
+}
+.ui-accordion .ui-accordion-content {
+    padding: 1em 2.2em;
+    border-top: 0;
+    margin-top: -2px;
+    position: relative;
+    top: 1px;
+    margin-bottom: 2px;
+    overflow: auto;
+    display: none;
+    zoom: 1;
+    border-left: 3px solid #7e68ff;
+}
+.ui-accordion .ui-accordion-content-active {
+    display: block;
+}
+
+/* End jQuery ui style for accordion */
+
+/* Start comment section style */
+.reviews-wrapper {
+    border-top: 1px solid #eeeeee;
+    border-bottom: 1px solid #eeeeee;
+    padding-top: 16px;
+}
+
+ul.wt-reviews-container {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+ul.wt-reviews-container .review-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.05);
+    border-radius: 8px;
+    padding: 12px 24px;
+    border: 1px solid #eeeeee;
+}
+
+ul.wt-reviews-container .trip-review-container {
+    margin-bottom: 24px;
+    padding: 12px 24px;
+}
+
+.single-product .add-new-review {
+    display: none;
+}
+
+ul.wt-reviews-container .review-date-wrapper {
+    font-size: 14px;
+    color: #b2b2b2;
+}
+
+ul.wt-reviews-container .review-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+ul.wt-reviews-container .review-header .review-name-rate {
+    display: flex;
+    align-items: center;
+}
+
+ul.wt-reviews-container .review-header .review-name-rate .trip-review-rate {
+    line-height: 1;
+}
+
+ul.wt-reviews-container .review-header .review-author-name {
+    margin-right: 12px;
+}
+
+ul.wt-reviews-container .review-avatar{
+    border-radius: 30px;
+    overflow: hidden;
+    margin-right: 8px;
+}
+
+ul.wt-reviews-container .review-avatar-profile{
+    border-radius: 30px;
+    overflow: hidden;
+    margin-right: 8px;
+    width: 60px;
+    height: 60px;
+}
+
+
+
+ul.wt-reviews-container .review-avatar-profile img {
+    max-width: none;
+}
+
+ul.wt-reviews-container .review-content {
+    flex: 1;
+    justify-self: flex-start;
+}
+
+ul.wt-reviews-container .author-details {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+ul.wt-reviews-container .author-details .review-avatar {
+    border-radius: 30px;
+    overflow: hidden;
+}
+
+ul.wt-reviews-container .author-details .review-author {
+    flex: 1;
+    display: flex;
+}
+
+ul.wt-reviews-container .author-details .review-author .review-author-name {
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 1.53;
+    margin-bottom: 0;
+    margin-right: 16px;
+    color: #2d2d2d;
+}
+
+ul.wt-reviews-container .author-details .review-author .star-rating-container {
+    font-size: 13px;
+}
+
+ul.wt-reviews-container .comment-for {
+    font-size: 12px;
+}
+
+ul.wt-reviews-container .comment-for a {
+    color: #007bff;
+}
+
+@media screen and (max-width: 768px) {
+    ul.wt-reviews-container {
+        padding: 12px 8px;
+    }
+    ul.wt-reviews-container .author-details .review-author {
+        display: block;
+    }
+}
+
+/* end comment section style */
+
+/* My Reviews Style */
+
+.my-reviews-content-container {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.participants-reviews {
+    width: 48%;
+}
+
+.trips-reviews {
+    width: 48%;
+}
+
+@media screen and (max-width: 768px) {
+    .participants-reviews{
+        width: 100%;
+    }
+    .trips-reviews{
+        width: 100%;
+    }
+}
+
+/* End My reviews Style */
+
+.reviews-head-container {
+    margin-bottom: 32px;
+}
+
+.step-title, .participants-tab-header {
+    margin-bottom: 16px;
+    border-bottom: 1px solid #eeeeee;
+    padding-bottom: 16px;
+}
+
+.step-title h3, .participants-tab-header h3 {
+    font-size: 22px;
+    font-weight: 400;
+    margin-bottom: 0 !important;
+}
+
+
