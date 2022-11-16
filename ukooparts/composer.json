@@ -1,0 +1,16 @@
+{
+    "name": "ukoo/ukooparts",
+    "description": "ukooparts",
+    "type": "wordpress-plugin",
+    "autoload": {
+        "psr-4": {
+            "Ukoo\\Ukooparts\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Ukoo"
+        }
+    ],
+    "require": {}
+}
