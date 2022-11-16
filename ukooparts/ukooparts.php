@@ -39,20 +39,46 @@ create_page('moto', 'all the motos are here', 'publish');
 
 
 //////////////Vincent Pages ********************************
-function create_manufacturers_page($title, $content, $status){
-    $page_array = array(
-        'post_title' => $title,
-        'post_content' => $content,
-        'post_status' => $status,
-        'post_type' => 'page'
-    );
-    $new_page = get_page_by_title( $title, OBJECT, 'page');
-    if (  !isset( $new_page ) ) {
-        wp_insert_post($page_array, false);
-	}
+
+function getConnexion(){
+    return new PDO('mysql:host=localhost;dbname=ukooparts','root','');
 }
-// call the function to create a page title "marque"
-create_manufacturers_page('manufacturers', 'all the manufacturers are here', 'publish');
+
+
+// try{
+//     $db = new PDO('mysql:host=localhost;dbname=ukooparts','root','');
+//     $db -> exec('SET NAMES "UTF8"');
+// }catch(PDOException $e){
+//     echo 'Erreur:'.$e ->getMessage();
+//     die();
+// }
+
+
+
+function shortcode_manufacturers() : string {
+    $pdo = getConnexion();
+    $req = "SELECT * FROM `PREFIX_ukooparts_manufacturer` ORDER BY name ASC"; 
+    $stmt = $pdo->prepare($req);
+    $stmt->execute();
+    $manufacturers = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    echo "<h2>Liste des constructeurs</h2>";
+    // print_r($manufacturers);
+    $html = '<h3></h3><div>';
+
+    foreach($manufacturers as $manufacturer) :
+        
+     $html = $html.'</div><p>'.$manufacturer["name"].'</p><div>';
+        endforeach;
+
+        $html = $html.'</div>';
+
+        return $html;
+        }
+
+
+        add_shortcode('manufacturers', 'shortcode_manufacturers');
+
+
 
 /////////////////////////////Adam/////////////////////////////////////////////////
 
@@ -166,12 +192,6 @@ function typesCss1(){
     margin-left: auto
 
 }
-#yamaha{
-    border: 1px solid blue;
-   
-
-}
-
     #titre {
         position: relative;
         overflow: hidden;
@@ -357,6 +377,75 @@ function shortcode_cadeaux(): string{
     return "<h2>Bienvenue dans cette superbe liste de cadeaux ! !</h2>";
 }
 add_shortcode('cadeaux', 'shortcode_cadeaux');
+
+
+////////////////////////////////ilyes/////////////////////////////////////////////////////
+
+function shortcode_descriptif(): void{
+    
+    try{
+        $db = new PDO('mysql:host=localhost;dbname=ukooparts','root','');
+        $db -> exec('SET NAMES "UTF8"');
+    }catch(PDOException $e){
+        echo 'Erreur:'.$e ->getMessage();
+        die();
+    }
+    if(isset($_GET['descriptif_id']) && isset($_GET['lang_id'])){
+    
+        $lang_id = $_GET['lang_id'];
+        $descriptif_id = $_GET['descriptif_id'];
+
+            $query = $db -> query( "SELECT LANG.description AS description, ENGIN.model AS model,ENGIN.id_ukooparts_engine AS id, ENGIN.year_start AS start, ENGIN.year_end AS end, ENGIN.image AS image, MANU.name AS manufacturer, CONCAT(MANU.name, ' ', ENGIN.model) AS title, CONCAT(ENGIN.year_start, '-', ENGIN.year_end) AS years  
+            FROM  PREFIX_ukooparts_engine ENGIN 
+            inner join PREFIX_ukooparts_engine_lang LANG 
+            on LANG.id_ukooparts_engine = ENGIN.id_ukooparts_engine
+            INNER JOIN PREFIX_ukooparts_manufacturer MANU 
+            ON ENGIN.id_ukooparts_manufacturer = MANU.id_ukooparts_manufacturer WHERE ENGIN.id_ukooparts_engine = $descriptif_id AND LANG.id_lang = $lang_id");
+            
+            
+            
+                foreach($query as $row)
+                {
+                   echo("<h1>" . $row['title'] . "</h1> 
+                        <h2>" . $row['years'] . "</h2>
+                        <p>" . $row['description'] . "</p>"
+                        );
+
+                }
+            
+        }      
+}
+add_shortcode('descriptif', 'shortcode_descriptif');
+
+
+
+// yuan
+    function shortcode_models() {
+        $db = new PDO('mysql:host=localhost;dbname=test','root','root');
+        $db -> exec('SET NAMES "UTF8"');
+        $models = ($db->query("SELECT engine.model, manu.name
+            FROM PREFIX_ukooparts_engine AS engine
+            INNER JOIN PREFIX_ukooparts_manufacturer AS manu
+            ON manu.id_ukooparts_manufacturer = engine.id_ukooparts_manufacturer
+                WHERE  manu.id_ukooparts_manufacturer=11 ORDER BY model ASC;"))->fetchAll();
+        
+        $html= '';
+        $first_letter = $models[0]['model'][0];
+        $html = $html.'<h3>'.$first_letter.'</h3><div>';
+        foreach($models as $model){       
+            if($model['model'][0] != $first_letter){
+                $first_letter = $model['model'][0];
+                $html = $html.'</div><h3>'.$first_letter.'</h3><div>';
+                $html = $html.$model['name'].' '.$model['model'].',  ';
+            }else{
+                $html = $html.$model['name'].' '.$model['model'].',  ';
+            }
+            ?>      }
+        $html = $html.'</div>';
+    return $html;
+    }
+    add_shortcode('models', 'shortcode_models');
+
 
 
 
