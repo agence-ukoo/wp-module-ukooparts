@@ -362,8 +362,6 @@ add_shortcode('cadeaux', 'shortcode_cadeaux');
 
 // yuan
     function redirect_accessoire() {
-        $letters=
-        ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W', 'X','Y','Z'];
         $db = new PDO('mysql:host=localhost;dbname=test','root','root');
         $db -> exec('SET NAMES "UTF8"');
         $models = ($db->query("SELECT engine.model, manu.name
@@ -371,7 +369,7 @@ add_shortcode('cadeaux', 'shortcode_cadeaux');
             INNER JOIN PREFIX_ukooparts_manufacturer AS manu
             ON manu.id_ukooparts_manufacturer = engine.id_ukooparts_manufacturer
                 WHERE  manu.id_ukooparts_manufacturer=11 ORDER BY model ASC;"))->fetchAll();
-        //-----------loop florent
+        
         $html= '';
         $first_letter = $models[0]['model'][0];
         $html = $html.'<h3>'.$first_letter.'</h3><div>';
