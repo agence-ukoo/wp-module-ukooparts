@@ -387,7 +387,7 @@ add_shortcode('cadeaux', 'shortcode_cadeaux');
 
 
 // yuan
-    function redirect_accessoire() {
+    function shortcode_models() {
         $db = new PDO('mysql:host=localhost;dbname=test','root','root');
         $db -> exec('SET NAMES "UTF8"');
         $models = ($db->query("SELECT engine.model, manu.name
@@ -403,13 +403,12 @@ add_shortcode('cadeaux', 'shortcode_cadeaux');
             if($model['model'][0] != $first_letter){
                 $first_letter = $model['model'][0];
                 $html = $html.'</div><h3>'.$first_letter.'</h3><div>';
+                $html = $html.$model['name'].' '.$model['model'].',  ';
             }else{
                 $html = $html.$model['name'].' '.$model['model'].',  ';
             }
         }
         $html = $html.'</div>';
     return $html;
-        
     }
-
-    add_shortcode('accessoire', 'redirect_accessoire');
+    add_shortcode('models', 'shortcode_models');
