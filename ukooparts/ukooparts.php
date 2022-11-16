@@ -381,5 +381,30 @@ function shortcode_topmoto(): string{
 }
 add_shortcode('topmoto', 'shortcode_topmoto');
 
+/*************      Test CSS  ********/
+
+class topmoto {
+
+    public function __construct()
+{
+    
+
+    add_action('wp_enqueue_scripts', array($this, 'load_assets'));
 
 
+}
+
+public function load_assets(){
+
+wp_enqueue_style(
+ 'ukooparts',
+  plugin_dir_url(__FILE__) . 'css/ukooparts.css',
+   array(),
+    1,
+    'all'
+);
+
+}
+}
+
+new topmoto;
