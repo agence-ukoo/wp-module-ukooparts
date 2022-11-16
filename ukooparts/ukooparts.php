@@ -421,7 +421,7 @@ add_shortcode('descriptif', 'shortcode_descriptif');
 
 // yuan
     function shortcode_models() {
-        $db = new PDO('mysql:host=localhost;dbname=test','root','root');
+        $db = new PDO('mysql:host=localhost;dbname=ukooparts','root','');
         $db -> exec('SET NAMES "UTF8"');
         $models = ($db->query("SELECT engine.model, manu.name
             FROM PREFIX_ukooparts_engine AS engine
@@ -440,7 +440,7 @@ add_shortcode('descriptif', 'shortcode_descriptif');
             }else{
                 $html = $html.$model['name'].' '.$model['model'].',  ';
             }
-            ?>      }
+            }
         $html = $html.'</div>';
     return $html;
     }
