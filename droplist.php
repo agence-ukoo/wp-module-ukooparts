@@ -6,7 +6,7 @@
     height: 50px;
     text-align: center;
     display: flex;
-    background-color: grey;
+    background-color: red;
 }
 </style>
 
@@ -14,10 +14,9 @@
     <meta charset="utf-8" />
     <link rel="stylesheet" />
 </head>
-<body>
  <?php    
 try{
-    $db = new PDO('mysql:host=localhost;dbname=test','root','');
+    $db = new PDO('mysql:host=localhost;dbname=ukooparts','root','');
     $db -> exec('SET NAMES "UTF8"');
 }catch(PDOException $e){
     echo 'Erreur:'.$e ->getMessage();
@@ -44,7 +43,7 @@ try{
   <label for="cylindre">Cylindré</label>
   <select>
 <?php
-    foreach ($db->query('SELECT displacement FROM PREFIX_ukooparts_engine WHERE id_ukooparts_engine = name FROM PREFIX_ukooparts_manufacturer') as $row) {
+    foreach ($db->query('SELECT displacement FROM PREFIX_ukooparts_engine') as $row) {
         echo '<option value="' . $row['displacement'] . '">'. $row['displacement'] . ' </option>';
     }   
 ?>
@@ -75,8 +74,6 @@ try{
 </div>
 
 </section>
-
-</body>
 
 
 
