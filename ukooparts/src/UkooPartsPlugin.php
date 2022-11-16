@@ -164,7 +164,7 @@ class UkooPartsPlugin
             $this->create_ukooparts_post('manufacturers','Liste des constructeurs', '[manufacturers]'),
             $this->create_ukooparts_post('models','Liste des modèles', '[models]'),
             $this->create_ukooparts_post('fiche-descriptif','fiche descriptif', '[descriptif]'),
-
+            $this->create_ukooparts_post('topmoto','Top 50 bécanes', '[topmoto]'),
         );
     }
     
