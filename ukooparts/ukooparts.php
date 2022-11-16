@@ -39,20 +39,45 @@ create_page('moto', 'all the motos are here', 'publish');
 
 
 //////////////Vincent Pages ********************************
-function create_manufacturers_page($title, $content, $status){
-    $page_array = array(
-        'post_title' => $title,
-        'post_content' => $content,
-        'post_status' => $status,
-        'post_type' => 'page'
-    );
-    $new_page = get_page_by_title( $title, OBJECT, 'page');
-    if (  !isset( $new_page ) ) {
-        wp_insert_post($page_array, false);
-	}
+
+function getConnexion(){
+    return new PDO('mysql:host=localhost;dbname=ukooparts','root','');
 }
-// call the function to create a page title "marque"
-create_manufacturers_page('manufacturers', 'all the manufacturers are here', 'publish');
+
+
+// try{
+//     $db = new PDO('mysql:host=localhost;dbname=ukooparts','root','');
+//     $db -> exec('SET NAMES "UTF8"');
+// }catch(PDOException $e){
+//     echo 'Erreur:'.$e ->getMessage();
+//     die();
+// }
+
+
+
+function shortcode_manufacturers() : string {
+    $pdo = getConnexion();
+    $req = "SELECT * FROM `PREFIX_ukooparts_manufacturer` ORDER BY name ASC"; 
+    $stmt = $pdo->prepare($req);
+    $stmt->execute();
+    $manufacturers = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    echo "<h2>Liste des constructeurs - par ordre alphabétique</h2>";
+    // print_r($manufacturers);
+    $html = '<h3>TEST</h3><div>';
+
+    foreach($manufacturers as $manufacturer) :
+        
+     $html = $html.'</div><p>'.$manufacturer["name"].'</p><div>';
+        endforeach;
+
+        $html = $html.'</div>';
+
+        return $html;
+        }
+
+
+
+
 
 /////////////////////////////Adam/////////////////////////////////////////////////
 
