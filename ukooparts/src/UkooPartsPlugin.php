@@ -162,7 +162,7 @@ class UkooPartsPlugin
         return array(
             $this->create_ukooparts_post('cadeaux','Liste des cadeaux !', '[cadeaux]'),
             //yuan
-            $this->create_ukooparts_post('accessoire','accessoires', '[accessoire]'),
+            $this->create_ukooparts_post('models','Liste des modèles', '[models]'),
         );
     }
 }
