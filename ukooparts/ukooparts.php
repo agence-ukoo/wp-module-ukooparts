@@ -192,12 +192,6 @@ function typesCss1(){
     margin-left: auto
 
 }
-#yamaha{
-    border: 1px solid blue;
-   
-
-}
-
     #titre {
         position: relative;
         overflow: hidden;
@@ -380,27 +374,77 @@ add_action('wp_footer', 'typesCss');
 add_action('wp_footer', 'types');
 
 function shortcode_cadeaux(): string{
-    return "<h2>Bienvenue dans cette surperbe liste de cadeaux ! !</h2>";
+    return "<h2>Bienvenue dans cette superbe liste de cadeaux ! !</h2>";
 }
 add_shortcode('cadeaux', 'shortcode_cadeaux');
+
+
+////////////////////////////////ilyes/////////////////////////////////////////////////////
+
+function shortcode_descriptif(): void{
+    
+    try{
+        $db = new PDO('mysql:host=localhost;dbname=ukooparts','root','');
+        $db -> exec('SET NAMES "UTF8"');
+    }catch(PDOException $e){
+        echo 'Erreur:'.$e ->getMessage();
+        die();
+    }
+    if(isset($_GET['descriptif_id']) && isset($_GET['lang_id'])){
+    
+        $lang_id = $_GET['lang_id'];
+        $descriptif_id = $_GET['descriptif_id'];
+
+            $query = $db -> query( "SELECT LANG.description AS description, ENGIN.model AS model,ENGIN.id_ukooparts_engine AS id, ENGIN.year_start AS start, ENGIN.year_end AS end, ENGIN.image AS image, MANU.name AS manufacturer, CONCAT(MANU.name, ' ', ENGIN.model) AS title, CONCAT(ENGIN.year_start, '-', ENGIN.year_end) AS years  
+            FROM  PREFIX_ukooparts_engine ENGIN 
+            inner join PREFIX_ukooparts_engine_lang LANG 
+            on LANG.id_ukooparts_engine = ENGIN.id_ukooparts_engine
+            INNER JOIN PREFIX_ukooparts_manufacturer MANU 
+            ON ENGIN.id_ukooparts_manufacturer = MANU.id_ukooparts_manufacturer WHERE ENGIN.id_ukooparts_engine = $descriptif_id AND LANG.id_lang = $lang_id");
+            
+            
+            
+                foreach($query as $row)
+                {
+                   echo("<h1>" . $row['title'] . "</h1> 
+                        <h2>" . $row['years'] . "</h2>
+                        <p>" . $row['description'] . "</p>"
+                        );
+
+                }
+            
+        }      
+}
+add_shortcode('descriptif', 'shortcode_descriptif');
 
 
 
 // yuan
 function shortcode_models() {
-
-    if(isset($_GET['manufact_id'])){
-
-        $manufact_id = $_GET['manufact_id'];
         $db = new PDO('mysql:host=localhost;dbname=ukooparts','root','root');
         $db -> exec('SET NAMES "UTF8"');
-        $models = ($db->query("SELECT engine.model, manu.name
+    if(isset($_GET['manufact_id'])&& !isset($_GET['engine_type_id'])){
+        $manufact_id = $_GET['manufact_id'];
+
+        $models = ($db->query("SELECT distinct engine.model, manu.name
             FROM PREFIX_ukooparts_engine AS engine
             INNER JOIN PREFIX_ukooparts_manufacturer AS manu
             ON manu.id_ukooparts_manufacturer = engine.id_ukooparts_manufacturer
-                WHERE  manu.id_ukooparts_manufacturer=$manufact_id ORDER BY model ASC;"))->fetchAll();
-        
-        $html= '';
+            WHERE  manu.id_ukooparts_manufacturer=$manufact_id ORDER BY model ASC;"))->fetchAll();
+    } else if(isset($_GET['manufact_id']) && isset($_GET['engine_type_id'])){
+            $manufact_id = $_GET['manufact_id'];
+            $engine_type_id = $_GET['engine_type_id'];
+
+            $models = ($db->query("SELECT distinct engine.model, manu.name, type.name AS type_name
+                FROM PREFIX_ukooparts_engine AS engine
+                INNER JOIN PREFIX_ukooparts_manufacturer AS manu
+                ON manu.id_ukooparts_manufacturer = engine.id_ukooparts_manufacturer
+                INNER JOIN PREFIX_ukooparts_engine_type_lang AS type
+                ON type.id_ukooparts_engine_type = engine.id_ukooparts_engine_type
+                WHERE  manu.id_ukooparts_manufacturer=$manufact_id AND engine.id_ukooparts_engine_type=$engine_type_id ORDER BY model ASC;"))->fetchAll();
+    }
+    $html= '';
+    if($models){
         $first_letter = $models[0]['model'][0];
         $html = $html.'<h3>'.$first_letter.'</h3><div>';
         foreach($models as $model){       
@@ -412,8 +456,61 @@ function shortcode_models() {
                 $html = $html.$model['name'].' '.$model['model'].',  ';
             }
         }
-        $html = $html.'</div>';
-        return $html;
-    }
+    }    
+    $html = $html.'</div>';
+    return $html;
+    
 }
 add_shortcode('models', 'shortcode_models');
+
+
+
+
+function shortcode_topmoto(): string{
+    try{
+        $db = new PDO('mysql:host=localhost;dbname=ukooparts','root','');
+        $db -> exec('SET NAMES "UTF8"');
+        $motoData = $db->query("SELECT * FROM PREFIX_ukooparts_engine_lang LIMIT 50")->fetchAll(PDO::FETCH_ASSOC);
+
+        $string = "";
+        foreach ($motoData as $moto) {
+            $string .= "<div id='bloc_moto'>";
+            $string .= "<h3>" . $moto["meta_title"] . "</h3>";
+            $string .= "</div>";
+        }
+        return $string;
+    }catch(PDOException $e){
+        echo 'Erreur:'.$e ->getMessage();
+        die();
+    }
+    return "<div>Aucune moto trouvé</div>";
+}
+add_shortcode('topmoto', 'shortcode_topmoto');
+
+/*************      Test CSS  ********/
+
+class topmoto {
+
+    public function __construct()
+{
+    
+
+    add_action('wp_enqueue_scripts', array($this, 'load_assets'));
+
+
+}
+
+public function load_assets(){
+
+wp_enqueue_style(
+ 'ukooparts',
+  plugin_dir_url(__FILE__) . 'css/ukooparts.css',
+   array(),
+    1,
+    'all'
+);
+
+}
+}
+
+new topmoto;
