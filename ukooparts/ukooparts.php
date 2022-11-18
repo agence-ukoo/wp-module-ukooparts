@@ -436,57 +436,63 @@ function shortcode_models() {
                         <input type="submit" name="submit" value="Rechercher">
                     </form>
                 </div>';
-    // connect to bdd
-    $db = new PDO('mysql:host=localhost;dbname=ukooparts','root','');
-    $db -> exec('SET NAMES "UTF8"');
+    // if manufacturer id set in url
+    if(isset($_GET['manufact_id'])){            
+        // connect to bdd
+        $db = new PDO('mysql:host=localhost;dbname=ukooparts','root','');
+        $db -> exec('SET NAMES "UTF8"');
 
-    // if there is manufacturer id but no engine type id, the list of models will be filtered only by manufacturer(brand name: example YAMAHA)
-    if(isset($_GET['manufact_id'])&& !isset($_GET['engine_type_id'])){ 
-        $manufact_id = $_GET['manufact_id'];
-
-        $models = ($db->query("SELECT distinct engine.model, manu.name
-            FROM PREFIX_ukooparts_engine AS engine
-            INNER JOIN PREFIX_ukooparts_manufacturer AS manu
-            ON manu.id_ukooparts_manufacturer = engine.id_ukooparts_manufacturer
-            WHERE  manu.id_ukooparts_manufacturer=$manufact_id ORDER BY model ASC;"))->fetchAll();
-    // if  there is manufacturer id and engine type id, the list of models will be filtered by both manufacturer(brand name: example YAMAHA) and engine type id(type of vehicle: example scotter)
-    } else if(isset($_GET['manufact_id']) && isset($_GET['engine_type_id'])){
+        // if engine type id is not set in url, the list of models will be filtered only by manufacturer(brand name: example YAMAHA)
+        if(!isset($_GET['engine_type_id'])){ 
             $manufact_id = $_GET['manufact_id'];
-            $engine_type_id = $_GET['engine_type_id'];
 
-            $models = ($db->query("SELECT distinct engine.model, manu.name, type.name AS type_name
+            $models = ($db->query("SELECT distinct engine.model, manu.name
                 FROM PREFIX_ukooparts_engine AS engine
                 INNER JOIN PREFIX_ukooparts_manufacturer AS manu
                 ON manu.id_ukooparts_manufacturer = engine.id_ukooparts_manufacturer
-                INNER JOIN PREFIX_ukooparts_engine_type_lang AS type
-                ON type.id_ukooparts_engine_type = engine.id_ukooparts_engine_type
-                WHERE  manu.id_ukooparts_manufacturer=$manufact_id AND engine.id_ukooparts_engine_type=$engine_type_id ORDER BY model ASC;"))->fetchAll();
-    }
-    // if there is no search, or the search key word is 'tous', the whole list will be showed
-    if($models && (!isset($_POST['submit']) || strtoupper($_POST['key'])=='TOUS')){
-        $first_letter = $models[0]['model'][0];
-        $html = $html.'<h3>'.$first_letter.'</h3><div>';
-        foreach($models as $model){       
-            if($model['model'][0] != $first_letter){
-                $first_letter = $model['model'][0];
-                $html = $html.'</div><h3>'.$first_letter.'</h3><div>';
-                $html = $html.$model['name'].' '.$model['model'].',  ';
-            }else{
-                $html = $html.$model['name'].' '.$model['model'].',  ';
-            }
+                WHERE  manu.id_ukooparts_manufacturer=$manufact_id ORDER BY model ASC;"))->fetchAll();
+        // if engine type id is set, the list of models will be filtered by both manufacturer(brand name: example YAMAHA) and engine type id(type of vehicle: example scotter)
+        } else {
+                $manufact_id = $_GET['manufact_id'];
+                $engine_type_id = $_GET['engine_type_id'];
+
+                $models = ($db->query("SELECT distinct engine.model, manu.name, type.name AS type_name
+                    FROM PREFIX_ukooparts_engine AS engine
+                    INNER JOIN PREFIX_ukooparts_manufacturer AS manu
+                    ON manu.id_ukooparts_manufacturer = engine.id_ukooparts_manufacturer
+                    INNER JOIN PREFIX_ukooparts_engine_type_lang AS type
+                    ON type.id_ukooparts_engine_type = engine.id_ukooparts_engine_type
+                    WHERE  manu.id_ukooparts_manufacturer=$manufact_id AND engine.id_ukooparts_engine_type=$engine_type_id ORDER BY model ASC;"))->fetchAll();
         }
-        return $html.'</body></></div>';
-    // if the search key word is not 'tous', the list will be filtered by the key words
-    } else if ($models && isset($_POST['submit'])){
-        $key = $_POST['key'];
-        $array_models_found = array();
-        $html = $html.'<div>';
-        foreach($models as $model){
-            if(strpos(strtoupper($model['model']), strtoupper($key)) !== false){
-                $html = $html.$model['name'].' '.$model['model'].', ';
+        // if there is no search, or the search key word is 'tous', the whole list will be showed
+        if($models && (!isset($_POST['submit']) || strtoupper($_POST['key'])=='TOUS')){
+            $first_letter = $models[0]['model'][0];
+            $html = $html.'<h3>'.$first_letter.'</h3><div>';
+            foreach($models as $model){       
+                if($model['model'][0] != $first_letter){
+                    $first_letter = $model['model'][0];
+                    $html = $html.'</div><h3>'.$first_letter.'</h3><div>';
+                    $html = $html.$model['name'].' '.$model['model'].',  ';
+                }else{
+                    $html = $html.$model['name'].' '.$model['model'].',  ';
+                }
             }
+            return $html.'</body></></div>';
+        // if the search key word is not 'tous', the list will be filtered by the key words
+        } else if ($models && isset($_POST['submit'])){
+            $key = $_POST['key'];
+            $array_models_found = array();
+            $html = $html.'<div>';
+            foreach($models as $model){
+                if(strpos(strtoupper($model['model']), strtoupper($key)) !== false){
+                    $html = $html.$model['name'].' '.$model['model'].', ';
+                }
+            }
+            return $html.'</div></body></></div>';
         }
-        return $html.'</div></body></></div>';
+    // if no id is set in url, no list is shown
+    } else if (!isset($_GET['manufact_id']) && !isset($_GET['engine_type_id'])){
+        return $html.'<div>Non manufacturer choisi</div></body></></div>';
     }
 }
 add_shortcode('models', 'shortcode_models');
