@@ -439,7 +439,7 @@ function shortcode_models() {
     // if manufacturer id set in url
     if(isset($_GET['manufact_id'])){            
         // connect to bdd
-        $db = new PDO('mysql:host=localhost;dbname=ukooparts','root','');
+        $db = new PDO('mysql:host=localhost;dbname=ukooparts','root','root');
         $db -> exec('SET NAMES "UTF8"');
 
         // if engine type id is not set in url, the list of models will be filtered only by manufacturer(brand name: example YAMAHA)
@@ -464,8 +464,8 @@ function shortcode_models() {
                     ON type.id_ukooparts_engine_type = engine.id_ukooparts_engine_type
                     WHERE  manu.id_ukooparts_manufacturer=$manufact_id AND engine.id_ukooparts_engine_type=$engine_type_id ORDER BY model ASC;"))->fetchAll();
         }
-        // if there is no search, or the search key word is 'tous', the whole list will be showed
-        if($models && (!isset($_POST['submit']) || strtoupper($_POST['key'])=='TOUS')){
+        // if there is no search, or the search key word is 'tous', or search without any key word entered, the whole list will be showed
+        if($models && (!isset($_POST['submit']) || (isset($_POST['submit']) && (strtoupper($_POST['key'])=='TOUS' || !$_POST['key']) ))     ) {
             $first_letter = $models[0]['model'][0];
             $html = $html.'<h3>'.$first_letter.'</h3><div>';
             foreach($models as $model){       
@@ -477,22 +477,26 @@ function shortcode_models() {
                     $html = $html.$model['name'].' '.$model['model'].',  ';
                 }
             }
-            return $html.'</body></></div>';
+            return $html.'</div></body></html>';
         // if the search key word is not 'tous', the list will be filtered by the key words
-        } else if ($models && isset($_POST['submit'])){
+        } else if ($models && isset($_POST['submit']) && strtoupper($_POST['key']) !='TOUS'){
             $key = $_POST['key'];
             $array_models_found = array();
             $html = $html.'<div>';
             foreach($models as $model){
-                if(strpos(strtoupper($model['model']), strtoupper($key)) !== false){
+                if(str_contains(strtoupper($model['model']), strtoupper($key)) !== false){
                     $html = $html.$model['name'].' '.$model['model'].', ';
+                    array_push($array_models_found, $model);
                 }
             }
-            return $html.'</div></body></></div>';
+            if(sizeof($array_models_found) == 0){
+                $html = $html.'Ce modèle ne existe pas';
+            }
+            return $html.'</div></body></html>';
         }
     // if no id is set in url, no list is shown
     } else if (!isset($_GET['manufact_id']) && !isset($_GET['engine_type_id'])){
-        return $html.'<div>Non manufacturer choisi</div></body></></div>';
+        return $html.'<div>Non manufacturer choisi</div></body></html>';
     }
 }
 add_shortcode('models', 'shortcode_models');
