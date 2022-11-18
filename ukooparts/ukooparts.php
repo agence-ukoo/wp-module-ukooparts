@@ -421,9 +421,27 @@ add_shortcode('descriptif', 'shortcode_descriptif');
 
 // yuan
 function shortcode_models() {
-        $db = new PDO('mysql:host=localhost;dbname=ukooparts','root','root');
-        $db -> exec('SET NAMES "UTF8"');
-    if(isset($_GET['manufact_id'])&& !isset($_GET['engine_type_id'])){
+    $html= '<!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+            </head>
+            <style>
+            </style>
+            <body>
+                <div class="container">
+                    <form method="post" action="">
+                        <input type="text" placeholder="TOUS pour tous les modèles" name="key">
+                        <input type="submit" name="submit" value="Rechercher">
+                    </form>
+                </div>';
+    // connect to bdd
+    $db = new PDO('mysql:host=localhost;dbname=ukooparts','root','');
+    $db -> exec('SET NAMES "UTF8"');
+
+    // if there is manufacturer id but no engine type id, the list of models will be filtered only by manufacturer(brand name: example YAMAHA)
+    if(isset($_GET['manufact_id'])&& !isset($_GET['engine_type_id'])){ 
         $manufact_id = $_GET['manufact_id'];
 
         $models = ($db->query("SELECT distinct engine.model, manu.name
@@ -431,6 +449,7 @@ function shortcode_models() {
             INNER JOIN PREFIX_ukooparts_manufacturer AS manu
             ON manu.id_ukooparts_manufacturer = engine.id_ukooparts_manufacturer
             WHERE  manu.id_ukooparts_manufacturer=$manufact_id ORDER BY model ASC;"))->fetchAll();
+    // if  there is manufacturer id and engine type id, the list of models will be filtered by both manufacturer(brand name: example YAMAHA) and engine type id(type of vehicle: example scotter)
     } else if(isset($_GET['manufact_id']) && isset($_GET['engine_type_id'])){
             $manufact_id = $_GET['manufact_id'];
             $engine_type_id = $_GET['engine_type_id'];
@@ -443,8 +462,8 @@ function shortcode_models() {
                 ON type.id_ukooparts_engine_type = engine.id_ukooparts_engine_type
                 WHERE  manu.id_ukooparts_manufacturer=$manufact_id AND engine.id_ukooparts_engine_type=$engine_type_id ORDER BY model ASC;"))->fetchAll();
     }
-    $html= '';
-    if($models){
+    // if there is no search, or the search key word is 'tous', the whole list will be showed
+    if($models && (!isset($_POST['submit']) || strtoupper($_POST['key'])=='TOUS')){
         $first_letter = $models[0]['model'][0];
         $html = $html.'<h3>'.$first_letter.'</h3><div>';
         foreach($models as $model){       
@@ -456,10 +475,19 @@ function shortcode_models() {
                 $html = $html.$model['name'].' '.$model['model'].',  ';
             }
         }
-    }    
-    $html = $html.'</div>';
-    return $html;
-    
+        return $html.'</body></></div>';
+    // if the search key word is not 'tous', the list will be filtered by the key words
+    } else if ($models && isset($_POST['submit'])){
+        $key = $_POST['key'];
+        $array_models_found = array();
+        $html = $html.'<div>';
+        foreach($models as $model){
+            if(strpos(strtoupper($model['model']), strtoupper($key)) !== false){
+                $html = $html.$model['name'].' '.$model['model'].', ';
+            }
+        }
+        return $html.'</div></body></></div>';
+    }
 }
 add_shortcode('models', 'shortcode_models');
 
