@@ -81,66 +81,69 @@ function shortcode_manufacturers() : string {
 
 
 /////////////////////////////Adam/////////////////////////////////////////////////
+add_action('wp_head','droplist');
+add_action('wp_head','dropcss');
 
-/*add_action('wp_header', 'dropdown_view');
-function create_dropList($title, $content, $status){
-    $page_array = array(
-        'post_title' => $title,
-        'post_content' => $content,
-        'post_status' => $status,
-        'post_type' => 'page'
-    );
-    $new_page = get_page_by_title( $title, OBJECT, 'page');
-    if (  !isset( $new_page ) ) {
-        wp_insert_post($page_array, false);
-	}
+function dropcss(){
+printf(
+    "<style>
+    .dropall{
+        width: 100%;
+        height: 50px;
+        text-align: center;
+        display: flex;
+        background-color: red;
+    }
+    </style>");
 }
 
-create_dropList('droplist test', '<section class="dropall">
-<div class = "droplist">
-<?php $marques ?>
-<form action="droplist.php">
-  <label for="Marque">Marque</label>
-  <select name="Marque" id="Marque">
-    <option value="">Marque</option>
-    <option value="">Aprilia</option>
-    <option value="">BMW</option>
-    <option value="">Honda</option>
-    <option value="">KTM</option>
-    <option value="">Kawazaki</option>
-    <option value="">Moto-Guizzi</option>
-  </select>
-</form>
-</div>
+function droplist(){
+try{
+    $db = new PDO('mysql:host=localhost;dbname=test','root','');
+    $db -> exec('SET NAMES "UTF8"');
+}catch(PDOException $e){
+    echo 'Erreur:'.$e ->getMessage();
+    die();
+}
 
-<?php $cylindre ?>
+"<section class='dropall'>
+  <label for='Marque'>Marque</label>
+  <select>";
+    foreach ($db->query('SELECT name FROM PREFIX_ukooparts_manufacturer') as $row) {
+        echo '<option value="' . $row['name'] . '">'. $row['name'] . ' </option>';
+    }   
 
-<div class = "droplist">
-<form action="droplist.php">
-  <label for="cylindre">Cylindré</label>
-  <select name="cylindre" id="cylindre">
-    <option value="">cylindré</option>
-    <option value=""></option>
-    <option value=""></option>
-    <option value=""></option>
-  </select>
+"</select>
 </form>
-</div>
+  <label for='model'>Modèles</label>
+  <select>";
+    foreach ($db->query('SELECT model FROM PREFIX_ukooparts_engine ') as $row) {
+        echo '<option value="' . $row['model'] . '">'. $row['model'] . ' </option>';
+    }   
 
-<div class = "droplist">
-<form action="droplist.php">
-  <label for="modeles">Modèles</label>
-  <select name="modeles" id="modeles">
-    <option value="">modèles</option>
-    <option value=""></option>
-    <option value=""></option>
-    <option value=""></option>
-  </select>
+"</select>
+  <label for='cylindre'>Cylindré</label>
+  <select>";
+    foreach ($db->query('SELECT displacement FROM PREFIX_ukooparts_engine') as $row) {
+        echo '<option value="' . $row['displacement'] . '">'. $row['displacement'] . ' </option>';
+    }   
+"</select>
 </form>
-</div>
-</section>',
-'publish'
-);*/
+
+
+  <label for='year'>année</label>
+  <select>";
+    foreach ($db->query('SELECT  FROM PREFIX_ukooparts_compatibility') as $row) {
+        echo '<option value="' . $row['year'] . '">'. $row['year'] . ' </option>';
+    }   
+
+"</select>
+</section>";}
+
+
+
+
+
 
 
 
@@ -470,7 +473,7 @@ function shortcode_topmoto(): string{
 }
 add_shortcode('topmoto', 'shortcode_topmoto');
 
-/*************      Test CSS  ********/
+/*************      ukooparts CSS  ********/
 
 class topmoto {
 

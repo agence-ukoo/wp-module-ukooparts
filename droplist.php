@@ -6,7 +6,7 @@
     height: 50px;
     text-align: center;
     display: flex;
-    background-color: greenyellow;
+    background-color: red;
 }
 </style>
 
