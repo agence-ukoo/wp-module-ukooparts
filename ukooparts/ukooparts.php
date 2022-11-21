@@ -40,45 +40,72 @@ create_page('moto', 'all the motos are here', 'publish');
 
 //////////////Vincent Pages ********************************
 
-function getConnexion(){
-    return new PDO('mysql:host=localhost;dbname=ukooparts','root','');
+   //infos de connexions à la db
+try{
+    $db = new PDO('mysql:host=localhost;dbname=ukooparts','root','');
+    $db -> exec('SET NAMES "UTF8"');
+}catch(PDOException $e){
+    echo 'Erreur:'.$e ->getMessage();
+    die();
 }
 
+    // fonction de display des constructeurs par noms A-Z
+function shortcode_manufacturers() {
 
-// try{
-//     $db = new PDO('mysql:host=localhost;dbname=ukooparts','root','');
-//     $db -> exec('SET NAMES "UTF8"');
-// }catch(PDOException $e){
-//     echo 'Erreur:'.$e ->getMessage();
-//     die();
-// }
+    $db = new PDO('mysql:host=localhost;dbname=ukooparts','root','');
+    $db -> exec('SET NAMES "UTF8"');
+    $manufacturers = ($db->query("SELECT * FROM `PREFIX_ukooparts_manufacturer` ORDER BY name ASC;"))->fetchAll();
 
+    $displayManu = "";
+    $first_letterManu = $manufacturers[0]['name'][0];
+    $displayManu = $displayManu. '<h3>' . $first_letterManu. '</h3><div>';
 
-
-function shortcode_manufacturers() : string {
-    $pdo = getConnexion();
-    $req = "SELECT * FROM `PREFIX_ukooparts_manufacturer` ORDER BY name ASC"; 
-    $stmt = $pdo->prepare($req);
-    $stmt->execute();
-    $manufacturers = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    echo "<h2>Liste des constructeurs</h2>";
-    // print_r($manufacturers);
-    $html = '<h3></h3><div>';
-
-    foreach($manufacturers as $manufacturer) :
-        
-     $html = $html.'</div><p>'.$manufacturer["name"].'</p><div>';
-        endforeach;
-
-        $html = $html.'</div>';
-
-        return $html;
+    foreach($manufacturers as $manufacturer) {
+        if($manufacturer['name'][0] != $first_letterManu) {
+            $first_letterManu = $manufacturer['name'][0];
+            $displayManu = $displayManu. '</div><h3>' .$first_letterManu. '</h3><div>';
+            $displayManu = $displayManu.$manufacturer['name'];
+        } else {
+            $displayManu = $displayManu.$manufacturer['name'];
         }
 
+    }
+    $displayManu = $displayManu.'</div>';
+    return $displayManu;
+}
 
-        add_shortcode('manufacturers', 'shortcode_manufacturers');
+add_shortcode('manufacturers', 'shortcode_manufacturers');
+
+    // création d'une fonction de connexion
+    // function getConnexion(){
+    //     return new PDO('mysql:host=localhost;dbname=ukooparts','root','');
+    // }
+    //
+    // $manufacturers = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    // echo "<h2>Liste des constructeurs</h2>";
+    // // print_r($manufacturers);
+    // $html = '<h3></h3><div>';
+
+    // foreach($manufacturers as $manufacturer) :
+        
+    //  $html = $html.'</div><p>'.$manufacturer["name"].'</p><div>';
+    //     endforeach;
+
+    //     $html = $html.'</div>';
+
+    //     return $html;
+    //     }
 
 
+    //     add_shortcode('manufacturers', 'shortcode_manufacturers');
+
+        // search field
+        ?>
+
+<!-- <form role="search" method="get" action="http://localhost/ukooparts/" class="wp-block-search__button-outside wp-block-search__text-button wp-block-search"><label for="wp-block-search__input-1" class="wp-block-search__label"></label><div class="wp-block-search__inside-wrapper ">
+    <input type="search" id="wp-block-search__input-1" class="wp-block-search__input wp-block-search__input" name="s" value="" placeholder="" required=""><button type="submit" class="wp-block-search__button wp-element-button">Rechercher</button></div></form> -->
+
+<?php 
 
 /////////////////////////////Adam/////////////////////////////////////////////////
 
@@ -388,7 +415,7 @@ add_shortcode('cadeaux', 'shortcode_cadeaux');
 
 // yuan
     function redirect_accessoire() {
-        $db = new PDO('mysql:host=localhost;dbname=test','root','root');
+        $db = new PDO('mysql:host=localhost;dbname=ukooparts','root','');
         $db -> exec('SET NAMES "UTF8"');
         $models = ($db->query("SELECT engine.model, manu.name
             FROM PREFIX_ukooparts_engine AS engine
