@@ -507,7 +507,7 @@ add_shortcode('models', 'shortcode_models');
 
 
 
-
+// Larbi top50 moto
 function shortcode_topmoto(): string{
     try{
         $db = new PDO('mysql:host=localhost;dbname=ukooparts','root','');
@@ -515,16 +515,19 @@ function shortcode_topmoto(): string{
         $motoData = $db->query("SELECT * FROM PREFIX_ukooparts_engine_lang LIMIT 50")->fetchAll(PDO::FETCH_ASSOC);
 
         $string = "";
+        $string .= "<ol id='order_list_vehicle'>";
         foreach ($motoData as $moto) {
-            $string .= "<div id='bloc_moto'>";
-            $string .= "<h3>" . $moto["meta_title"] . "</h3>";
-            $string .= "</div>";
+            $string .= "<li class='list_vehicle'>" . $moto["meta_title"] . "</li>"; 
         }
+        $string .= "<a href='#'><li>voir toutes les motos</p></li>";
+        $string .= "</ol>";
+
         return $string;
     }catch(PDOException $e){
         echo 'Erreur:'.$e ->getMessage();
         die();
     }
+    
     return "<div>Aucune moto trouvé</div>";
 }
 add_shortcode('topmoto', 'shortcode_topmoto');
