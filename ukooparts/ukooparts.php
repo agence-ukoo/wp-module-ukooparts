@@ -39,7 +39,7 @@ function shortcode_manufacturers() {
                         </form>
                     </div>';
 
-    $db = new PDO('mysql:host=localhost;dbname=ukooparts','root', 'root');
+    $db = new PDO('mysql:host=localhost;dbname=ukooparts','root', '');
     $db -> exec('SET NAMES "UTF8"');
     if(!isset($_GET['engine_type_id'])){
         $manufacturers = ($db->query("SELECT * FROM `PREFIX_ukooparts_manufacturer` ORDER BY name ASC;"))->fetchAll();
