@@ -126,7 +126,7 @@ class UkooPartsPlugin
                 'capability_type' => 'page',
                 'menu_icon' => 'dashicons-welcome-view-site'
             );
-            register_post_type('ukooparts', $args);
+            register_post_type('parts', $args);
         }
 
         function add_page_to_init(): void
@@ -135,9 +135,9 @@ class UkooPartsPlugin
 
                 $array = extract($array_entry);
                 extract((array)$array);
-                        if (!get_page_by_path($url, OBJECT, 'ukooparts'))
+                        if (!get_page_by_path($url, OBJECT, 'parts'))
                             wp_insert_post(array(
-                                'post_type' => "ukooparts",
+                                'post_type' => "parts",
                                 'post_content' => $content,
                                 'post_title' => $title,
                                 'post_name' => $url, //this is for the URL
@@ -162,7 +162,9 @@ class UkooPartsPlugin
         return array(
             $this->create_ukooparts_post('cadeaux','Liste des cadeaux !', '[cadeaux]'),
             $this->create_ukooparts_post('manufacturers','Liste des constructeurs', '[manufacturers]'),
-            $this->create_ukooparts_post('accessoire','accessoires', '[accessoire]'),
+            $this->create_ukooparts_post('models','Liste des modèles', '[models]'),
+            $this->create_ukooparts_post('fiche-descriptif','fiche descriptif', '[descriptif]'),
+            $this->create_ukooparts_post('topmoto','Top 50 bécanes', '[topmoto]'),
         );
     }
     
