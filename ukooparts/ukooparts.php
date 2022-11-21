@@ -162,19 +162,19 @@ function marque(){
             </div>
             <div class="container" id="containerLogo">
             <div class="logo" id="yamaha">
-            <a href="https://www.tech2roo.com/compat/yamaha/850/mt-09/158-159-403"><img class="logo" src="https://i.pinimg.com/originals/0b/c0/24/0bc024f240e6bec6d29df3155d487adf.png" /></a>
+            <a href="http://localhost:10004/ukooparts/models/?manufact_id=11".><img class="logo" src="https://i.pinimg.com/originals/0b/c0/24/0bc024f240e6bec6d29df3155d487adf.png" /></a>
             </div>
             <div class="logo" id="kawasaki">
-            <a href="https://www.tech2roo.com/compat/kawasaki/650/er-6f-sans-abs/161-140-181"><img class="logo" src="https://www.freepnglogos.com/uploads/kawasaki-png-logo/kawasaki-green-emblem-png-logo-1.png" /></a>
+            <a href="http://localhost:10004/ukooparts/models/?manufact_id=5"><img class="logo" src="https://www.freepnglogos.com/uploads/kawasaki-png-logo/kawasaki-green-emblem-png-logo-1.png" /></a>
             </div>           
             <div class="logo" id="suzuki">
-            <a href="https://www.tech2roo.com/compat/suzuki/750/gsr750/153-17-343"><img class="logo" src="https://seeklogo.com/images/S/suzuki-logo-B2B31D667D-seeklogo.com.png" /></a>
+            <a href="http://localhost:10004/ukooparts/models/?manufact_id=9"><img class="logo" src="https://seeklogo.com/images/S/suzuki-logo-B2B31D667D-seeklogo.com.png" /></a>
             </div>           
             <div class="logo" id="aprilia">
-            <a href="https://www.tech2roo.com/compat/aprilia/150/scarabeo/2005/418-150-910-12"><img class="logo" src="https://www.autocollant-tuning.com/2143-home_default/autocollant-aprilia-sport.jpg" /></a>
+            <a href="http://localhost:10004/ukooparts/models/?manufact_id=16"><img class="logo" src="https://www.autocollant-tuning.com/2143-home_default/autocollant-aprilia-sport.jpg" /></a>
             </div>                       
             <div class="logo" id="bmw">
-            <a href="https://www.tech2roo.com/compat/bmw/1000/r-100-r/1997/1-24-753-77"><img class="logo" src="https://assets.stickpng.com/thumbs/580b57fcd9996e24bc43c46e.png" /></a>
+            <a href="http://localhost:10004/ukooparts/models/?manufact_id=15"><img class="logo" src="https://assets.stickpng.com/thumbs/580b57fcd9996e24bc43c46e.png" /></a>
             </div>       
             </div>                
             <p style="text-align: center;"> voir tout les <a href="https://www.tech2roo.com/">constructeurs </a></p>'
@@ -420,31 +420,86 @@ add_shortcode('descriptif', 'shortcode_descriptif');
 
 
 // yuan
-    function shortcode_models() {
-        $db = new PDO('mysql:host=localhost;dbname=ukooparts','root','');
+function shortcode_models() {
+    $html= '<!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+            </head>
+            <style>
+            </style>
+            <body>
+                <div class="container">
+                    <form method="post" action="">
+                        <input type="text" placeholder="TOUS pour tous les modèles" name="key">
+                        <input type="submit" name="submit" value="Rechercher">
+                    </form>
+                </div>';
+    // if manufacturer id set in url
+    if(isset($_GET['manufact_id'])){            
+        // connect to bdd
+        $db = new PDO('mysql:host=localhost;dbname=ukooparts','root','root');
         $db -> exec('SET NAMES "UTF8"');
-        $models = ($db->query("SELECT engine.model, manu.name
-            FROM PREFIX_ukooparts_engine AS engine
-            INNER JOIN PREFIX_ukooparts_manufacturer AS manu
-            ON manu.id_ukooparts_manufacturer = engine.id_ukooparts_manufacturer
-                WHERE  manu.id_ukooparts_manufacturer=11 ORDER BY model ASC;"))->fetchAll();
-        
-        $html= '';
-        $first_letter = $models[0]['model'][0];
-        $html = $html.'<h3>'.$first_letter.'</h3><div>';
-        foreach($models as $model){       
-            if($model['model'][0] != $first_letter){
-                $first_letter = $model['model'][0];
-                $html = $html.'</div><h3>'.$first_letter.'</h3><div>';
-                $html = $html.$model['name'].' '.$model['model'].',  ';
-            }else{
-                $html = $html.$model['name'].' '.$model['model'].',  ';
+
+        // if engine type id is not set in url, the list of models will be filtered only by manufacturer(brand name: example YAMAHA)
+        if(!isset($_GET['engine_type_id'])){ 
+            $manufact_id = $_GET['manufact_id'];
+
+            $models = ($db->query("SELECT distinct engine.model, manu.name
+                FROM PREFIX_ukooparts_engine AS engine
+                INNER JOIN PREFIX_ukooparts_manufacturer AS manu
+                ON manu.id_ukooparts_manufacturer = engine.id_ukooparts_manufacturer
+                WHERE  manu.id_ukooparts_manufacturer=$manufact_id ORDER BY model ASC;"))->fetchAll();
+        // if engine type id is set, the list of models will be filtered by both manufacturer(brand name: example YAMAHA) and engine type id(type of vehicle: example scotter)
+        } else {
+                $manufact_id = $_GET['manufact_id'];
+                $engine_type_id = $_GET['engine_type_id'];
+
+                $models = ($db->query("SELECT distinct engine.model, manu.name, type.name AS type_name
+                    FROM PREFIX_ukooparts_engine AS engine
+                    INNER JOIN PREFIX_ukooparts_manufacturer AS manu
+                    ON manu.id_ukooparts_manufacturer = engine.id_ukooparts_manufacturer
+                    INNER JOIN PREFIX_ukooparts_engine_type_lang AS type
+                    ON type.id_ukooparts_engine_type = engine.id_ukooparts_engine_type
+                    WHERE  manu.id_ukooparts_manufacturer=$manufact_id AND engine.id_ukooparts_engine_type=$engine_type_id ORDER BY model ASC;"))->fetchAll();
+        }
+        // if there is no search, or the search key word is 'tous', or search without any key word entered, the whole list will be showed
+        if($models && (!isset($_POST['submit']) || (isset($_POST['submit']) && (strtoupper($_POST['key'])=='TOUS' || !$_POST['key']) ))     ) {
+            $first_letter = $models[0]['model'][0];
+            $html = $html.'<h3>'.$first_letter.'</h3><div>';
+            foreach($models as $model){       
+                if($model['model'][0] != $first_letter){
+                    $first_letter = $model['model'][0];
+                    $html = $html.'</div><h3>'.$first_letter.'</h3><div>';
+                    $html = $html.$model['name'].' '.$model['model'].',  ';
+                }else{
+                    $html = $html.$model['name'].' '.$model['model'].',  ';
+                }
             }
+            return $html.'</div></body></html>';
+        // if the search key word is not 'tous', the list will be filtered by the key words
+        } else if ($models && isset($_POST['submit']) && strtoupper($_POST['key']) !='TOUS'){
+            $key = $_POST['key'];
+            $array_models_found = array();
+            $html = $html.'<div>';
+            foreach($models as $model){
+                if(str_contains(strtoupper($model['model']), strtoupper($key)) !== false){
+                    $html = $html.$model['name'].' '.$model['model'].', ';
+                    array_push($array_models_found, $model);
+                }
             }
-        $html = $html.'</div>';
-    return $html;
+            if(sizeof($array_models_found) == 0){
+                $html = $html.'Ce modèle ne existe pas';
+            }
+            return $html.'</div></body></html>';
+        }
+    // if no id is set in url, no list is shown
+    } else if (!isset($_GET['manufact_id']) && !isset($_GET['engine_type_id'])){
+        return $html.'<div>Non manufacturer choisi</div></body></html>';
     }
-    add_shortcode('models', 'shortcode_models');
+}
+add_shortcode('models', 'shortcode_models');
 
 
 
