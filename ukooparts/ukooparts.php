@@ -19,59 +19,69 @@ $plugin = new Ukoo\Ukooparts\UkooPartsPlugin(__FILE__);
 
 
 
-// function to create pages  yuhan/////////////////////////////////////////////////////////////////////:
-function create_page($title, $content, $status){
-    $page_array = array(
-        'post_title' => $title,
-        'post_content' => $content,
-        'post_status' => $status,
-        'post_type' => 'page'
-    );
-    $new_page = get_page_by_title( $title, OBJECT, 'page');
-    if (  !isset( $new_page ) ) {
-        wp_insert_post($page_array, false);
-	}
-}
-// call the function to create a page title "moto"
-create_page('moto', 'all the motos are here', 'publish');
-
-
-
-
 //////////////Vincent Pages ********************************
-
-   //infos de connexions à la db
-try{
-    $db = new PDO('mysql:host=localhost;dbname=ukooparts','root','');
-    $db -> exec('SET NAMES "UTF8"');
-}catch(PDOException $e){
-    echo 'Erreur:'.$e ->getMessage();
-    die();
-}
-
     // fonction de display des constructeurs par noms A-Z
 function shortcode_manufacturers() {
 
-    $db = new PDO('mysql:host=localhost;dbname=ukooparts','root','');
+    $displayManu = '<!DOCTYPE html>
+            <html lang="en">
+                <head>
+                    <meta charset="UTF-8">
+                    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+                </head>
+                <style>
+                </style>
+                <body>
+                    <div class="container">
+                        <form method="post" action="">
+                            <input type="text" placeholder="TOUS pour tous les marques" name="key">
+                            <input type="submit" name="submit" value="Rechercher">
+                        </form>
+                    </div>';
+
+    $db = new PDO('mysql:host=localhost;dbname=ukooparts','root', 'root');
     $db -> exec('SET NAMES "UTF8"');
-    $manufacturers = ($db->query("SELECT * FROM `PREFIX_ukooparts_manufacturer` ORDER BY name ASC;"))->fetchAll();
-
-    $displayManu = "";
-    $first_letterManu = $manufacturers[0]['name'][0];
-    $displayManu = $displayManu. '<h3>' . $first_letterManu. '</h3><div>';
-
-    foreach($manufacturers as $manufacturer) {
-        if($manufacturer['name'][0] != $first_letterManu) {
-            $first_letterManu = $manufacturer['name'][0];
-            $displayManu = $displayManu. '</div><h3>' .$first_letterManu. '</h3><div>';
-            $displayManu = $displayManu.$manufacturer['name'];
-        } else {
-            $displayManu = $displayManu.$manufacturer['name'];
-        }
-
+    if(!isset($_GET['engine_type_id'])){
+        $manufacturers = ($db->query("SELECT * FROM `PREFIX_ukooparts_manufacturer` ORDER BY name ASC;"))->fetchAll();
+    }else{
+        $engine_type_id = $_GET['engine_type_id'];
+        $manufacturers = ($db->query("select distinct engine.id_ukooparts_manufacturer, engine.id_ukooparts_engine_type, manu.name
+            FROM PREFIX_ukooparts_engine as engine
+            INNER JOIN PREFIX_ukooparts_manufacturer as manu
+            ON manu.id_ukooparts_manufacturer = engine.id_ukooparts_manufacturer
+            WHERE engine.id_ukooparts_engine_type = $engine_type_id ORDER BY name ASC"))->fetchAll(); 
     }
-    $displayManu = $displayManu.'</div>';
-    return $displayManu;
+    
+    if($manufacturers && (!isset($_POST['submit']) || (isset($_POST['submit']) && (strtoupper($_POST['key'])=='TOUS' || !$_POST['key']) ))     ) {
+        $first_letterManu = $manufacturers[0]['name'][0];
+        $displayManu = $displayManu. '<h3>' . $first_letterManu. '</h3><div>';
+
+        foreach($manufacturers as $manufacturer) {
+            if($manufacturer['name'][0] != $first_letterManu) {
+                $first_letterManu = $manufacturer['name'][0];
+                $displayManu = $displayManu. '</div><h3>' .$first_letterManu. '</h3><div>';
+                $displayManu = $displayManu.$manufacturer['name'].', ';
+            } else {
+                $displayManu = $displayManu.$manufacturer['name'].', ';
+            }
+
+        }
+        return $displayManu.'</div></body></html>';   
+    }else if ($manufacturers && isset($_POST['submit']) && strtoupper($_POST['key']) !='TOUS'){
+        $key = $_POST['key'];
+        $array_manufacts_found = array();
+        $displayManu = $displayManu.'<div>';
+        foreach($manufacturers as $manu){
+            if(str_contains(strtoupper($manu['name']), strtoupper($key))){
+                $displayManu = $displayManu.$manu['name'].', ';
+                array_push($array_manufacts_found, $manu);
+            }
+        }
+        if(sizeof($array_manufacts_found) == 0){
+            $displayManu = $displayManu.'Ce modèle ne existe pas';
+        }
+        return $displayManu.'</div></body></html>';
+    }    
 }
 
 add_shortcode('manufacturers', 'shortcode_manufacturers');
@@ -388,7 +398,7 @@ add_shortcode('cadeaux', 'shortcode_cadeaux');
 function shortcode_descriptif(): void{
 
     try{
-        $db = new PDO('mysql:host=localhost;dbname=ukooparts','root','');
+        $db = new PDO('mysql:host=localhost;dbname=ukooparts','root', '');
         $db -> exec('SET NAMES "UTF8"');
     }catch(PDOException $e){
         echo 'Erreur:'.$e ->getMessage();
@@ -439,11 +449,11 @@ function shortcode_models() {
                         <input type="text" placeholder="TOUS pour tous les modèles" name="key">
                         <input type="submit" name="submit" value="Rechercher">
                     </form>
-                </div>';
+                </div>';            
     // if manufacturer id set in url
     if(isset($_GET['manufact_id'])){
         // connect to bdd
-        $db = new PDO('mysql:host=localhost;dbname=ukooparts','root','');
+        $db = new PDO('mysql:host=localhost;dbname=ukooparts','root', '');
         $db -> exec('SET NAMES "UTF8"');
 
         // if engine type id is not set in url, the list of models will be filtered only by manufacturer(brand name: example YAMAHA)
@@ -510,7 +520,7 @@ add_shortcode('models', 'shortcode_models');
 // Larbi top50 moto
 function shortcode_topmoto(): string{
     try{
-        $db = new PDO('mysql:host=localhost;dbname=ukooparts','root','');
+        $db = new PDO('mysql:host=localhost;dbname=ukooparts','root', '');
         $db -> exec('SET NAMES "UTF8"');
         $motoData = $db->query("SELECT * FROM PREFIX_ukooparts_engine_lang LIMIT 50")->fetchAll(PDO::FETCH_ASSOC);
 
