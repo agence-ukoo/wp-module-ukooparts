@@ -160,19 +160,19 @@ function marque(){
             </div>
             <div class="container" id="containerLogo">
             <div class="logo" id="yamaha">
-            <a href="http://localhost:10004/ukooparts/models/?manufact_id=11".><img class="logo" src="https://i.pinimg.com/originals/0b/c0/24/0bc024f240e6bec6d29df3155d487adf.png" /></a>
+            <a href="models/?manufact_id=11"><img class="logo" src="https://i.pinimg.com/originals/0b/c0/24/0bc024f240e6bec6d29df3155d487adf.png" /></a>
             </div>
             <div class="logo" id="kawasaki">
-            <a href="http://localhost:10004/ukooparts/models/?manufact_id=5"><img class="logo" src="https://www.freepnglogos.com/uploads/kawasaki-png-logo/kawasaki-green-emblem-png-logo-1.png" /></a>
+            <a href="models/?manufact_id=5"><img class="logo" src="https://www.freepnglogos.com/uploads/kawasaki-png-logo/kawasaki-green-emblem-png-logo-1.png" /></a>
             </div>           
             <div class="logo" id="suzuki">
-            <a href="http://localhost:10004/ukooparts/models/?manufact_id=9"><img class="logo" src="https://seeklogo.com/images/S/suzuki-logo-B2B31D667D-seeklogo.com.png" /></a>
+            <a href="models/?manufact_id=9"><img class="logo" src="https://seeklogo.com/images/S/suzuki-logo-B2B31D667D-seeklogo.com.png" /></a>
             </div>           
             <div class="logo" id="aprilia">
-            <a href="http://localhost:10004/ukooparts/models/?manufact_id=16"><img class="logo" src="https://www.autocollant-tuning.com/2143-home_default/autocollant-aprilia-sport.jpg" /></a>
+            <a href="models/?manufact_id=16"><img class="logo" src="https://www.autocollant-tuning.com/2143-home_default/autocollant-aprilia-sport.jpg" /></a>
             </div>                       
             <div class="logo" id="bmw">
-            <a href="http://localhost:10004/ukooparts/models/?manufact_id=15"><img class="logo" src="https://assets.stickpng.com/thumbs/580b57fcd9996e24bc43c46e.png" /></a>
+            <a href="models/?manufact_id=15"><img class="logo" src="https://assets.stickpng.com/thumbs/580b57fcd9996e24bc43c46e.png" /></a>
             </div>       
             </div>                
             <p style="text-align: center;"> voir tout les <a href="https://www.tech2roo.com/">constructeurs </a></p>'
