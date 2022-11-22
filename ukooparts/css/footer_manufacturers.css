@@ -1,0 +1,56 @@
+.logo{
+    width: 300px;
+    height: 300px;
+    display: flex;
+    margin-left: auto
+}
+
+#titre {
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+    width: 86%;
+    font-weight: bold;
+    font-size: 130%;
+    text-transform: uppercase;
+}
+#titrecss{
+    display: flex;
+    width: 100%;
+    justify-content:center;
+}
+
+#titre:before,  #titre:after {
+    position: absolute;
+    top: 51%;
+    overflow: hidden;
+    width: 50%;
+    height: 1px;
+    margin-left: 1%;
+    content: '\a0';
+    background-color:
+            #000;
+}
+#titre:before {
+    margin-left: -51%;
+    text-align: right;
+}
+
+
+#containerLogo{
+    margin: 3%;
+    display: flex;
+    flex-direction: row;
+}
+
+.triangle_container{
+    width: 100%;
+}
+
+#triangle{
+    margin-left: auto;
+    margin-right: auto;
+    padding: 15px;
+    width: 120px;
+    display: block
+}

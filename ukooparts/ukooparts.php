@@ -17,26 +17,15 @@ require UKOOPARTS_PLUGIN_DIR . 'vendor/autoload.php';
 
 $plugin = new Ukoo\Ukooparts\UkooPartsPlugin(__FILE__);
 
+add_action('wp_head', 'import_script');
 
-
-// function to create pages  yuhan/////////////////////////////////////////////////////////////////////:
-function create_page($title, $content, $status){
-    $page_array = array(
-        'post_title' => $title,
-        'post_content' => $content,
-        'post_status' => $status,
-        'post_type' => 'page'
-    );
-    $new_page = get_page_by_title( $title, OBJECT, 'page');
-    if (  !isset( $new_page ) ) {
-        wp_insert_post($page_array, false);
-	}
+function import_script(){
+    ?>
+    <link href="<?php echo plugin_dir_url(__FILE__) ?>css/footer_manufacturers.css" rel="stylesheet">
+    <link href="<?php echo plugin_dir_url(__FILE__) ?>css/footer_types.css" rel="stylesheet">
+    <link href="<?php echo plugin_dir_url(__FILE__) ?>css/top50.css" rel="stylesheet">
+    <?php
 }
-// call the function to create a page title "moto"
-create_page('moto', 'all the motos are here', 'publish');
-
-
-
 
 //////////////Vincent Pages ********************************
 
@@ -55,23 +44,87 @@ function shortcode_manufacturers() {
     $db = new PDO('mysql:host=localhost;dbname=ukooparts','root','');
     $db -> exec('SET NAMES "UTF8"');
     $manufacturers = ($db->query("SELECT * FROM `PREFIX_ukooparts_manufacturer` ORDER BY name ASC;"))->fetchAll();
+    $manufacturers = (call_bdd()->query("SELECT * FROM `PREFIX_ukooparts_manufacturer` ORDER BY name ASC;"))->fetchAll();
 
     $displayManu = "";
     $first_letterManu = $manufacturers[0]['name'][0];
     $displayManu = $displayManu. '<h3>' . $first_letterManu. '</h3><div>';
+    $displayManu = '<!DOCTYPE html>
+            <html lang="en">
+                <head>
+                    <meta charset="UTF-8">
+                    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+                </head>
+                <style>
+                </style>
+                <body>
+                    <div class="container">
+                        <form method="post" action="">
+                            <input type="text" placeholder="TOUS pour tous les marques" name="key">
+                            <input type="submit" name="submit" value="Rechercher">
+                        </form>
+                    </div>';
 
-    foreach($manufacturers as $manufacturer) {
-        if($manufacturer['name'][0] != $first_letterManu) {
-            $first_letterManu = $manufacturer['name'][0];
-            $displayManu = $displayManu. '</div><h3>' .$first_letterManu. '</h3><div>';
-            $displayManu = $displayManu.$manufacturer['name'];
-        } else {
-            $displayManu = $displayManu.$manufacturer['name'];
-        }
 
+    if(!isset($_GET['engine_type_id'])){
+        $manufacturers = (call_bdd()->query("SELECT * FROM `PREFIX_ukooparts_manufacturer` ORDER BY name ASC;"))->fetchAll();
+    }else{
+        $engine_type_id = $_GET['engine_type_id'];
+        $manufacturers = (call_bdd()->query("select distinct engine.id_ukooparts_manufacturer, engine.id_ukooparts_engine_type, manu.name
+            FROM PREFIX_ukooparts_engine as engine
+            INNER JOIN PREFIX_ukooparts_manufacturer as manu
+            ON manu.id_ukooparts_manufacturer = engine.id_ukooparts_manufacturer
+            WHERE engine.id_ukooparts_engine_type = $engine_type_id ORDER BY name ASC"))->fetchAll();
     }
-    $displayManu = $displayManu.'</div>';
-    return $displayManu;
+
+    if($manufacturers && (!isset($_POST['submit']) || (isset($_POST['submit']) && (strtoupper($_POST['key'])=='TOUS' || !$_POST['key']) ))     ) {
+        $first_letterManu = $manufacturers[0]['name'][0];
+        $displayManu = $displayManu. '<h3>' . $first_letterManu. '</h3><div>';
+
+        foreach($manufacturers as $manufacturer) {
+            $manufact_id = $manufacturer['id_ukooparts_manufacturer'];
+            if($manufacturer['name'][0] != $first_letterManu) {
+                $first_letterManu = $manufacturer['name'][0];
+                $displayManu = $displayManu. '</div><h3>' .$first_letterManu. '</h3><div>';
+                if(isset($_GET['engine_type_id'])){
+                    $engine_type_id = $_GET['engine_type_id'];
+                    $displayManu = $displayManu.'<a href="models/?manufact_id='.$manufact_id.'&engine_type_id='.$_GET['engine_type_id'].'">'.$manufacturer['name'].'</a>, ';
+                }else{
+                    $displayManu = $displayManu.'<a href="models/?manufact_id='.$manufact_id.'">'.$manufacturer['name'].'</a>, ';
+                }
+
+            } else {
+
+                if(isset($_GET['engine_type_id'])){
+                    $engine_type_id = $_GET['engine_type_id'];
+                    $displayManu = $displayManu.'<a href="models/?manufact_id='.$manufact_id.'&engine_type_id='.$_GET['engine_type_id'].'">'.$manufacturer['name'].'</a>, ';
+                }else{
+                    $displayManu = $displayManu.'<a href="models/?manufact_id='.$manufact_id.'">'.$manufacturer['name'].'</a>, ';
+                }
+            }
+
+        }
+        return $displayManu.'</div></body></html>';
+    }else if ($manufacturers && isset($_POST['submit']) && strtoupper($_POST['key']) !='TOUS'){
+        $key = $_POST['key'];
+        $array_manufacts_found = array();
+        $displayManu = $displayManu.'<div>';
+        foreach($manufacturers as $manufacturer){
+            $manufact_id = $manufacturer['id_ukooparts_manufacturer'];
+            if(str_contains(strtoupper($manufacturer['name']), strtoupper($key))){
+                if($_GET['engine_type_id']){
+                    $displayManu = $displayManu.'<a href="models/?manufact_id='.$manufact_id.'&engine_type_id='.$_GET['engine_type_id'].'">'.$manufacturer['name'].'</a>, ';
+                }else{
+                    $displayManu = $displayManu.'<a href="models/?manufact_id='.$manufact_id.'">'.$manufacturer['name'].'</a>, ';
+                }
+                array_push($array_manufacts_found, $manufacturer);
+            }
+        }
+        if(sizeof($array_manufacts_found) == 0){
+            $displayManu = $displayManu.'Ce modèle ne existe pas';
+        }
+        return $displayManu.'</div></body></html>';
+    }
 }
 
 add_shortcode('manufacturers', 'shortcode_manufacturers');
@@ -149,14 +202,13 @@ create_dropList('droplist test', '<section class="dropall">
 
 ////////////////////////////////////ilies////////////////////////////////////////////
 add_action('wp_footer','marque');
-add_action( 'wp_footer','typesCss1');
 
-function marque(){
+function marque(): void{
     printf(' <div class="titrediv" id="titrecss">
             <h2 id="titre"><span> Nos constructeurs moto route </span></h2>
             </div>
-            <div class="triangleRouge" id="triangle">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Red_triangle.svg/540px-Red_triangle.svg.png" />
+            <div class="triangle_container">
+            <img id="triangle" src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Red_triangle.svg/540px-Red_triangle.svg.png" />
             </div>
             <div class="container" id="containerLogo">
             <div class="logo" id="yamaha">
@@ -179,76 +231,6 @@ function marque(){
         );
 }
 
-function typesCss1(){
-    echo "
-    <style type='text/css'>
-
-.logo{
-    width: 300px;
-    height: 300px;
-    display: flex;
-    margin-left: auto
-
-}
-#yamaha{
-    border: 1px solid blue;
-   
-
-}
-
-    #titre {
-        position: relative;
-        overflow: hidden;
-        text-align: center;
-        width: 86%;
-        font-weight: bold;
-        font-size: 130%;
-        text-transform: uppercase;
-    }
-    #titrecss{
-        display: flex;
-        width: 100%;
-        justify-content:center;
-    }
-
-    #titre:before,  #titre:after {
-        position: absolute;
-        top: 51%;
-        overflow: hidden;
-        width: 50%;
-        height: 1px;
-        margin-left: 1%;
-        content: '\a0';
-        background-color: 
-    #000;
-    }
-    #titre:before {
-        margin-left: -51%;
-        text-align: right;
-    }
-
-    
-    #containerLogo{
-        margin: 3%;
-        display: flex;
-        flex-direction: row;
-    }
-
-    
-    #triangle{
-        width: 1%;
-        height: 1%;
-        margin-top: 1%;
-        margin-left: 50%;
-        display: flex;
-        flex-direction: row;
-        position: center;
-        align-self: center;
-    }
-    </style>
-    ";
-}
-
 
 /////////////////////////////////////////larbi///////////////////////////////////////////
 
@@ -257,9 +239,10 @@ function types(){
     <div id="containerTitleSelectTypeVehicule">
         <h3 id="titleSelectTypeVehicule"><span>sélectionnez votre type de véhicule</span></h3>
     </div>
-    <div class="redArrow">
-    <img  src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Red_triangle.svg/540px-Red_triangle.svg.png" alt="">
-</div>
+    
+    <div class="triangle_container">
+            <img id="triangle" src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Red_triangle.svg/540px-Red_triangle.svg.png" />
+    </div>
 
     <div id="container">
         <div id="containerListTypeVehicule">
@@ -293,88 +276,6 @@ function types(){
     ');
 }
 
-function typesCss(){
-    echo "
-	<style type='text/css'>
-
-    .redArrow{
-        width: 1%;
-        height: 1%;
-        margin-left: auto;
-        margin-right: auto;
-    }
-
-    #container{
-        display: flex;
-        justify-content: center;
-    }
-
-    #containerTitleSelectTypeVehicule{
-        display: flex;
-        width:100%;
-        justify-content: center;
-    }
-
-
-    #titleSelectTypeVehicule{
-        position: relative;
-        overflow: hidden;
-        text-align: center;
-        font-weight: bold;
-        font-size: 20px;
-        text-transform: uppercase;
-        width: 90%;
-    }
-
-    #titleSelectTypeVehicule:after, #titleSelectTypeVehicule:before {
-        content: '\a0';
-        overflow: hidden;
-        position: absolute;
-        height: 0.8px;
-        width: 50%;
-        top: 51%;
-        margin-left: 1%;
-        background: black;
-    }
-
-    #titleSelectTypeVehicule:before{
-    margin-left: -51%;
-    text-align: right;
-    }
-
-	#containerListTypeVehicule{
-        list-style: none;
-        display: flex;
-        width: 55%;
-        /*justify-content: space-around;*/
-        column-gap: 10%;
-        margin-left: auto;
-        margin-right: auto;
-    }
-
-    .linkTypeVehicule{
-        outline: none;
-        text-decoration: none;
-    }
-
-    .linkImglistTypeVehicule{
-        display: block;
-        width: 25%;
-    }
-
-    .linkImglistTypeVehicule p {   
-        text-align: center;
-        white-space: nowrap;
-
-    }
-
-   
-
-	</style>
-	";
-}
-
-add_action('wp_footer', 'typesCss');
 add_action('wp_footer', 'types');
 
 function shortcode_cadeaux(): string{
@@ -460,7 +361,7 @@ function shortcode_models() {
                 $manufact_id = $_GET['manufact_id'];
                 $engine_type_id = $_GET['engine_type_id'];
 
-                $models = ($db->query("SELECT distinct engine.model, manu.name, type.name AS type_name
+                $models = (call_bdd()->query("SELECT distinct engine.model, manu.name, type.name AS type_name
                     FROM PREFIX_ukooparts_engine AS engine
                     INNER JOIN PREFIX_ukooparts_manufacturer AS manu
                     ON manu.id_ukooparts_manufacturer = engine.id_ukooparts_manufacturer
@@ -510,9 +411,7 @@ add_shortcode('models', 'shortcode_models');
 // Larbi top50 moto
 function shortcode_topmoto(): string{
     try{
-        $db = new PDO('mysql:host=localhost;dbname=ukooparts','root','');
-        $db -> exec('SET NAMES "UTF8"');
-        $motoData = $db->query("SELECT * FROM PREFIX_ukooparts_engine_lang LIMIT 50")->fetchAll(PDO::FETCH_ASSOC);
+        $motoData = call_bdd()->query("SELECT * FROM PREFIX_ukooparts_engine_lang LIMIT 50")->fetchAll(PDO::FETCH_ASSOC);
 
         $string = "";
         $string .= "<ol id='order_list_vehicle'>";
@@ -534,28 +433,5 @@ add_shortcode('topmoto', 'shortcode_topmoto');
 
 /*************      Test CSS  ********/
 
-class topmoto {
-
-    public function __construct()
-{
-
-
-    add_action('wp_enqueue_scripts', array($this, 'load_assets'));
-
-
-}
-
-public function load_assets(){
-
-wp_enqueue_style(
- 'ukooparts',
-  plugin_dir_url(__FILE__) . 'css/ukooparts.css',
-   array(),
-    1,
-    'all'
-);
-
-}
-}
 
 new topmoto;
