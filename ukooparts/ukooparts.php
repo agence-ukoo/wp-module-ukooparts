@@ -32,7 +32,7 @@ function import_script(){
    //infos de connexions à la db
 function call_bdd(): PDO{
     try{
-        $db = new PDO('mysql:host=localhost;dbname=ukooparts','root','');
+        $db = new PDO('mysql:host=localhost;dbname=ukooparts','root','root');
         $db -> exec('SET NAMES "UTF8"');
         return $db;
     }catch(PDOException $e){
@@ -70,7 +70,7 @@ function shortcode_manufacturers() {
         $manufacturers = (call_bdd()->query("SELECT * FROM `PREFIX_ukooparts_manufacturer` ORDER BY name ASC;"))->fetchAll();
     }else{
         $engine_type_id = $_GET['engine_type_id'];
-        $manufacturers = (call_bdd()->query("select distinct engine.id_ukooparts_manufacturer, engine.id_ukooparts_engine_type, manu.name
+        $manufacturers = (call_bdd()->query("select engine.id_ukooparts_manufacturer, engine.id_ukooparts_engine_type, manu.name
             FROM PREFIX_ukooparts_engine as engine
             INNER JOIN PREFIX_ukooparts_manufacturer as manu
             ON manu.id_ukooparts_manufacturer = engine.id_ukooparts_manufacturer
@@ -217,17 +217,18 @@ add_shortcode('cadeaux', 'shortcode_cadeaux');
 
 function shortcode_descriptif(): void{
 
-    if(isset($_GET['descriptif_id']) && isset($_GET['lang_id'])){
+    if(isset($_GET['engine_id'])){
 
-        $lang_id = $_GET['lang_id'];
-        $descriptif_id = $_GET['descriptif_id'];
-
-        $query = call_bdd() -> query( "SELECT LANG.description AS description, ENGIN.model AS model,ENGIN.id_ukooparts_engine AS id, ENGIN.year_start AS start, ENGIN.year_end AS end, ENGIN.image AS image, MANU.name AS manufacturer, CONCAT(MANU.name, ' ', ENGIN.model) AS title, CONCAT(ENGIN.year_start, '-', ENGIN.year_end) AS years  
+        $engine_id = $_GET['engine_id'];
+        $query = call_bdd() -> query( "SELECT distinct TYPE_LANG.name as type_name, LANG.description AS description, ENGIN.model AS model,ENGIN.id_ukooparts_engine, ENGIN.year_start AS start, ENGIN.year_end AS end, ENGIN.image AS image, MANU.name AS manufacturer, CONCAT(MANU.name, ' ', TYPE_LANG.name, ' ',ENGIN.model) AS title, CONCAT(ENGIN.year_start, '-', ENGIN.year_end) AS years  
         FROM  PREFIX_ukooparts_engine ENGIN 
         inner join PREFIX_ukooparts_engine_lang LANG 
         on LANG.id_ukooparts_engine = ENGIN.id_ukooparts_engine
         INNER JOIN PREFIX_ukooparts_manufacturer MANU 
-        ON ENGIN.id_ukooparts_manufacturer = MANU.id_ukooparts_manufacturer WHERE ENGIN.id_ukooparts_engine = $descriptif_id AND LANG.id_lang = $lang_id");
+        ON ENGIN.id_ukooparts_manufacturer = MANU.id_ukooparts_manufacturer 
+        INNER JOIN PREFIX_ukooparts_engine_type_lang AS TYPE_LANG 
+        ON ENGIN.id_ukooparts_engine_type = TYPE_LANG.id_ukooparts_engine_type
+        WHERE ENGIN.id_ukooparts_engine = $engine_id AND LANG.id_lang = 1;");
 
         foreach($query as $row)
         {
@@ -265,7 +266,7 @@ function shortcode_models() {
         if(!isset($_GET['engine_type_id'])){
             $manufact_id = $_GET['manufact_id'];
 
-            $models = (call_bdd()->query("SELECT distinct engine.model, manu.name
+            $models = (call_bdd()->query("SELECT engine.model, manu.name
                 FROM PREFIX_ukooparts_engine AS engine
                 INNER JOIN PREFIX_ukooparts_manufacturer AS manu
                 ON manu.id_ukooparts_manufacturer = engine.id_ukooparts_manufacturer
@@ -275,7 +276,7 @@ function shortcode_models() {
                 $manufact_id = $_GET['manufact_id'];
                 $engine_type_id = $_GET['engine_type_id'];
 
-                $models = (call_bdd()->query("SELECT distinct engine.model, manu.name, type.name AS type_name
+                $models = (call_bdd()->query("SELECT engine.model, manu.name, type.name AS type_name
                     FROM PREFIX_ukooparts_engine AS engine
                     INNER JOIN PREFIX_ukooparts_manufacturer AS manu
                     ON manu.id_ukooparts_manufacturer = engine.id_ukooparts_manufacturer
