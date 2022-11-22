@@ -85,10 +85,10 @@ function shortcode_manufacturers() {
 
     // compare les 2 arrays et indique les lettres qui sont dans $tab_letterExists
      foreach( range('A', 'Z') as $abc) {
-        if (in_array($abc, $tab_letterExists)) {
-            echo "<p style='color:green;'>$abc</p>";
+        if (in_array($abc, $tab_letterExists)) { ?>
+             <p><a href="#<?php $abc ?>" style='color:black;'><?php echo $abc ?></a></p> <?php
         } else {
-            echo "<p style='color:red;'>$abc</p>";
+            echo "<p style='color:grey;'>$abc</p>";
         }
     
      }
@@ -103,7 +103,7 @@ function shortcode_manufacturers() {
     foreach($manufacturers as $manufacturer) {
         if($manufacturer['name'][0] != $first_letterManu) {
             $first_letterManu = $manufacturer['name'][0];
-            $displayManu = $displayManu. '</div><h3>' .$first_letterManu. '</h3><div>';
+            $displayManu = $displayManu. '</div><h3><a>' .$first_letterManu. '</a></h3><div>';
             $displayManu = $displayManu.$manufacturer['name'];
         } else {
             $displayManu = $displayManu.$manufacturer['name'];
