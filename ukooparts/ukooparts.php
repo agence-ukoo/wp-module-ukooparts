@@ -266,7 +266,7 @@ function shortcode_models() {
         if(!isset($_GET['engine_type_id'])){
             $manufact_id = $_GET['manufact_id'];
 
-            $models = (call_bdd()->query("SELECT engine.model, manu.name
+            $models = (call_bdd()->query("SELECT engine.model, manu.name, engine.id_ukooparts_engine AS id_engine
                 FROM PREFIX_ukooparts_engine AS engine
                 INNER JOIN PREFIX_ukooparts_manufacturer AS manu
                 ON manu.id_ukooparts_manufacturer = engine.id_ukooparts_manufacturer
@@ -276,7 +276,7 @@ function shortcode_models() {
                 $manufact_id = $_GET['manufact_id'];
                 $engine_type_id = $_GET['engine_type_id'];
 
-                $models = (call_bdd()->query("SELECT engine.model, manu.name, type.name AS type_name
+                $models = (call_bdd()->query("SELECT engine.model, manu.name, type.name AS type_name, engine.id_ukooparts_engine AS id_engine
                     FROM PREFIX_ukooparts_engine AS engine
                     INNER JOIN PREFIX_ukooparts_manufacturer AS manu
                     ON manu.id_ukooparts_manufacturer = engine.id_ukooparts_manufacturer
