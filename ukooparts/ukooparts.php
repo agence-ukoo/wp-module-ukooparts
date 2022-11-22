@@ -203,7 +203,7 @@ function marque(){
             <a href="models/?manufact_id=15"><img class="logo" src="https://assets.stickpng.com/thumbs/580b57fcd9996e24bc43c46e.png" /></a>
             </div>       
             </div>                
-            <p style="text-align: center;"> voir tout les <a href="https://www.tech2roo.com/">constructeurs </a></p>'
+            <p style="text-align: center;"> voir tout les <a href="manufacturers">constructeurs </a></p>'
         );
 }
 
