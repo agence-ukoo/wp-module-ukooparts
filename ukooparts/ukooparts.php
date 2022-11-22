@@ -61,7 +61,8 @@ function shortcode_manufacturers() {
             if($manufacturer['name'][0] != $first_letterManu) {
                 $first_letterManu = $manufacturer['name'][0];
                 $displayManu = $displayManu. '</div><h3>' .$first_letterManu. '</h3><div>';
-                if($_GET['engine_type_id']){
+                if(isset($_GET['engine_type_id'])){
+                    $engine_type_id = $_GET['engine_type_id'];
                     $displayManu = $displayManu.'<a href="models/?manufact_id='.$manufact_id.'&engine_type_id='.$_GET['engine_type_id'].'">'.$manufacturer['name'].'</a>, ';
                 }else{
                     $displayManu = $displayManu.'<a href="models/?manufact_id='.$manufact_id.'">'.$manufacturer['name'].'</a>, ';
@@ -69,7 +70,8 @@ function shortcode_manufacturers() {
                 
             } else {
                 
-                if($_GET['engine_type_id']){
+                if(isset($_GET['engine_type_id'])){
+                    $engine_type_id = $_GET['engine_type_id'];
                     $displayManu = $displayManu.'<a href="models/?manufact_id='.$manufact_id.'&engine_type_id='.$_GET['engine_type_id'].'">'.$manufacturer['name'].'</a>, ';
                 }else{
                     $displayManu = $displayManu.'<a href="models/?manufact_id='.$manufact_id.'">'.$manufacturer['name'].'</a>, ';
