@@ -39,7 +39,7 @@ function shortcode_manufacturers() {
                         </form>
                     </div>';
 
-    $db = new PDO('mysql:host=localhost;dbname=ukooparts','root', '');
+    $db = new PDO('mysql:host=localhost;dbname=ukooparts','root', 'root');
     $db -> exec('SET NAMES "UTF8"');
     if(!isset($_GET['engine_type_id'])){
         $manufacturers = ($db->query("SELECT * FROM `PREFIX_ukooparts_manufacturer` ORDER BY name ASC;"))->fetchAll();
@@ -57,12 +57,23 @@ function shortcode_manufacturers() {
         $displayManu = $displayManu. '<h3>' . $first_letterManu. '</h3><div>';
 
         foreach($manufacturers as $manufacturer) {
+            $manufact_id = $manufacturer['id_ukooparts_manufacturer'];
             if($manufacturer['name'][0] != $first_letterManu) {
                 $first_letterManu = $manufacturer['name'][0];
                 $displayManu = $displayManu. '</div><h3>' .$first_letterManu. '</h3><div>';
-                $displayManu = $displayManu.$manufacturer['name'].', ';
+                if($_GET['engine_type_id']){
+                    $displayManu = $displayManu.'<a href="models/?manufact_id="'.$manufact_id."&engine_type_id=".$_GET['engine_type_id'].'">'.$manufacturer['name'].'</a>, ';
+                }else{
+                    $displayManu = $displayManu.'<a href="models/?manufact_id="'.$manufact_id.'>'.$manufacturer['name'].'</a>, ';
+                }
+                
             } else {
-                $displayManu = $displayManu.$manufacturer['name'].', ';
+                
+                if($_GET['engine_type_id']){
+                    $displayManu = $displayManu.'<a href="models/?manufact_id="'.$manufact_id."&engine_type_id=".$_GET['engine_type_id'].'>'.$manufacturer['name'].'</a>, ';
+                }else{
+                    $displayManu = $displayManu.'<a href="models/?manufact_id="'.$manufact_id.'>'.$manufacturer['name'].'</a>, ';
+                }
             }
 
         }
@@ -71,10 +82,14 @@ function shortcode_manufacturers() {
         $key = $_POST['key'];
         $array_manufacts_found = array();
         $displayManu = $displayManu.'<div>';
-        foreach($manufacturers as $manu){
-            if(str_contains(strtoupper($manu['name']), strtoupper($key))){
-                $displayManu = $displayManu.$manu['name'].', ';
-                array_push($array_manufacts_found, $manu);
+        foreach($manufacturers as $manufacturer){
+            if(str_contains(strtoupper($manufacturer['name']), strtoupper($key))){
+                if($_GET['engine_type_id']){
+                    $displayManu = $displayManu.'<a href="models/?manufact_id="'.$manufact_id."&engine_type_id=".$_GET['engine_type_id'].'>'.$manufacturer['name'].'</a>, ';
+                }else{
+                    $displayManu = $displayManu.'<a href="models/?manufact_id="'.$manufact_id.'>'.$manufacturer['name'].'</a>, ';
+                }
+                array_push($array_manufacts_found, $manufacturer);
             }
         }
         if(sizeof($array_manufacts_found) == 0){
@@ -274,25 +289,25 @@ function types(){
     <div id="container">
         <div id="containerListTypeVehicule">
             <div class="linkImglistTypeVehicule">
-            <a class="linkTypeVehicule" href="#">
+            <a class="linkTypeVehicule" href="manufacturers/?engine_type_id=1">
                 <img class="iconSelectTypeVehicule" src="http://imagenspng.com/wp-content/uploads/desenhos-motos-Imagem-png-para-imprimir-gratis-768x768.png" alt="">
                 <p>Pièces moto</p>
             </a>
             </div>
             <div class="linkImglistTypeVehicule">
-            <a class="linkTypeVehicule" href="#">
+            <a class="linkTypeVehicule" href="manufacturers/?engine_type_id=2">
                 <img class="iconSelectTypeVehicule" src="http://imagenspng.com/wp-content/uploads/desenhos-motos-Imagem-png-para-imprimir-gratis-768x768.png" alt="">
                 <p>Pièces scooter</p>
             </a>
             </div>
             <div class="linkImglistTypeVehicule">
-            <a class="linkTypeVehicule" href="#">
+            <a class="linkTypeVehicule" href="manufacturers/?engine_type_id=3">
                 <img class="iconSelectTypeVehicule" src="http://imagenspng.com/wp-content/uploads/desenhos-motos-Imagem-png-para-imprimir-gratis-768x768.png" alt="">
                 <p>Pièces quad et SSV</p>
             </a>
             </div>
             <div class="linkImglistTypeVehicule">
-            <a class="linkTypeVehicule" href="#">
+            <a class="linkTypeVehicule" href="manufacturers/?engine_type_id=4">
                 <img class="iconSelectTypeVehicule" src="http://imagenspng.com/wp-content/uploads/desenhos-motos-Imagem-png-para-imprimir-gratis-768x768.png" alt="">
                 <p>Pièces tout terrain</p>
             </a>
@@ -398,7 +413,7 @@ add_shortcode('cadeaux', 'shortcode_cadeaux');
 function shortcode_descriptif(): void{
 
     try{
-        $db = new PDO('mysql:host=localhost;dbname=ukooparts','root', '');
+        $db = new PDO('mysql:host=localhost;dbname=ukooparts','root', 'root');
         $db -> exec('SET NAMES "UTF8"');
     }catch(PDOException $e){
         echo 'Erreur:'.$e ->getMessage();
@@ -453,7 +468,7 @@ function shortcode_models() {
     // if manufacturer id set in url
     if(isset($_GET['manufact_id'])){
         // connect to bdd
-        $db = new PDO('mysql:host=localhost;dbname=ukooparts','root', '');
+        $db = new PDO('mysql:host=localhost;dbname=ukooparts','root', 'root');
         $db -> exec('SET NAMES "UTF8"');
 
         // if engine type id is not set in url, the list of models will be filtered only by manufacturer(brand name: example YAMAHA)
