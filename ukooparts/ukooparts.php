@@ -328,7 +328,7 @@ function shortcode_topmoto(): string{
         $string = "";
         $string .= "<ol id='order_list_vehicle'>";
         foreach ($motoData as $moto) {
-            $string .= "<li class='list_vehicle'>" . $moto["meta_title"] . "</li>"; 
+            $string .= "<li class='list_vehicle'><a href='#'>" . $moto["meta_title"] . "</a></li>"; 
         }
         $string .= "<a href='#'><li>voir toutes les motos</p></li>";
         $string .= "</ol>";
