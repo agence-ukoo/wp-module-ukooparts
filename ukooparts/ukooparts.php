@@ -56,6 +56,38 @@ function shortcode_manufacturers() {
     $db -> exec('SET NAMES "UTF8"');
     $manufacturers = ($db->query("SELECT * FROM `PREFIX_ukooparts_manufacturer` ORDER BY name ASC;"))->fetchAll();
 
+        // loop qui récupère une fois toutes les initiales des constructeurs. (ex: A B D F...)
+        $lettersList = ($db->query("SELECT distinct SUBSTRING(name, 1, 1) FROM PREFIX_ukooparts_manufacturer ORDER BY name ASC;"))->fetchAll();
+        // print_r($lettersList);
+    $tab_letterExists = array();    
+    foreach($lettersList as $letter) {
+        array_push($tab_letterExists, $letter);
+        // print_r($tab_letterExists);
+    } 
+
+    // affiche l'alphabet entier en ligne (A B C D...)
+    $tab_alphabet = array();
+    foreach( range('A', 'Z') as $element) {          
+        array_push($tab_alphabet, $element);
+        // print_r($tab_alphabet);
+    }
+
+
+    // compare les deux array pour afficher les lettres cliquables
+    $result = array_intersect($tab_letterExists, $tab_alphabet);
+    print($result);
+
+
+        // if($element == $letter) {
+        //     echo "<p style='color:green;'>$element</p>";
+        // } else {
+        //     echo "<p style='color:red;'>$element</p>";
+        // }
+        //echo $element . " ";
+
+
+
+
     $displayManu = "";
     $first_letterManu = $manufacturers[0]['name'][0];
     $displayManu = $displayManu. '<h3>' . $first_letterManu. '</h3><div>';
