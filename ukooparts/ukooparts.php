@@ -56,11 +56,12 @@ function shortcode_manufacturers() {
     $manufacturers = (call_bdd()->query("SELECT * FROM `PREFIX_ukooparts_manufacturer` ORDER BY name ASC;"))->fetchAll();
 
         // loop qui récupère une fois toutes les initiales des constructeurs. (ex: A B D F...)
-        $lettersList = ($db->query("SELECT distinct SUBSTRING(name, 1, 1) FROM PREFIX_ukooparts_manufacturer ORDER BY name ASC;"))->fetchAll();
+        $lettersList = (call_bdd()->query("SELECT distinct SUBSTRING(name, 1, 1) FROM PREFIX_ukooparts_manufacturer ORDER BY name ASC;"))->fetchAll();
+        
         // print_r($lettersList);
     $tab_letterExists = array();    
     foreach($lettersList as $letter) {
-        array_push($tab_letterExists, $letter);
+        array_push($tab_letterExists, $letter[0]);
         // print_r($tab_letterExists);
     } 
 
@@ -71,18 +72,18 @@ function shortcode_manufacturers() {
         // print_r($tab_alphabet);
     }
 
+    $result = array_intersect($tab_alphabet, $tab_letterExists);
+     // print_r($result);
 
-    // compare les deux array pour afficher les lettres cliquables
-    $result = array_intersect($tab_letterExists, $tab_alphabet);
-    print($result);
-
-
-        // if($element == $letter) {
-        //     echo "<p style='color:green;'>$element</p>";
-        // } else {
-        //     echo "<p style='color:red;'>$element</p>";
-        // }
-        //echo $element . " ";
+    // compare les 2 arrays et indique les lettres qui sont dans $tab_letterExists
+     foreach( range('A', 'Z') as $abc) {
+        if (in_array($abc, $tab_letterExists)) {
+            echo "<p style='color:green;'>$abc</p>";
+        } else {
+            echo "<p style='color:red;'>$abc</p>";
+        }
+    
+     }
 
 
 
