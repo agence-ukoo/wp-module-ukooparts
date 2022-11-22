@@ -30,20 +30,20 @@ function import_script(){
 //////////////Vincent Pages ********************************
 
    //infos de connexions à la db
-try{
-    $db = new PDO('mysql:host=localhost;dbname=ukooparts','root','');
-    $db -> exec('SET NAMES "UTF8"');
-}catch(PDOException $e){
-    echo 'Erreur:'.$e ->getMessage();
-    die();
+function call_bdd(): PDO{
+    try{
+        $db = new PDO('mysql:host=localhost;dbname=ukooparts','root','');
+        $db -> exec('SET NAMES "UTF8"');
+        return $db;
+    }catch(PDOException $e){
+        echo 'Erreur:'.$e ->getMessage();
+        die();
+    }
 }
 
     // fonction de display des constructeurs par noms A-Z
 function shortcode_manufacturers() {
 
-    $db = new PDO('mysql:host=localhost;dbname=ukooparts','root','');
-    $db -> exec('SET NAMES "UTF8"');
-    $manufacturers = ($db->query("SELECT * FROM `PREFIX_ukooparts_manufacturer` ORDER BY name ASC;"))->fetchAll();
     $manufacturers = (call_bdd()->query("SELECT * FROM `PREFIX_ukooparts_manufacturer` ORDER BY name ASC;"))->fetchAll();
 
     $displayManu = "";
@@ -129,77 +129,6 @@ function shortcode_manufacturers() {
 
 add_shortcode('manufacturers', 'shortcode_manufacturers');
 
-
-
-/////////////////////////////Adam/////////////////////////////////////////////////
-
-/*add_action('wp_header', 'dropdown_view');
-function create_dropList($title, $content, $status){
-    $page_array = array(
-        'post_title' => $title,
-        'post_content' => $content,
-        'post_status' => $status,
-        'post_type' => 'page'
-    );
-    $new_page = get_page_by_title( $title, OBJECT, 'page');
-    if (  !isset( $new_page ) ) {
-        wp_insert_post($page_array, false);
-	}
-}
-
-create_dropList('droplist test', '<section class="dropall">
-<div class = "droplist">
-<?php $marques ?>
-<form action="droplist.php">
-  <label for="Marque">Marque</label>
-  <select name="Marque" id="Marque">
-    <option value="">Marque</option>
-    <option value="">Aprilia</option>
-    <option value="">BMW</option>
-    <option value="">Honda</option>
-    <option value="">KTM</option>
-    <option value="">Kawazaki</option>
-    <option value="">Moto-Guizzi</option>
-  </select>
-</form>
-</div>
-
-<?php $cylindre ?>
-
-<div class = "droplist">
-<form action="droplist.php">
-  <label for="cylindre">Cylindré</label>
-  <select name="cylindre" id="cylindre">
-    <option value="">cylindré</option>
-    <option value=""></option>
-    <option value=""></option>
-    <option value=""></option>
-  </select>
-</form>
-</div>
-
-<div class = "droplist">
-<form action="droplist.php">
-  <label for="modeles">Modèles</label>
-  <select name="modeles" id="modeles">
-    <option value="">modèles</option>
-    <option value=""></option>
-    <option value=""></option>
-    <option value=""></option>
-  </select>
-</form>
-</div>
-</section>',
-'publish'
-);*/
-
-
-
-
-
-
-
-
 ////////////////////////////////////ilies////////////////////////////////////////////
 add_action('wp_footer','marque');
 
@@ -227,7 +156,7 @@ function marque(): void{
             <a href="models/?manufact_id=15"><img class="logo" src="https://assets.stickpng.com/thumbs/580b57fcd9996e24bc43c46e.png" /></a>
             </div>       
             </div>                
-            <p style="text-align: center;"> voir tout les <a href="https://www.tech2roo.com/">constructeurs </a></p>'
+            <p style="text-align: center;"> voir tout les <a href="manufacturers">constructeurs </a></p>'
         );
 }
 
@@ -247,25 +176,25 @@ function types(){
     <div id="container">
         <div id="containerListTypeVehicule">
             <div class="linkImglistTypeVehicule">
-            <a class="linkTypeVehicule" href="#">
+            <a class="linkTypeVehicule" href="manufacturers/?engine_type_id=1">
                 <img class="iconSelectTypeVehicule" src="http://imagenspng.com/wp-content/uploads/desenhos-motos-Imagem-png-para-imprimir-gratis-768x768.png" alt="">
                 <p>Pièces moto</p>
             </a>
             </div>
             <div class="linkImglistTypeVehicule">
-            <a class="linkTypeVehicule" href="#">
+            <a class="linkTypeVehicule" href="manufacturers/?engine_type_id=2">
                 <img class="iconSelectTypeVehicule" src="http://imagenspng.com/wp-content/uploads/desenhos-motos-Imagem-png-para-imprimir-gratis-768x768.png" alt="">
                 <p>Pièces scooter</p>
             </a>
             </div>
             <div class="linkImglistTypeVehicule">
-            <a class="linkTypeVehicule" href="#">
+            <a class="linkTypeVehicule" href="manufacturers/?engine_type_id=3">
                 <img class="iconSelectTypeVehicule" src="http://imagenspng.com/wp-content/uploads/desenhos-motos-Imagem-png-para-imprimir-gratis-768x768.png" alt="">
                 <p>Pièces quad et SSV</p>
             </a>
             </div>
             <div class="linkImglistTypeVehicule">
-            <a class="linkTypeVehicule" href="#">
+            <a class="linkTypeVehicule" href="manufacturers/?engine_type_id=4">
                 <img class="iconSelectTypeVehicule" src="http://imagenspng.com/wp-content/uploads/desenhos-motos-Imagem-png-para-imprimir-gratis-768x768.png" alt="">
                 <p>Pièces tout terrain</p>
             </a>
@@ -288,41 +217,30 @@ add_shortcode('cadeaux', 'shortcode_cadeaux');
 
 function shortcode_descriptif(): void{
 
-    try{
-        $db = new PDO('mysql:host=localhost;dbname=ukooparts','root','');
-        $db -> exec('SET NAMES "UTF8"');
-    }catch(PDOException $e){
-        echo 'Erreur:'.$e ->getMessage();
-        die();
-    }
     if(isset($_GET['descriptif_id']) && isset($_GET['lang_id'])){
 
         $lang_id = $_GET['lang_id'];
         $descriptif_id = $_GET['descriptif_id'];
 
-            $query = $db -> query( "SELECT LANG.description AS description, ENGIN.model AS model,ENGIN.id_ukooparts_engine AS id, ENGIN.year_start AS start, ENGIN.year_end AS end, ENGIN.image AS image, MANU.name AS manufacturer, CONCAT(MANU.name, ' ', ENGIN.model) AS title, CONCAT(ENGIN.year_start, '-', ENGIN.year_end) AS years  
-            FROM  PREFIX_ukooparts_engine ENGIN 
-            inner join PREFIX_ukooparts_engine_lang LANG 
-            on LANG.id_ukooparts_engine = ENGIN.id_ukooparts_engine
-            INNER JOIN PREFIX_ukooparts_manufacturer MANU 
-            ON ENGIN.id_ukooparts_manufacturer = MANU.id_ukooparts_manufacturer WHERE ENGIN.id_ukooparts_engine = $descriptif_id AND LANG.id_lang = $lang_id");
+        $query = call_bdd() -> query( "SELECT LANG.description AS description, ENGIN.model AS model,ENGIN.id_ukooparts_engine AS id, ENGIN.year_start AS start, ENGIN.year_end AS end, ENGIN.image AS image, MANU.name AS manufacturer, CONCAT(MANU.name, ' ', ENGIN.model) AS title, CONCAT(ENGIN.year_start, '-', ENGIN.year_end) AS years  
+        FROM  PREFIX_ukooparts_engine ENGIN 
+        inner join PREFIX_ukooparts_engine_lang LANG 
+        on LANG.id_ukooparts_engine = ENGIN.id_ukooparts_engine
+        INNER JOIN PREFIX_ukooparts_manufacturer MANU 
+        ON ENGIN.id_ukooparts_manufacturer = MANU.id_ukooparts_manufacturer WHERE ENGIN.id_ukooparts_engine = $descriptif_id AND LANG.id_lang = $lang_id");
 
-
-
-                foreach($query as $row)
-                {
-                   echo("<h1>" . $row['title'] . "</h1> 
-                        <h2>" . $row['years'] . "</h2>
-                        <p>" . $row['description'] . "</p>"
-                        );
-
-                }
+        foreach($query as $row)
+        {
+            echo("<h1>" . $row['title'] . "</h1> 
+                  <h2>" . $row['years'] . "</h2>
+                  <p>" . $row['description'] . "</p>"
+            );
 
         }
+
+    }
 }
 add_shortcode('descriptif', 'shortcode_descriptif');
-
-
 
 // yuan
 function shortcode_models() {
@@ -343,15 +261,11 @@ function shortcode_models() {
                 </div>';
     // if manufacturer id set in url
     if(isset($_GET['manufact_id'])){
-        // connect to bdd
-        $db = new PDO('mysql:host=localhost;dbname=ukooparts','root','');
-        $db -> exec('SET NAMES "UTF8"');
-
         // if engine type id is not set in url, the list of models will be filtered only by manufacturer(brand name: example YAMAHA)
         if(!isset($_GET['engine_type_id'])){
             $manufact_id = $_GET['manufact_id'];
 
-            $models = ($db->query("SELECT distinct engine.model, manu.name
+            $models = (call_bdd()->query("SELECT distinct engine.model, manu.name
                 FROM PREFIX_ukooparts_engine AS engine
                 INNER JOIN PREFIX_ukooparts_manufacturer AS manu
                 ON manu.id_ukooparts_manufacturer = engine.id_ukooparts_manufacturer
@@ -406,8 +320,6 @@ function shortcode_models() {
 }
 add_shortcode('models', 'shortcode_models');
 
-
-
 // Larbi top50 moto
 function shortcode_topmoto(): string{
     try{
@@ -430,8 +342,3 @@ function shortcode_topmoto(): string{
     return "<div>Aucune moto trouvé</div>";
 }
 add_shortcode('topmoto', 'shortcode_topmoto');
-
-/*************      Test CSS  ********/
-
-
-new topmoto;
