@@ -27,22 +27,6 @@ function import_script(){
     <?php
 }
 
-// function to create pages  yuhan/////////////////////////////////////////////////////////////////////:
-function create_page($title, $content, $status){
-    $page_array = array(
-        'post_title' => $title,
-        'post_content' => $content,
-        'post_status' => $status,
-        'post_type' => 'page'
-    );
-    $new_page = get_page_by_title( $title, OBJECT, 'page');
-    if (  !isset( $new_page ) ) {
-        wp_insert_post($page_array, false);
-	}
-}
-// call the function to create a page title "moto"
-create_page('moto', 'all the motos are here', 'publish');
-
 //////////////Vincent Pages ********************************
 
    //infos de connexions à la db
@@ -60,25 +44,87 @@ function call_bdd(): PDO{
     // fonction de display des constructeurs par noms A-Z
 function shortcode_manufacturers() {
 
-
     $manufacturers = (call_bdd()->query("SELECT * FROM `PREFIX_ukooparts_manufacturer` ORDER BY name ASC;"))->fetchAll();
 
     $displayManu = "";
     $first_letterManu = $manufacturers[0]['name'][0];
     $displayManu = $displayManu. '<h3>' . $first_letterManu. '</h3><div>';
+    $displayManu = '<!DOCTYPE html>
+            <html lang="en">
+                <head>
+                    <meta charset="UTF-8">
+                    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+                </head>
+                <style>
+                </style>
+                <body>
+                    <div class="container">
+                        <form method="post" action="">
+                            <input type="text" placeholder="TOUS pour tous les marques" name="key">
+                            <input type="submit" name="submit" value="Rechercher">
+                        </form>
+                    </div>';
 
-    foreach($manufacturers as $manufacturer) {
-        if($manufacturer['name'][0] != $first_letterManu) {
-            $first_letterManu = $manufacturer['name'][0];
-            $displayManu = $displayManu. '</div><h3>' .$first_letterManu. '</h3><div>';
-            $displayManu = $displayManu.$manufacturer['name'];
-        } else {
-            $displayManu = $displayManu.$manufacturer['name'];
-        }
 
+    if(!isset($_GET['engine_type_id'])){
+        $manufacturers = (call_bdd()->query("SELECT * FROM `PREFIX_ukooparts_manufacturer` ORDER BY name ASC;"))->fetchAll();
+    }else{
+        $engine_type_id = $_GET['engine_type_id'];
+        $manufacturers = (call_bdd()->query("select distinct engine.id_ukooparts_manufacturer, engine.id_ukooparts_engine_type, manu.name
+            FROM PREFIX_ukooparts_engine as engine
+            INNER JOIN PREFIX_ukooparts_manufacturer as manu
+            ON manu.id_ukooparts_manufacturer = engine.id_ukooparts_manufacturer
+            WHERE engine.id_ukooparts_engine_type = $engine_type_id ORDER BY name ASC"))->fetchAll();
     }
-    $displayManu = $displayManu.'</div>';
-    return $displayManu;
+
+    if($manufacturers && (!isset($_POST['submit']) || (isset($_POST['submit']) && (strtoupper($_POST['key'])=='TOUS' || !$_POST['key']) ))     ) {
+        $first_letterManu = $manufacturers[0]['name'][0];
+        $displayManu = $displayManu. '<h3>' . $first_letterManu. '</h3><div>';
+
+        foreach($manufacturers as $manufacturer) {
+            $manufact_id = $manufacturer['id_ukooparts_manufacturer'];
+            if($manufacturer['name'][0] != $first_letterManu) {
+                $first_letterManu = $manufacturer['name'][0];
+                $displayManu = $displayManu. '</div><h3>' .$first_letterManu. '</h3><div>';
+                if(isset($_GET['engine_type_id'])){
+                    $engine_type_id = $_GET['engine_type_id'];
+                    $displayManu = $displayManu.'<a href="models/?manufact_id='.$manufact_id.'&engine_type_id='.$_GET['engine_type_id'].'">'.$manufacturer['name'].'</a>, ';
+                }else{
+                    $displayManu = $displayManu.'<a href="models/?manufact_id='.$manufact_id.'">'.$manufacturer['name'].'</a>, ';
+                }
+
+            } else {
+
+                if(isset($_GET['engine_type_id'])){
+                    $engine_type_id = $_GET['engine_type_id'];
+                    $displayManu = $displayManu.'<a href="models/?manufact_id='.$manufact_id.'&engine_type_id='.$_GET['engine_type_id'].'">'.$manufacturer['name'].'</a>, ';
+                }else{
+                    $displayManu = $displayManu.'<a href="models/?manufact_id='.$manufact_id.'">'.$manufacturer['name'].'</a>, ';
+                }
+            }
+
+        }
+        return $displayManu.'</div></body></html>';
+    }else if ($manufacturers && isset($_POST['submit']) && strtoupper($_POST['key']) !='TOUS'){
+        $key = $_POST['key'];
+        $array_manufacts_found = array();
+        $displayManu = $displayManu.'<div>';
+        foreach($manufacturers as $manufacturer){
+            $manufact_id = $manufacturer['id_ukooparts_manufacturer'];
+            if(str_contains(strtoupper($manufacturer['name']), strtoupper($key))){
+                if($_GET['engine_type_id']){
+                    $displayManu = $displayManu.'<a href="models/?manufact_id='.$manufact_id.'&engine_type_id='.$_GET['engine_type_id'].'">'.$manufacturer['name'].'</a>, ';
+                }else{
+                    $displayManu = $displayManu.'<a href="models/?manufact_id='.$manufact_id.'">'.$manufacturer['name'].'</a>, ';
+                }
+                array_push($array_manufacts_found, $manufacturer);
+            }
+        }
+        if(sizeof($array_manufacts_found) == 0){
+            $displayManu = $displayManu.'Ce modèle ne existe pas';
+        }
+        return $displayManu.'</div></body></html>';
+    }
 }
 
 add_shortcode('manufacturers', 'shortcode_manufacturers');
@@ -110,7 +156,7 @@ function marque(): void{
             <a href="models/?manufact_id=15"><img class="logo" src="https://assets.stickpng.com/thumbs/580b57fcd9996e24bc43c46e.png" /></a>
             </div>       
             </div>                
-            <p style="text-align: center;"> voir tout les <a href="https://www.tech2roo.com/">constructeurs </a></p>'
+            <p style="text-align: center;"> voir tout les <a href="manufacturers">constructeurs </a></p>'
         );
 }
 
@@ -130,25 +176,25 @@ function types(){
     <div id="container">
         <div id="containerListTypeVehicule">
             <div class="linkImglistTypeVehicule">
-            <a class="linkTypeVehicule" href="#">
+            <a class="linkTypeVehicule" href="manufacturers/?engine_type_id=1">
                 <img class="iconSelectTypeVehicule" src="http://imagenspng.com/wp-content/uploads/desenhos-motos-Imagem-png-para-imprimir-gratis-768x768.png" alt="">
                 <p>Pièces moto</p>
             </a>
             </div>
             <div class="linkImglistTypeVehicule">
-            <a class="linkTypeVehicule" href="#">
+            <a class="linkTypeVehicule" href="manufacturers/?engine_type_id=2">
                 <img class="iconSelectTypeVehicule" src="http://imagenspng.com/wp-content/uploads/desenhos-motos-Imagem-png-para-imprimir-gratis-768x768.png" alt="">
                 <p>Pièces scooter</p>
             </a>
             </div>
             <div class="linkImglistTypeVehicule">
-            <a class="linkTypeVehicule" href="#">
+            <a class="linkTypeVehicule" href="manufacturers/?engine_type_id=3">
                 <img class="iconSelectTypeVehicule" src="http://imagenspng.com/wp-content/uploads/desenhos-motos-Imagem-png-para-imprimir-gratis-768x768.png" alt="">
                 <p>Pièces quad et SSV</p>
             </a>
             </div>
             <div class="linkImglistTypeVehicule">
-            <a class="linkTypeVehicule" href="#">
+            <a class="linkTypeVehicule" href="manufacturers/?engine_type_id=4">
                 <img class="iconSelectTypeVehicule" src="http://imagenspng.com/wp-content/uploads/desenhos-motos-Imagem-png-para-imprimir-gratis-768x768.png" alt="">
                 <p>Pièces tout terrain</p>
             </a>
@@ -296,6 +342,3 @@ function shortcode_topmoto(): string{
     return "<div>Aucune moto trouvé</div>";
 }
 add_shortcode('topmoto', 'shortcode_topmoto');
-
-/*************      Test CSS  ********/
-
