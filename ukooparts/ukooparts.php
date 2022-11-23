@@ -49,28 +49,19 @@ function shortcode_manufacturers() {
     $displayManu = "";
     $first_letterManu = $manufacturers[0]['name'][0];
     $displayManu = $displayManu. '<h3>' . $first_letterManu. '</h3><div>';
-    $displayManu = '<!DOCTYPE html>
-            <html lang="en">
-                <head>
-                    <meta charset="UTF-8">
-                    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-                </head>
-                <style>
-                </style>
-                <body>
-                    <div class="container">
+    $displayManu = '
+                    <div>
                         <form method="post" action="">
                             <input type="text" placeholder="TOUS pour tous les marques" name="key">
                             <input type="submit" name="submit" value="Rechercher">
                         </form>
                     </div>';
 
-
     if(!isset($_GET['engine_type_id'])){
         $manufacturers = (call_bdd()->query("SELECT * FROM `PREFIX_ukooparts_manufacturer` ORDER BY name ASC;"))->fetchAll();
     }else{
         $engine_type_id = $_GET['engine_type_id'];
-        $manufacturers = (call_bdd()->query("select engine.id_ukooparts_manufacturer, engine.id_ukooparts_engine_type, manu.name
+        $manufacturers = (call_bdd()->query("select distinct engine.id_ukooparts_manufacturer, engine.id_ukooparts_engine_type, manu.name
             FROM PREFIX_ukooparts_engine as engine
             INNER JOIN PREFIX_ukooparts_manufacturer as manu
             ON manu.id_ukooparts_manufacturer = engine.id_ukooparts_manufacturer
@@ -88,18 +79,18 @@ function shortcode_manufacturers() {
                 $displayManu = $displayManu. '</div><h3>' .$first_letterManu. '</h3><div>';
                 if(isset($_GET['engine_type_id'])){
                     $engine_type_id = $_GET['engine_type_id'];
-                    $displayManu = $displayManu.'<a href="models/?manufact_id='.$manufact_id.'&engine_type_id='.$_GET['engine_type_id'].'">'.$manufacturer['name'].'</a>, ';
+                    $displayManu = $displayManu.'<a href="models/?manufact_id='.$manufact_id.'&engine_type_id='.$_GET['engine_type_id'].'">'.$manufacturer['name'].'</a> ';
                 }else{
-                    $displayManu = $displayManu.'<a href="models/?manufact_id='.$manufact_id.'">'.$manufacturer['name'].'</a>, ';
+                    $displayManu = $displayManu.'<a href="models/?manufact_id='.$manufact_id.'">'.$manufacturer['name'].'</a> ';
                 }
 
             } else {
 
                 if(isset($_GET['engine_type_id'])){
                     $engine_type_id = $_GET['engine_type_id'];
-                    $displayManu = $displayManu.'<a href="models/?manufact_id='.$manufact_id.'&engine_type_id='.$_GET['engine_type_id'].'">'.$manufacturer['name'].'</a>, ';
+                    $displayManu = $displayManu.'<a href="models/?manufact_id='.$manufact_id.'&engine_type_id='.$_GET['engine_type_id'].'">'.$manufacturer['name'].'</a> ';
                 }else{
-                    $displayManu = $displayManu.'<a href="models/?manufact_id='.$manufact_id.'">'.$manufacturer['name'].'</a>, ';
+                    $displayManu = $displayManu.'<a href="models/?manufact_id='.$manufact_id.'">'.$manufacturer['name'].'</a> ';
                 }
             }
 
@@ -115,7 +106,7 @@ function shortcode_manufacturers() {
                 if($_GET['engine_type_id']){
                     $displayManu = $displayManu.'<a href="models/?manufact_id='.$manufact_id.'&engine_type_id='.$_GET['engine_type_id'].'">'.$manufacturer['name'].'</a>, ';
                 }else{
-                    $displayManu = $displayManu.'<a href="models/?manufact_id='.$manufact_id.'">'.$manufacturer['name'].'</a>, ';
+                    $displayManu = $displayManu.'<a href="models/?manufact_id='.$manufact_id.'">'.$manufacturer['name'].'</a>, '. ' '.' ';
                 }
                 array_push($array_manufacts_found, $manufacturer);
             }
@@ -220,7 +211,7 @@ function shortcode_descriptif(): void{
     if(isset($_GET['engine_id'])){
 
         $engine_id = $_GET['engine_id'];
-        $query = call_bdd() -> query( "SELECT distinct TYPE_LANG.name as type_name, LANG.description AS description, ENGIN.model AS model,ENGIN.id_ukooparts_engine, ENGIN.year_start AS start, ENGIN.year_end AS end, ENGIN.image AS image, MANU.name AS manufacturer, CONCAT(MANU.name, ' ', TYPE_LANG.name, ' ',ENGIN.model) AS title, CONCAT(ENGIN.year_start, '-', ENGIN.year_end) AS years  
+        $query = call_bdd() -> query( "SELECT distinct TYPE_LANG.name as type_name, LANG.description AS description, ENGIN.model AS model,ENGIN.id_ukooparts_engine, ENGIN.year_start AS start, ENGIN.year_end AS end, ENGIN.image AS image, MANU.name AS manufacturer, CONCAT(MANU.name, ' ', substr(TYPE_LANG.name, 8), ' ',ENGIN.model) AS title, CONCAT(ENGIN.year_start, '-', ENGIN.year_end) AS years  
         FROM  PREFIX_ukooparts_engine ENGIN 
         inner join PREFIX_ukooparts_engine_lang LANG 
         on LANG.id_ukooparts_engine = ENGIN.id_ukooparts_engine
@@ -232,8 +223,8 @@ function shortcode_descriptif(): void{
 
         foreach($query as $row)
         {
-            echo("<h1>" . $row['title'] . "</h1> 
-                  <h2>" . $row['years'] . "</h2>
+            echo("<h3>" . $row['title'] . "</h3> 
+                  <h4>" . $row['years'] . "</h4>
                   <p>" . $row['description'] . "</p>"
             );
 
@@ -245,28 +236,20 @@ add_shortcode('descriptif', 'shortcode_descriptif');
 
 // yuan
 function shortcode_models() {
-    $html= '<!DOCTYPE html>
-            <html lang="en">
-            <head>
-                <meta charset="UTF-8">
-                <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-            </head>
-            <style>
-            </style>
-            <body>
-                <div class="container">
-                    <form method="post" action="">
-                        <input type="text" placeholder="TOUS pour tous les modèles" name="key">
-                        <input type="submit" name="submit" value="Rechercher">
-                    </form>
-                </div>';
+    $html= '
+            <div>
+                <form method="post" action="">
+                    <input type="text" placeholder="TOUS pour tous les modèles" name="key">
+                    <input type="submit" name="submit" value="Rechercher">
+                </form>
+            </div>';
     // if manufacturer id set in url
     if(isset($_GET['manufact_id'])){
         // if engine type id is not set in url, the list of models will be filtered only by manufacturer(brand name: example YAMAHA)
         if(!isset($_GET['engine_type_id'])){
             $manufact_id = $_GET['manufact_id'];
 
-            $models = (call_bdd()->query("SELECT engine.model, manu.name, engine.id_ukooparts_engine AS id_engine
+            $models = (call_bdd()->query("SELECT engine.model, manu.name, engine.id_ukooparts_engine AS id_engine, CONCAT(manu.name, ' ', engine.model) AS display_name
                 FROM PREFIX_ukooparts_engine AS engine
                 INNER JOIN PREFIX_ukooparts_manufacturer AS manu
                 ON manu.id_ukooparts_manufacturer = engine.id_ukooparts_manufacturer
@@ -276,7 +259,7 @@ function shortcode_models() {
                 $manufact_id = $_GET['manufact_id'];
                 $engine_type_id = $_GET['engine_type_id'];
 
-                $models = (call_bdd()->query("SELECT engine.model, manu.name, type.name AS type_name, engine.id_ukooparts_engine AS id_engine
+                $models = (call_bdd()->query("SELECT engine.model, manu.name, type.name AS type_name, engine.id_ukooparts_engine AS id_engine, CONCAT(manu.name, ' ', engine.model) AS display_name
                     FROM PREFIX_ukooparts_engine AS engine
                     INNER JOIN PREFIX_ukooparts_manufacturer AS manu
                     ON manu.id_ukooparts_manufacturer = engine.id_ukooparts_manufacturer
@@ -292,9 +275,9 @@ function shortcode_models() {
                 if($model['model'][0] != $first_letter){
                     $first_letter = $model['model'][0];
                     $html = $html.'</div><h3>'.$first_letter.'</h3><div>';
-                    $html = $html.$model['name'].' '.$model['model'].',  ';
+                    $html = $html.'<a href="fiche-descriptif/?engine_id='.$model['id_engine'].'">'.$model['display_name'].'</a>  ';
                 }else{
-                    $html = $html.$model['name'].' '.$model['model'].',  ';
+                    $html = $html.'<a href="fiche-descriptif/?engine_id='.$model['id_engine'].'">'.$model['display_name'].'</a>  ';
                 }
             }
             return $html.'</div></body></html>';
@@ -304,8 +287,8 @@ function shortcode_models() {
             $array_models_found = array();
             $html = $html.'<div>';
             foreach($models as $model){
-                if(str_contains(strtoupper($model['model']), strtoupper($key)) !== false){
-                    $html = $html.$model['name'].' '.$model['model'].', ';
+                if(str_contains(strtoupper($model['model']), strtoupper($key))){
+                    $html = $html.'<a href="fiche-descriptif/?engine_id='.$model['id_engine'].'">'.$model['display_name'].'</a>  ';
                     array_push($array_models_found, $model);
                 }
             }
