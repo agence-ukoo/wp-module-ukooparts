@@ -67,21 +67,25 @@ function shortcode_manufacturers() {
      // print_r($result);
 
     // compare les 2 arrays et indique les lettres qui sont dans $tab_letterExists
+    // le echo $abc permet de créer un href vers les ancres par lettre alphabétique
+
      foreach( range('A', 'Z') as $abc) {
         if (in_array($abc, $tab_letterExists)) { ?>
-             <p><a href="#<?php $abc ?>" style='color:black;'><?php echo $abc ?></a></p> <?php
+             <span><a href="#<?php echo $abc ?>" style='color:black;'><?php echo $abc ?></a></span> <?php
         } else {
-            echo "<p style='color:grey;'>$abc</p>";
+            echo "<span style='color:grey;'>$abc</span> ";
         }
     
      }
 
+     ?><span><a href="#0-9" style='color:black;'><?php echo "0-9" //$abc ?></a></span> <?php
 
-
+     
 
     $displayManu = "";
     $first_letterManu = $manufacturers[0]['name'][0];
     $displayManu = $displayManu. '<h3>' . $first_letterManu. '</h3><div>';
+
     $displayManu = '<!DOCTYPE html>
             <html lang="en">
                 <head>
@@ -112,13 +116,21 @@ function shortcode_manufacturers() {
 
     if($manufacturers && (!isset($_POST['submit']) || (isset($_POST['submit']) && (strtoupper($_POST['key'])=='TOUS' || !$_POST['key']) ))     ) {
         $first_letterManu = $manufacturers[0]['name'][0];
-        $displayManu = $displayManu. '<h3>' . $first_letterManu. '</h3><div>';
+        $displayManu = $displayManu. '<h3 id="'.$first_letterManu.'">' . $first_letterManu. '</h3><div>'; // echo $first_letterManu pour créer une ancre unique en fontion de la lettre
 
         foreach($manufacturers as $manufacturer) {
             $manufact_id = $manufacturer['id_ukooparts_manufacturer'];
             if($manufacturer['name'][0] != $first_letterManu) {
                 $first_letterManu = $manufacturer['name'][0];
-                $displayManu = $displayManu. '</div><h3>' .$first_letterManu. '</h3><div>';
+
+                // mettre un if pour vérifier s'il s'agit d'un numéro en initial et tout rediriger vers le 1er nombre de la liste
+
+               if(!is_numeric($first_letterManu)) {
+                    $displayManu = $displayManu. '</div><h3 id="'.$first_letterManu.'">' .$first_letterManu. '</h3><div>'; // echo $first_letterManu pour créer une ancre unique en fontion de la lettre
+               } else {
+                $displayManu = $displayManu. '</div><h3 id="0-9">' .$first_letterManu. '</h3><div>'; // tous les chiffres froment des sections différentes mais une seul id
+               }
+               
                 if(isset($_GET['engine_type_id'])){
                     $engine_type_id = $_GET['engine_type_id'];
                     $displayManu = $displayManu.'<a href="models/?manufact_id='.$manufact_id.'&engine_type_id='.$_GET['engine_type_id'].'">'.$manufacturer['name'].'</a>, ';
