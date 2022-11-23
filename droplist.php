@@ -1,23 +1,24 @@
-<!DOCTYPE html>
+<?php
+// setcookie(time()+3600*24*365);
+?> 
 
+<!DOCTYPE html>
 <style>
 .dropall{
     width: 100%;
-    height: 50px;
+    height: 50%;
     text-align: center;
-    display: flex;
-    background-color: red;
-}
+    display: flex;}
 </style>
 
 <head>
     <meta charset="utf-8" />
     <link rel="stylesheet" />
 </head>
-<body>
- <?php    
+
+<?php
 try{
-    $db = new PDO('mysql:host=localhost;dbname=test','root','');
+    $db = new PDO('mysql:host=localhost;dbname=ukooparts','root','');
     $db -> exec('SET NAMES "UTF8"');
 }catch(PDOException $e){
     echo 'Erreur:'.$e ->getMessage();
@@ -26,56 +27,39 @@ try{
 ?>
 
 <section class="dropall">
-<div class = 'droplist'>
+<form  action = "" method="GET">
   <label for="Marque">Marque</label>
-  <select>
+  <select name="Choix1" >
 <?php
     foreach ($db->query('SELECT name FROM PREFIX_ukooparts_manufacturer') as $row) {
         echo '<option value="' . $row['name'] . '">'. $row['name'] . ' </option>';
-    }   
+    }
 ?>
 </select>
-</form>
-</div>
 
-<div class = 'droplist'>
   <label for="model">Modèles</label>
-  <select>
-<?php
-    foreach ($db->query('SELECT model FROM PREFIX_ukooparts_engine ') as $row) {
-        echo '<option value="' . $row['model'] . '">'. $row['model'] . ' </option>';
-    }   
-?>
+  <select name="Choix2">
+<?php foreach ($db->query('SELECT model FROM PREFIX_ukooparts_engine ') as $row) {
+        echo '<option value="' . $row['model'] . '">'. $row['model'] . ' </option>';}?>
 </select>
-</div>
 
-<div class = 'droplist'>
   <label for="cylindre">Cylindré</label>
-  <select>
+  <select name="Choix3">
 <?php
     foreach ($db->query('SELECT displacement FROM PREFIX_ukooparts_engine') as $row) {
-        echo '<option value="' . $row['displacement'] . '">'. $row['displacement'] . ' </option>';
-    }   
-?>
+        echo '<option value="' . $row['displacement'] . '">'. $row['displacement'] . ' </option>';}?>
 </select>
-</form>
-</div>
+<input name="Envoyer" type="submit" value="valider" />
+  </form>
 
-
-<div class = 'droplist'>
-  <label for="year">année</label>
-  <select>
 <?php
-    foreach ($db->query('SELECT  FROM PREFIX_ukooparts_compatibility') as $row) {
-        echo '<option value="' . $row['year'] . '">'. $row['year'] . ' </option>';
-    }   
+if (isset($_GET['Envoyer'])) {
+ echo "Vous avez selectioner ".$_GET['Choix1']," ".$_GET['Choix2'];}
+
 ?>
-</select>
-</div>
 
 </section>
 
-</body>
 
 
 

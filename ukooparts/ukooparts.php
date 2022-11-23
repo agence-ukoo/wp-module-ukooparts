@@ -81,75 +81,11 @@ function shortcode_manufacturers() : string {
 
 
 /////////////////////////////Adam/////////////////////////////////////////////////
-add_action('wp_head','droplist');
-add_action('wp_head','dropcss');
 
-function dropcss(){
-printf(
-    "<style>
-    .dropall{
-        width: 100%;
-        height: 50px;
-        text-align: center;
-        display: flex;
-        background-color: red;
-    }
-    </style>");
+function droplist() {
+	include( 'wp-content/plugins/droplist.php' );
 }
-
-function droplist(){
-try{
-    $db = new PDO('mysql:host=localhost;dbname=test','root','');
-    $db -> exec('SET NAMES "UTF8"');
-}catch(PDOException $e){
-    echo 'Erreur:'.$e ->getMessage();
-    die();
-}
-
-"<section class='dropall'>
-  <label for='Marque'>Marque</label>
-  <select>";
-    foreach ($db->query('SELECT name FROM PREFIX_ukooparts_manufacturer') as $row) {
-        echo '<option value="' . $row['name'] . '">'. $row['name'] . ' </option>';
-    }   
-
-"</select>
-</form>
-  <label for='model'>Modèles</label>
-  <select>";
-    foreach ($db->query('SELECT model FROM PREFIX_ukooparts_engine ') as $row) {
-        echo '<option value="' . $row['model'] . '">'. $row['model'] . ' </option>';
-    }   
-
-"</select>
-  <label for='cylindre'>Cylindré</label>
-  <select>";
-    foreach ($db->query('SELECT displacement FROM PREFIX_ukooparts_engine') as $row) {
-        echo '<option value="' . $row['displacement'] . '">'. $row['displacement'] . ' </option>';
-    }   
-"</select>
-</form>
-
-
-  <label for='year'>année</label>
-  <select>";
-    foreach ($db->query('SELECT  FROM PREFIX_ukooparts_compatibility') as $row) {
-        echo '<option value="' . $row['year'] . '">'. $row['year'] . ' </option>';
-    }   
-
-"</select>
-</section>";}
-
-
-
-
-
-
-
-
-
-
-
+add_action( 'wp_head', 'droplist' );
 
 
 ////////////////////////////////////ilies////////////////////////////////////////////
