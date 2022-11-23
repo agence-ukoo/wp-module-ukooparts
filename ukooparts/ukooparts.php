@@ -43,12 +43,6 @@ function call_bdd(): PDO{
 
     // fonction de display des constructeurs par noms A-Z
 function shortcode_manufacturers() {
-
-    $manufacturers = (call_bdd()->query("SELECT * FROM `PREFIX_ukooparts_manufacturer` ORDER BY name ASC;"))->fetchAll();
-
-    $displayManu = "";
-    $first_letterManu = $manufacturers[0]['name'][0];
-    $displayManu = $displayManu. '<h3>' . $first_letterManu. '</h3><div>';
     $displayManu = '
                     <div>
                         <form method="post" action="">
@@ -83,9 +77,7 @@ function shortcode_manufacturers() {
                 }else{
                     $displayManu = $displayManu.'<a href="models/?manufact_id='.$manufact_id.'">'.$manufacturer['name'].'</a> ';
                 }
-
             } else {
-
                 if(isset($_GET['engine_type_id'])){
                     $engine_type_id = $_GET['engine_type_id'];
                     $displayManu = $displayManu.'<a href="models/?manufact_id='.$manufact_id.'&engine_type_id='.$_GET['engine_type_id'].'">'.$manufacturer['name'].'</a> ';
@@ -93,9 +85,8 @@ function shortcode_manufacturers() {
                     $displayManu = $displayManu.'<a href="models/?manufact_id='.$manufact_id.'">'.$manufacturer['name'].'</a> ';
                 }
             }
-
         }
-        return $displayManu.'</div></body></html>';
+        return $displayManu.'</div>';
     }else if ($manufacturers && isset($_POST['submit']) && strtoupper($_POST['key']) !='TOUS'){
         $key = $_POST['key'];
         $array_manufacts_found = array();
@@ -114,7 +105,7 @@ function shortcode_manufacturers() {
         if(sizeof($array_manufacts_found) == 0){
             $displayManu = $displayManu.'Ce modèle ne existe pas';
         }
-        return $displayManu.'</div></body></html>';
+        return $displayManu.'</div>';
     }
 }
 
@@ -224,8 +215,8 @@ function shortcode_descriptif(): void{
         foreach($query as $row)
         {
             echo("<h3>" . $row['title'] . "</h3> 
-                  <h4>" . $row['years'] . "</h4>
-                  <p>" . $row['description'] . "</p>"
+                <h4>" . $row['years'] . "</h4>
+                <p>" . $row['description'] . "</p>"
             );
 
         }
@@ -259,7 +250,7 @@ function shortcode_models() {
                 $manufact_id = $_GET['manufact_id'];
                 $engine_type_id = $_GET['engine_type_id'];
 
-                $models = (call_bdd()->query("SELECT engine.model, manu.name, type.name AS type_name, engine.id_ukooparts_engine AS id_engine, CONCAT(manu.name, ' ', engine.model) AS display_name
+                $models = (call_bdd()->query("SELECT engine.model, manu.name, type.name AS type_name, engine.id_ukooparts_engine AS id_engine, CONCAT(manu.name, ' ', engine.model) AS display_name, CONCAT(substr(type.name, 8), ' ', manu.name) AS type_manu_name
                     FROM PREFIX_ukooparts_engine AS engine
                     INNER JOIN PREFIX_ukooparts_manufacturer AS manu
                     ON manu.id_ukooparts_manufacturer = engine.id_ukooparts_manufacturer
@@ -280,7 +271,7 @@ function shortcode_models() {
                     $html = $html.'<a href="fiche-descriptif/?engine_id='.$model['id_engine'].'">'.$model['display_name'].'</a>  ';
                 }
             }
-            return $html.'</div></body></html>';
+            return $html.'</div>';
         // if the search key word is not 'tous', the list will be filtered by the key words
         } else if ($models && isset($_POST['submit']) && strtoupper($_POST['key']) !='TOUS'){
             $key = $_POST['key'];
@@ -295,11 +286,11 @@ function shortcode_models() {
             if(sizeof($array_models_found) == 0){
                 $html = $html.'Ce modèle ne existe pas';
             }
-            return $html.'</div></body></html>';
+            return $html.'</div>';
         }
     // if no id is set in url, no list is shown
     } else if (!isset($_GET['manufact_id']) && !isset($_GET['engine_type_id'])){
-        return $html.'<div>Non manufacturer choisi</div></body></html>';
+        return $html.'<div>Non manufacturer choisi</div>';
     }
 }
 add_shortcode('models', 'shortcode_models');
