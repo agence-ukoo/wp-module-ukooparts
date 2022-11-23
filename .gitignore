@@ -1,4 +1,5 @@
 ukooparts/node_modules
+/node_modules
 .idea
 
 #WORDPRESS : Les autre fichiers du folder plugin
