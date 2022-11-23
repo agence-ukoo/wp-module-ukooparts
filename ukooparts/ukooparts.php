@@ -49,7 +49,7 @@ function shortcode_manufacturers() {
     $manufacturers = (call_bdd()->query("SELECT * FROM `PREFIX_ukooparts_manufacturer` ORDER BY name ASC;"))->fetchAll();
 
         // loop qui récupère une fois toutes les initiales des constructeurs. (ex: A B D F...)
-        $lettersList = (call_bdd()->query("SELECT distinct SUBSTRING(name, 1, 1) FROM PREFIX_ukooparts_manufacturer ORDER BY name ASC;"))->fetchAll();
+        $lettersList = (call_bdd()->query("SELECT distinct SUBSTRING(name, 1, 1) AS name FROM PREFIX_ukooparts_manufacturer ORDER BY name ASC;"))->fetchAll();
         
         // print_r($lettersList);
     $tab_letterExists = array();    
