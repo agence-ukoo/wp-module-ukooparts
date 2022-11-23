@@ -96,6 +96,7 @@ function shortcode_manufacturers() {
                 </style>
                 <body>
                     <div class="container">
+    
                     <div>
                         <form method="post" action="">
                             <input type="text" placeholder="TOUS pour tous les marques" name="key">
@@ -123,8 +124,7 @@ function shortcode_manufacturers() {
             if($manufacturer['name'][0] != $first_letterManu) {
                 $first_letterManu = $manufacturer['name'][0];
 
-                // mettre un if pour vérifier s'il s'agit d'un numéro en initial et tout rediriger vers le 1er nombre de la liste
-
+                //  le if vérifie s'il s'agit d'un numéro en initiale et redirige tout vers la dernière génération de l'id"0-9". 
                if(!is_numeric($first_letterManu)) {
                     $displayManu = $displayManu. '</div><h3 id="'.$first_letterManu.'">' .$first_letterManu. '</h3><div>'; // echo $first_letterManu pour créer une ancre unique en fontion de la lettre
                } else {
