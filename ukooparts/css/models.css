@@ -1,0 +1,13 @@
+.divHeaderTypeModel{
+    display: flex;
+}
+
+.titleDivHeaderTypeModel{
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.paraDivHeaderTypeModel{
+    font-size: 16px;
+}
