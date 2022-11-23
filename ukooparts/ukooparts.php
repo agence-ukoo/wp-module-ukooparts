@@ -80,24 +80,8 @@ function shortcode_manufacturers() {
 
      ?><span><a href="#0-9" style='color:black;'><?php echo "0-9" //$abc ?></a></span> <?php
 
-     
 
-    $displayManu = "";
-    $first_letterManu = $manufacturers[0]['name'][0];
-    $displayManu = $displayManu. '<h3>' . $first_letterManu. '</h3><div>';
-
-    $displayManu = '<!DOCTYPE html>
-            <html lang="en">
-                <head>
-                    <meta charset="UTF-8">
-                    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-                </head>
-                <style>
-                </style>
-                <body>
-                    <div class="container">
-    
-                    <div>
+    $displayManu = '<div>
                         <form method="post" action="">
                             <input type="text" placeholder="TOUS pour tous les marques" name="key">
                             <input type="submit" name="submit" value="Rechercher">
@@ -157,7 +141,7 @@ function shortcode_manufacturers() {
                 if($_GET['engine_type_id']){
                     $displayManu = $displayManu.'<a href="models/?manufact_id='.$manufact_id.'&engine_type_id='.$_GET['engine_type_id'].'">'.$manufacturer['name'].'</a>, ';
                 }else{
-                    $displayManu = $displayManu.'<a href="models/?manufact_id='.$manufact_id.'">'.$manufacturer['name'].'</a>, '. ' '.' ';
+                    $displayManu = $displayManu.'<a href="models/?manufact_id='.$manufact_id.'">'.$manufacturer['name'].'</a>, ';
                 }
                 array_push($array_manufacts_found, $manufacturer);
             }
