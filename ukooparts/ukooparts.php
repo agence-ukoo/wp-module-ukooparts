@@ -24,7 +24,6 @@ function import_script(){
     <link href="<?php echo plugin_dir_url(__FILE__) ?>css/footer_manufacturers.css" rel="stylesheet">
     <link href="<?php echo plugin_dir_url(__FILE__) ?>css/footer_types.css" rel="stylesheet">
     <link href="<?php echo plugin_dir_url(__FILE__) ?>css/top50.css" rel="stylesheet">
-    <link href="<?php echo plugin_dir_url(__FILE__) ?>css/top50.css" rel="stylesheet">
     <link href="<?php echo plugin_dir_url(__FILE__) ?>node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
     <script type="text/javascript" src="<?php echo plugin_dir_url(__FILE__) ?>node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
     <?php
@@ -227,7 +226,6 @@ function types(){
                 <img class="iconSelectTypeVehicule" src="http://imagenspng.com/wp-content/uploads/desenhos-motos-Imagem-png-para-imprimir-gratis-768x768.png" alt="">
                 <p>Pièces tout terrain</p>
             </a>
-
             </div>
         </div>
     </div>
@@ -274,13 +272,7 @@ add_shortcode('descriptif', 'shortcode_descriptif');
 
 // yuan
 function shortcode_models() {
-    $html= '
-            <div>
-                <form method="post" action="">
-                    <input type="text" placeholder="TOUS pour tous les modèles" name="key">
-                    <input type="submit" name="submit" value="Rechercher">
-                </form>
-            </div>';
+    
     // if manufacturer id set in url
     if(isset($_GET['manufact_id'])){
         // if engine type id is not set in url, the list of models will be filtered only by manufacturer(brand name: example YAMAHA)
@@ -305,6 +297,37 @@ function shortcode_models() {
                     ON type.id_ukooparts_engine_type = engine.id_ukooparts_engine_type
                     WHERE  manu.id_ukooparts_manufacturer=$manufact_id AND engine.id_ukooparts_engine_type=$engine_type_id ORDER BY model ASC;"))->fetchAll();
         }
+
+        if(isset($models[0]['type_manu_name'] )){
+            $type= $models[0]['type_manu_name'];
+        }else{
+            $type=$models[0]['name'];
+        }
+
+        $html= '
+                <div class="divHeaderTypeModel">
+                    <div>
+                            <h3 class="titleDivHeaderTypeModel">pièces détachées et accessoires '.$type.'</h3>
+                            <p class="paraDivHeaderTypeModel">
+                                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et 
+                                dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip 
+                                ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu 
+                                fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt 
+                                mollit anim id est laborum.
+                            </p>
+                        </div>
+                        <div>
+                            <img src="https://i.pinimg.com/originals/0b/c0/24/0bc024f240e6bec6d29df3155d487adf.png"/>
+                            <p class="paraDivHeaderTypeModel"><a href="#">Accéder au site de la marque</a></p>
+                        </div>
+                    </div>
+                    
+                    <form method="post" action="">
+                        <input type="text" placeholder="TOUS pour tous les modèles" name="key">
+                        <input type="submit" name="submit" value="Rechercher">
+                    </form>
+                </div>
+';
         // if there is no search, or the search key word is 'tous', or search without any key word entered, the whole list will be showed
         if($models && (!isset($_POST['submit']) || (isset($_POST['submit']) && (strtoupper($_POST['key'])=='TOUS' || !$_POST['key']) ))     ) {
             $first_letter = $models[0]['model'][0];
