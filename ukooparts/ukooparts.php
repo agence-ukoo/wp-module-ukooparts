@@ -24,7 +24,8 @@ function import_script(){
     <link href="<?php echo plugin_dir_url(__FILE__) ?>css/footer_manufacturers.css" rel="stylesheet">
     <link href="<?php echo plugin_dir_url(__FILE__) ?>css/footer_types.css" rel="stylesheet">
     <link href="<?php echo plugin_dir_url(__FILE__) ?>css/top50.css" rel="stylesheet">
-    <link href="<?php echo plugin_dir_url(__FILE__) ?>css/models.css" rel="stylesheet">
+    <link href="<?php echo plugin_dir_url(__FILE__) ?>node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script type="text/javascript" src="<?php echo plugin_dir_url(__FILE__) ?>node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
     <?php
 }
 
@@ -44,8 +45,45 @@ function call_bdd(): PDO{
 
     // fonction de display des constructeurs par noms A-Z
 function shortcode_manufacturers() {
-    $displayManu = '
-                    <div>
+
+    $manufacturers = (call_bdd()->query("SELECT * FROM `PREFIX_ukooparts_manufacturer` ORDER BY name ASC;"))->fetchAll();
+
+        // loop qui récupère une fois toutes les initiales des constructeurs. (ex: A B D F...)
+        $lettersList = (call_bdd()->query("SELECT distinct SUBSTRING(name, 1, 1) FROM PREFIX_ukooparts_manufacturer ORDER BY name ASC;"))->fetchAll();
+        
+        // print_r($lettersList);
+    $tab_letterExists = array();    
+    foreach($lettersList as $letter) {
+        array_push($tab_letterExists, $letter[0]);
+        // print_r($tab_letterExists);
+    } 
+
+    // affiche l'alphabet entier en ligne (A B C D...)
+    $tab_alphabet = array();
+    foreach( range('A', 'Z') as $element) {          
+        array_push($tab_alphabet, $element);
+        // print_r($tab_alphabet);
+    }
+
+    $result = array_intersect($tab_alphabet, $tab_letterExists);
+     // print_r($result);
+
+    // compare les 2 arrays et indique les lettres qui sont dans $tab_letterExists
+    // le echo $abc permet de créer un href vers les ancres par lettre alphabétique
+
+     foreach( range('A', 'Z') as $abc) {
+        if (in_array($abc, $tab_letterExists)) { ?>
+             <span><a href="#<?php echo $abc ?>" style='color:black;'><?php echo $abc ?></a></span> <?php
+        } else {
+            echo "<span style='color:grey;'>$abc</span> ";
+        }
+    
+     }
+
+     ?><span><a href="#0-9" style='color:black;'><?php echo "0-9" //$abc ?></a></span> <?php
+
+
+    $displayManu = '<div>
                         <form method="post" action="">
                             <input type="text" placeholder="TOUS pour tous les marques" name="key">
                             <input type="submit" name="submit" value="Rechercher">
@@ -65,13 +103,20 @@ function shortcode_manufacturers() {
 
     if($manufacturers && (!isset($_POST['submit']) || (isset($_POST['submit']) && (strtoupper($_POST['key'])=='TOUS' || !$_POST['key']) ))     ) {
         $first_letterManu = $manufacturers[0]['name'][0];
-        $displayManu = $displayManu. '<h3>' . $first_letterManu. '</h3><div>';
+        $displayManu = $displayManu. '<h3 id="'.$first_letterManu.'">' . $first_letterManu. '</h3><div>'; // echo $first_letterManu pour créer une ancre unique en fontion de la lettre
 
         foreach($manufacturers as $manufacturer) {
             $manufact_id = $manufacturer['id_ukooparts_manufacturer'];
             if($manufacturer['name'][0] != $first_letterManu) {
                 $first_letterManu = $manufacturer['name'][0];
-                $displayManu = $displayManu. '</div><h3>' .$first_letterManu. '</h3><div>';
+
+                //  le if vérifie s'il s'agit d'un numéro en initiale et redirige tout vers la dernière génération de l'id"0-9". 
+               if(!is_numeric($first_letterManu)) {
+                    $displayManu = $displayManu. '</div><h3 id="'.$first_letterManu.'">' .$first_letterManu. '</h3><div>'; // echo $first_letterManu pour créer une ancre unique en fontion de la lettre
+               } else {
+                $displayManu = $displayManu. '</div><h3 id="0-9">' .$first_letterManu. '</h3><div>'; // tous les chiffres froment des sections différentes mais une seul id
+               }
+               
                 if(isset($_GET['engine_type_id'])){
                     $engine_type_id = $_GET['engine_type_id'];
                     $displayManu = $displayManu.'<a href="models/?manufact_id='.$manufact_id.'&engine_type_id='.$_GET['engine_type_id'].'">'.$manufacturer['name'].'</a> ';
@@ -98,7 +143,7 @@ function shortcode_manufacturers() {
                 if($_GET['engine_type_id']){
                     $displayManu = $displayManu.'<a href="models/?manufact_id='.$manufact_id.'&engine_type_id='.$_GET['engine_type_id'].'">'.$manufacturer['name'].'</a>, ';
                 }else{
-                    $displayManu = $displayManu.'<a href="models/?manufact_id='.$manufact_id.'">'.$manufacturer['name'].'</a>, '. ' '.' ';
+                    $displayManu = $displayManu.'<a href="models/?manufact_id='.$manufact_id.'">'.$manufacturer['name'].'</a>, ';
                 }
                 array_push($array_manufacts_found, $manufacturer);
             }
@@ -190,7 +235,7 @@ function types(){
 add_action('wp_footer', 'types');
 
 function shortcode_cadeaux(): string{
-    return "<h2>Bienvenue dans cette surperbe liste de cadeaux ! !</h2>";
+    return '<a href="#" class="alert-warning">Warning link</a>';
 }
 add_shortcode('cadeaux', 'shortcode_cadeaux');
 
