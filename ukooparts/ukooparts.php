@@ -96,7 +96,6 @@ function shortcode_manufacturers() {
                 </style>
                 <body>
                     <div class="container">
-    $displayManu = 
                     <div>
                         <form method="post" action="">
                             <input type="text" placeholder="TOUS pour tous les marques" name="key">
