@@ -24,6 +24,9 @@ function import_script(){
     <link href="<?php echo plugin_dir_url(__FILE__) ?>css/footer_manufacturers.css" rel="stylesheet">
     <link href="<?php echo plugin_dir_url(__FILE__) ?>css/footer_types.css" rel="stylesheet">
     <link href="<?php echo plugin_dir_url(__FILE__) ?>css/top50.css" rel="stylesheet">
+    <link href="<?php echo plugin_dir_url(__FILE__) ?>css/top50.css" rel="stylesheet">
+    <link href="<?php echo plugin_dir_url(__FILE__) ?>node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script type="text/javascript" src="<?php echo plugin_dir_url(__FILE__) ?>node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
     <?php
 }
 
@@ -190,7 +193,7 @@ function types(){
 add_action('wp_footer', 'types');
 
 function shortcode_cadeaux(): string{
-    return "<h2>Bienvenue dans cette surperbe liste de cadeaux ! !</h2>";
+    return '<a href="#" class="alert-warning">Warning link</a>';
 }
 add_shortcode('cadeaux', 'shortcode_cadeaux');
 
