@@ -271,8 +271,8 @@ function shortcode_descriptif(): void{
 add_shortcode('descriptif', 'shortcode_descriptif');
 
 // yuan
-function shortcode_models() {
-    
+function shortcode_models(): string {
+    $html = null;
     // if manufacturer id set in url
     if(isset($_GET['manufact_id'])){
         // if engine type id is not set in url, the list of models will be filtered only by manufacturer(brand name: example YAMAHA)
@@ -362,6 +362,8 @@ function shortcode_models() {
     } else if (!isset($_GET['manufact_id']) && !isset($_GET['engine_type_id'])){
         return $html.'<div>Non manufacturer choisi</div>';
     }
+
+    return $html;
 }
 add_shortcode('models', 'shortcode_models');
 
