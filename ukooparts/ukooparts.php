@@ -257,6 +257,15 @@ function shortcode_descriptif(): void{
         ON ENGIN.id_ukooparts_engine_type = TYPE_LANG.id_ukooparts_engine_type
         WHERE ENGIN.id_ukooparts_engine = $engine_id AND LANG.id_lang = 1;");
 
+        $categories = call_bdd() -> query("SELECT wptm.term_id, wptm.meta_value, wpt.name, wppm.meta_key, wppm.meta_value
+            FROM wp_termmeta wptm
+            LEFT JOIN wp_terms wpt
+            ON wpt.term_id = wptm.term_id
+            LEFT JOIN wp_postmeta wppm
+            ON wppm.post_id = wptm.meta_value 
+            AND wppm.meta_key = '_wp_attached_file'
+            WHERE wptm.meta_value != 0;")
+            
         foreach($query as $row)
         {
             echo("<h3>" . $row['title'] . "</h3> 
