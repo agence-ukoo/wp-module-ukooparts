@@ -1,4 +1,5 @@
 <?php
+use Automattic\WooCommerce\Admin\API\Reports\Query;
 
 /*
 Plugin Name: Ukooparts
@@ -80,72 +81,10 @@ add_shortcode('manufacturers', 'shortcode_manufacturers');
 
 /////////////////////////////Adam/////////////////////////////////////////////////
 
-/*add_action('wp_header', 'dropdown_view');
-function create_dropList($title, $content, $status){
-    $page_array = array(
-        'post_title' => $title,
-        'post_content' => $content,
-        'post_status' => $status,
-        'post_type' => 'page'
-    );
-    $new_page = get_page_by_title( $title, OBJECT, 'page');
-    if (  !isset( $new_page ) ) {
-        wp_insert_post($page_array, false);
-	}
+function droplist() {
+    include( 'wp-content/plugins/droplist.php' );
 }
-
-create_dropList('droplist test', '<section class="dropall">
-<div class = "droplist">
-<?php $marques ?>
-<form action="droplist.php">
-  <label for="Marque">Marque</label>
-  <select name="Marque" id="Marque">
-    <option value="">Marque</option>
-    <option value="">Aprilia</option>
-    <option value="">BMW</option>
-    <option value="">Honda</option>
-    <option value="">KTM</option>
-    <option value="">Kawazaki</option>
-    <option value="">Moto-Guizzi</option>
-  </select>
-</form>
-</div>
-
-<?php $cylindre ?>
-
-<div class = "droplist">
-<form action="droplist.php">
-  <label for="cylindre">Cylindré</label>
-  <select name="cylindre" id="cylindre">
-    <option value="">cylindré</option>
-    <option value=""></option>
-    <option value=""></option>
-    <option value=""></option>
-  </select>
-</form>
-</div>
-
-<div class = "droplist">
-<form action="droplist.php">
-  <label for="modeles">Modèles</label>
-  <select name="modeles" id="modeles">
-    <option value="">modèles</option>
-    <option value=""></option>
-    <option value=""></option>
-    <option value=""></option>
-  </select>
-</form>
-</div>
-</section>',
-'publish'
-);*/
-
-
-
-
-
-
-
+add_action( 'wp_head', 'droplist' );
 
 ////////////////////////////////////ilies////////////////////////////////////////////
 add_action('wp_footer','marque');
@@ -420,6 +359,38 @@ function shortcode_descriptif(): void{
         }
 }
 add_shortcode('descriptif', 'shortcode_descriptif');
+
+
+function shortcode_search(): void{
+
+    try{
+        $db = new PDO('mysql:host=localhost;dbname=ukooparts','root','');
+        $db -> exec('SET NAMES "UTF8"');
+    }catch(PDOException $e){
+        echo 'Erreur:'.$e ->getMessage();
+        die();
+    }
+    if(isset($_GET['$query'])){
+
+            $query = $db -> query( "SELECT LANG.description AS description, ENGIN.model AS model,ENGIN.displacement as cylindré, ENGIN.year_start AS start, ENGIN.year_end AS end, ENGIN.image AS image, MANU.name AS manufacturer,
+            CONCAT(MANU.name, ' ', ENGIN.model) AS title FROM PREFIX_ukooparts_engine_lang LANG 
+            INNER JOIN PREFIX_ukooparts_engine ENGIN on LANG.id_ukooparts_engine = ENGIN.id_ukooparts_engine 
+            INNER JOIN PREFIX_ukooparts_manufacturer MANU ON ENGIN.id_ukooparts_manufacturer = MANU.id_ukooparts_manufacturer;");
+
+
+
+                foreach($query as $row)
+                {
+                   echo("<h1>" . $row['title'] . "</h1> 
+                        <h2>" . $row['start'] . "</h2>
+                        <p>" . $row['cylindré'] . "</p>"
+                        );
+
+                }
+
+        }
+}
+add_shortcode('search', 'shortcode_search');
 
 
 

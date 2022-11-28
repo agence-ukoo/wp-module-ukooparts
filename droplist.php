@@ -1,82 +1,67 @@
 <!DOCTYPE html>
-
 <style>
 .dropall{
     width: 100%;
     height: 50px;
     text-align: center;
     display: flex;
-    background-color: grey;
+    background-color: red;
 }
 </style>
-
 <head>
     <meta charset="utf-8" />
     <link rel="stylesheet" />
 </head>
-<body>
- <?php    
-try{
-    $db = new PDO('mysql:host=localhost;dbname=test','root','');
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function(){
+        $('#type').on('change', function(){
+            var typeID = $(this).val();
+            if(typeID){
+                $.ajax({
+                    type:'POST',
+                    url:'wp-content/plugins/ajaxData.php',
+                    data:'id_ukooparts_engine_type='+ typeID,
+                    success:function(html){
+                        $('#marque').html(html);
+                    }
+                });
+            }else{
+                $('#marque').html('<option value="">Select type first</option>');
+            }
+        })
+    })
+</script>
+<?php
+   try  {
+    $db = new PDO('mysql:host=localhost;dbname=ukooparts','root','');
     $db -> exec('SET NAMES "UTF8"');
+    $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 }catch(PDOException $e){
     echo 'Erreur:'.$e ->getMessage();
     die();
 }
 ?>
 
-<section class="dropall">
-<div class = 'droplist'>
-<?php $marques ?>
-  <label for="Marque">Marque</label>
-  <select>
-<?php
-    foreach ($db->query('SELECT name FROM PREFIX_ukooparts_manufacturer') as $row) {
-        echo '<option value="' . $row['name'] . '">'. $row['name'] . ' </option>';
-    }   
-?>
+<div class="container">
+    <?php
+    $result = $db->query("SELECT * FROM PREFIX_ukooparts_engine_type_lang WHERE id_lang = 1 ORDER BY name ASC");
+    ?>
+
+<select id="type">
+    <option value="">select type</option>
+    <?php 
+    if($result->rowCount()> 0){
+        while($row = $result->fetch(PDO::FETCH_ASSOC)){
+            echo'<option value="'.$row['id_ukooparts_engine_type'].'">'.$row['name'].'</option>';
+        }
+    }else{
+        echo'<option value=""> pas valide</option>';
+    }
+    ?>
 </select>
-</form>
-</div>
 
-
-<div class = 'droplist'>
-  <label for="cylindre">Cylindré</label>
-  <select>
-<?php
-    foreach ($db->query('SELECT displacement FROM PREFIX_ukooparts_engine WHERE id_ukooparts_engine = name FROM PREFIX_ukooparts_manufacturer') as $row) {
-        echo '<option value="' . $row['displacement'] . '">'. $row['displacement'] . ' </option>';
-    }   
-?>
-</select>
-</form>
-</div>
-
-<div class = 'droplist'>
-  <label for="model">Modèles</label>
-  <select>
-<?php
-    foreach ($db->query('SELECT model FROM PREFIX_ukooparts_engine ') as $row) {
-        echo '<option value="' . $row['model'] . '">'. $row['model'] . ' </option>';
-    }   
-?>
+<select id="marque">
+<option value="">modele</option>
 </select>
 </div>
-
-<div class = 'droplist'>
-  <label for="year">année</label>
-  <select>
-<?php
-    foreach ($db->query('SELECT  FROM PREFIX_ukooparts_compatibility') as $row) {
-        echo '<option value="' . $row['year'] . '">'. $row['year'] . ' </option>';
-    }   
-?>
-</select>
-</div>
-
-</section>
-
-</body>
-
-
-

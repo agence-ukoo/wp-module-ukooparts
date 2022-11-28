@@ -1,5 +1,6 @@
 {
   "dependencies": {
-    "composer": "^4.1.0"
+    "composer": "^4.1.0",
+    "jquery": "^3.6.1"
   }
 }
