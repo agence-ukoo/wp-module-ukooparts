@@ -49,7 +49,7 @@ function shortcode_manufacturers() {
     $manufacturers = (call_bdd()->query("SELECT * FROM `PREFIX_ukooparts_manufacturer` ORDER BY name ASC;"))->fetchAll();
 
         // loop qui récupère une fois toutes les initiales des constructeurs. (ex: A B D F...)
-        $lettersList = (call_bdd()->query("SELECT distinct SUBSTRING(name, 1, 1) FROM PREFIX_ukooparts_manufacturer ORDER BY name ASC;"))->fetchAll();
+        $lettersList = (call_bdd()->query("SELECT distinct SUBSTRING(name, 1, 1) as name FROM PREFIX_ukooparts_manufacturer ORDER BY name ASC;"))->fetchAll();
         
         // print_r($lettersList);
     $tab_letterExists = array();    
@@ -90,6 +90,12 @@ function shortcode_manufacturers() {
                         </form>
                     </div>';
 
+ // copie du code de Larbi top50 moto (pour display horizontal sur la page des constructeurs)
+
+
+// fin du code du top moto50
+
+
     if(!isset($_GET['engine_type_id'])){
         $manufacturers = (call_bdd()->query("SELECT * FROM `PREFIX_ukooparts_manufacturer` ORDER BY name ASC;"))->fetchAll();
     }else{
@@ -114,7 +120,7 @@ function shortcode_manufacturers() {
                if(!is_numeric($first_letterManu)) {
                     $displayManu = $displayManu. '</div><h3 id="'.$first_letterManu.'">' .$first_letterManu. '</h3><div>'; // echo $first_letterManu pour créer une ancre unique en fontion de la lettre
                } else {
-                $displayManu = $displayManu. '</div><h3 id="0-9">' .$first_letterManu. '</h3><div>'; // tous les chiffres froment des sections différentes mais une seul id
+                $displayManu = $displayManu. '</div><h3 id="0-9">' .$first_letterManu. '</h3><div>'; // tous les chiffres forment des sections différentes mais une seul id
                }
                
                 if(isset($_GET['engine_type_id'])){
@@ -149,7 +155,7 @@ function shortcode_manufacturers() {
             }
         }
         if(sizeof($array_manufacts_found) == 0){
-            $displayManu = $displayManu.'Ce modèle ne existe pas';
+            $displayManu = $displayManu.'Ce modèle n\'existe pas';
         }
         return $displayManu.'</div>';
     }
