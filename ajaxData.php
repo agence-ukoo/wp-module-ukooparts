@@ -9,13 +9,14 @@
 }
 if(!empty($_POST["id_ukooparts_engine_type"])){
    
-    $result = $db->query("SELECT * FROM PREFIX_ukooparts_engine 
-    WHERE id_ukooparts_engine_type = ".$_POST['id_ukooparts_engine_type']." AND active =1 ORDER BY model ASC");
+    $result = $db->query("SELECT DISTINCT MANU.id_ukooparts_manufacturer AS id_manufacturer, MANU.name AS manufacturer FROM PREFIX_ukooparts_engine ENGIN inner join 
+    PREFIX_ukooparts_manufacturer MANU ON ENGIN.id_ukooparts_manufacturer = MANU.id_ukooparts_manufacturer 
+    WHERE id_ukooparts_engine_type = ".$_POST['id_ukooparts_engine_type']."");
 
 if($result->rowCount() > 0){
     echo'<option value="">Select modéle</option>';
     while($row = $result->fetch(PDO::FETCH_ASSOC)){
-        echo'<option value"'.$row['id_ukooparts_engine'].'">'.$row['model'].'</option>';
+        echo'<option value"'.$row['id_manufacturer'].'">'.$row['manufacturer'].'</option>';
     }
 }else{
     echo'<option value="">pas de type</option>';
