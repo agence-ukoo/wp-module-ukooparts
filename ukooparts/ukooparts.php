@@ -49,7 +49,7 @@ function shortcode_manufacturers() {
     $manufacturers = (call_bdd()->query("SELECT * FROM `PREFIX_ukooparts_manufacturer` ORDER BY name ASC;"))->fetchAll();
 
         // loop qui récupère une fois toutes les initiales des constructeurs. (ex: A B D F...)
-        $lettersList = (call_bdd()->query("SELECT distinct SUBSTRING(name, 1, 1) as name FROM PREFIX_ukooparts_manufacturer ORDER BY name ASC;"))->fetchAll();
+        $lettersList = (call_bdd()->query("SELECT distinct SUBSTRING(name, 1, 1) AS name FROM PREFIX_ukooparts_manufacturer ORDER BY name ASC;"))->fetchAll();
         
         // print_r($lettersList);
     $tab_letterExists = array();    
@@ -146,7 +146,7 @@ function shortcode_manufacturers() {
         foreach($manufacturers as $manufacturer){
             $manufact_id = $manufacturer['id_ukooparts_manufacturer'];
             if(str_contains(strtoupper($manufacturer['name']), strtoupper($key))){
-                if($_GET['engine_type_id']){
+                if(isset($_GET['engine_type_id'])){
                     $displayManu = $displayManu.'<a href="models/?manufact_id='.$manufact_id.'&engine_type_id='.$_GET['engine_type_id'].'">'.$manufacturer['name'].'</a>, ';
                 }else{
                     $displayManu = $displayManu.'<a href="models/?manufact_id='.$manufact_id.'">'.$manufacturer['name'].'</a>, ';
@@ -277,8 +277,8 @@ function shortcode_descriptif(): void{
 add_shortcode('descriptif', 'shortcode_descriptif');
 
 // yuan
-function shortcode_models() {
-    
+function shortcode_models(): string {
+    $html = null;
     // if manufacturer id set in url
     if(isset($_GET['manufact_id'])){
         // if engine type id is not set in url, the list of models will be filtered only by manufacturer(brand name: example YAMAHA)
@@ -368,6 +368,8 @@ function shortcode_models() {
     } else if (!isset($_GET['manufact_id']) && !isset($_GET['engine_type_id'])){
         return $html.'<div>Non manufacturer choisi</div>';
     }
+
+    return $html;
 }
 add_shortcode('models', 'shortcode_models');
 
