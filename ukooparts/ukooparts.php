@@ -82,9 +82,10 @@ add_shortcode('manufacturers', 'shortcode_manufacturers');
 /////////////////////////////Adam/////////////////////////////////////////////////
 
 function droplist() {
-    include( 'wp-content/plugins/droplist.php' );
+	include( 'wp-content/plugins/droplist.php' );
 }
 add_action( 'wp_head', 'droplist' );
+
 
 ////////////////////////////////////ilies////////////////////////////////////////////
 add_action('wp_footer','marque');
@@ -503,7 +504,7 @@ function shortcode_topmoto(): string{
 }
 add_shortcode('topmoto', 'shortcode_topmoto');
 
-/*************      Test CSS  ********/
+/*************      ukooparts CSS  ********/
 
 class topmoto {
 

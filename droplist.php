@@ -1,3 +1,7 @@
+<?php
+// setcookie(time()+3600*24*365);
+?> 
+
 <!DOCTYPE html>
 <style>
 .dropall{
