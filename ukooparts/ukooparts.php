@@ -34,7 +34,7 @@ function import_script(){
    //infos de connexions à la db
 function call_bdd(): PDO{
     try{
-        $db = new PDO('mysql:host=localhost;dbname=ukooparts','root','root');
+        $db = new PDO('mysql:host=localhost;dbname=ukooparts','root','');
         $db -> exec('SET NAMES "UTF8"');
         return $db;
     }catch(PDOException $e){
@@ -247,7 +247,7 @@ function shortcode_descriptif(): void{
     if(isset($_GET['engine_id'])){
 
         $engine_id = $_GET['engine_id'];
-        $query = call_bdd() -> query( "SELECT distinct TYPE_LANG.name as type_name, LANG.description AS description, ENGIN.model AS model,ENGIN.id_ukooparts_engine, ENGIN.year_start AS start, ENGIN.year_end AS end, ENGIN.image AS image, MANU.name AS manufacturer, CONCAT(MANU.name,' ',ENGIN.model) AS title, CONCAT(ENGIN.year_start, '-', ENGIN.year_end) AS years  
+        $query = call_bdd() -> query( "SELECT distinct TYPE_LANG.name as type_name, LANG.description AS description, ENGIN.model AS model,ENGIN.id_ukooparts_engine, ENGIN.year_start AS start, ENGIN.year_end AS end, ENGIN.image AS image, MANU.name AS manufacturer, CONCAT(MANU.name, ' ', substr(TYPE_LANG.name, 8), ' ',ENGIN.model) AS title, CONCAT(ENGIN.year_start, '-', ENGIN.year_end) AS years  
         FROM  PREFIX_ukooparts_engine ENGIN 
         inner join PREFIX_ukooparts_engine_lang LANG 
         on LANG.id_ukooparts_engine = ENGIN.id_ukooparts_engine
@@ -256,15 +256,6 @@ function shortcode_descriptif(): void{
         INNER JOIN PREFIX_ukooparts_engine_type_lang AS TYPE_LANG 
         ON ENGIN.id_ukooparts_engine_type = TYPE_LANG.id_ukooparts_engine_type
         WHERE ENGIN.id_ukooparts_engine = $engine_id AND LANG.id_lang = 1;");
-
-        $categories = call_bdd() -> query("SELECT wptm.term_id, wptm.meta_value, wpt.name, wppm.meta_key, wppm.meta_value
-            FROM wp_termmeta wptm
-            LEFT JOIN wp_terms wpt
-            ON wpt.term_id = wptm.term_id
-            LEFT JOIN wp_postmeta wppm
-            ON wppm.post_id = wptm.meta_value 
-            AND wppm.meta_key = '_wp_attached_file'
-            WHERE wptm.meta_value != 0;")
 
         foreach($query as $row)
         {
