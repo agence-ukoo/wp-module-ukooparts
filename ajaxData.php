@@ -1,3 +1,4 @@
+
 <?php
   try{
     $db = new PDO('mysql:host=localhost;dbname=ukooparts','root','');
@@ -9,17 +10,32 @@
 }
 if(!empty($_POST["id_ukooparts_engine_type"])){
    
-    $result = $db->query("SELECT DISTINCT MANU.id_ukooparts_manufacturer AS id_manufacturer, MANU.name AS manufacturer FROM PREFIX_ukooparts_engine ENGIN inner join 
+    $result = $db->query("SELECT DISTINCT MANU.id_ukooparts_manufacturer, MANU.name AS manufacturer FROM PREFIX_ukooparts_engine ENGIN inner join 
     PREFIX_ukooparts_manufacturer MANU ON ENGIN.id_ukooparts_manufacturer = MANU.id_ukooparts_manufacturer 
-    WHERE id_ukooparts_engine_type = ".$_POST['id_ukooparts_engine_type']."");
+    WHERE id_ukooparts_engine_type = '".$_POST['id_ukooparts_engine_type']."'");
 
 if($result->rowCount() > 0){
-    echo'<option value="">Select modéle</option>';
+    echo'<option value="">Select marque</option>';
     while($row = $result->fetch(PDO::FETCH_ASSOC)){
-        echo'<option value"'.$row['id_manufacturer'].'">'.$row['manufacturer'].'</option>';
+        echo'<option value="'.$row['id_ukooparts_manufacturer'].'">'.$row['manufacturer'].'</option>';
     }
 }else{
-    echo'<option value="">pas de type</option>';
+    echo'<option value="">pas de marque</option>';
+}
+}elseif(!empty($_POST["id_ukooparts_manufacturer"])){
+
+    $result = $db->query("SELECT DISTINCT MANU.id_ukooparts_manufacturer,MANU.name,ENGIN.id_ukooparts_engine, ENGIN.model as modele 
+    FROM PREFIX_ukooparts_engine ENGIN 
+    inner join PREFIX_ukooparts_manufacturer MANU ON ENGIN.id_ukooparts_manufacturer = MANU.id_ukooparts_manufacturer
+    WHERE MANU.id_ukooparts_manufacturer = '".$_POST['id_ukooparts_manufacturer']."'");
+
+if($result->rowCount() > 0){
+    echo'<option value="">Select modele</option>';
+    while($row = $result->fetch(PDO::FETCH_ASSOC)){
+        echo'<option value"'.$row['id_ukooparts_engine'].'">'.$row['modele'].'</option>';
+    }
+}else{
+    echo'<option value="">pas de modele</option>';
 }
 }
 ?>

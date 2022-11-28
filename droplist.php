@@ -32,9 +32,26 @@
                 });
             }else{
                 $('#marque').html('<option value="">Select type first</option>');
+                $('#modele').html('<option value="">Select type first</option>');
+
             }
-        })
-    })
+        });
+        $('#marque').on('change', function(){
+            var marqueID = $(this).val();
+            if(marqueID){
+                $.ajax({
+                    type:'POST',
+                    url:'wp-content/plugins/ajaxData.php',
+                    data:'id_ukooparts_manufacturer='+ marqueID,
+                    success:function(html){
+                        $('#modele').html(html);
+                    }
+                });
+            }else{
+                $('#modele').html('<option value="">Select type first</option>');
+            }
+        });
+    });
 </script>
 <?php
    try  {
@@ -66,6 +83,9 @@
 </select>
 
 <select id="marque">
+<option value="">marque</option>
+</select>
+<select id="modele">
 <option value="">modele</option>
 </select>
 </div>
