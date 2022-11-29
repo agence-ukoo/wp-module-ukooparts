@@ -265,6 +265,16 @@ function shortcode_descriptif(){
             WHERE wptm.meta_value = 'subcategories'
             AND wptxm.parent = 0;");
 
+            // query to find all products(accessoires) and their category, parent category and Model vehicle
+        $products = call_bdd()-> query("select wpp.ID as product_id, wpp.post_author, wpp.post_title, wpp.post_status, wpp.post_type,
+            wptr.term_taxonomy_id as category_id
+            from wp_posts wpp
+            inner join wp_term_relationships wptr
+            on wptr.object_id = wpp.ID
+            where wpp.post_type = 'product'
+            and wpp.post_status = 'publish'
+            and wptr.term_taxonomy_id != wpp.post_author;")    
+
         foreach($query as $row)
         {
             $html = $html."<h3>" . $row['title'] . "</h3> 
