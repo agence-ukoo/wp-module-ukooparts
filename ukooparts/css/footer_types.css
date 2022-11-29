@@ -1,0 +1,78 @@
+.triangle_container{
+    width: 100%;
+}
+
+#triangle{
+    margin-left: auto;
+    margin-right: auto;
+    padding: 15px;
+    width: 120px;
+    display: block
+}
+
+#container{
+    display: flex;
+    justify-content: center;
+}
+
+#containerTitleSelectTypeVehicule{
+    display: flex;
+    width:100%;
+    justify-content: center;
+}
+
+
+#titleSelectTypeVehicule{
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+    font-weight: bold;
+    font-size: 20px;
+    text-transform: uppercase;
+    width: 90%;
+}
+
+#titleSelectTypeVehicule:after, #titleSelectTypeVehicule:before {
+    content: '\a0';
+    overflow: hidden;
+    position: absolute;
+    height: 0.8px;
+    width: 50%;
+    top: 51%;
+    margin-left: 1%;
+    background: black;
+}
+
+#titleSelectTypeVehicule:before{
+    margin-left: -51%;
+    text-align: right;
+}
+
+#containerListTypeVehicule{
+    list-style: none;
+    display: flex;
+}
+
+.linkTypeVehicule{
+    outline: none;
+    text-decoration: none;
+}
+
+.linkImglistTypeVehicule{
+    display: block;
+    width: 25%;
+}
+
+.linkImglistTypeVehicule p {
+    text-align: center;
+    white-space: nowrap;
+
+}
+
+.iconSelectTypeVehicule{
+    width: 300px;
+    height: 300px;
+    display: flex;
+    margin-left: 30px;
+    margin-right: 30px;
+}

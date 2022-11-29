@@ -1,6 +1,12 @@
-<?php
-// setcookie(time()+3600*24*365);
-?> 
+<?php     
+
+if (isset($_COOKIE['Choix1']))
+{
+    setcookie('Choix1', $_GET['Choix1'], time() + 31536000, null, null, false, true);
+}
+
+
+?>
 
 <!DOCTYPE html>
 <style>
@@ -54,8 +60,7 @@ try{
 
 <?php
 if (isset($_GET['Envoyer'])) {
- echo "Vous avez selectioner ".$_GET['Choix1']," ".$_GET['Choix2'];}
-
+ echo "Vous avez selectioner ".$_COOKIE[$_GET['Choix1']]," ".$_COOKIE[$_GET['Choix2']];}
 ?>
 
 </section>
