@@ -1,6 +1,13 @@
-<?php
-// setcookie(time()+3600*24*365);
-?> 
+<?php     
+if (isset($_COOKIE['Choix1']))
+{
+    setcookie('Choix1', $_GET['Choix1'], time() + 31536000, null, null, false, true);
+}
+if (isset($_COOKIE['Choix2']))
+{
+    setcookie('Choix2', $_GET['Choix2'], time() + 31536000, null, null, false, true);
+}
+?>
 
 <!DOCTYPE html>
 <style>
@@ -108,4 +115,22 @@
 <select id="year">
 <option value="">année</option>
 </select>
-</div>
+<input name="Envoyer" type="submit" value="valider" />
+  </form>
+
+<?php
+if (isset($_GET['Envoyer'])) {
+ $_GET['Choix1']." ".$_GET['Choix2'];}
+
+$_COOKIE['Choix1'] = $_GET['Choix1'];
+$_COOKIE['Choix2'] = $_GET['Choix2'];
+echo $_COOKIE['Choix1'],$_COOKIE['Choix2'];
+
+
+?>
+
+</section>
+
+
+
+

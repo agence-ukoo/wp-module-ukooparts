@@ -1,6 +1,11 @@
 {
   "dependencies": {
+<<<<<<< HEAD
     "composer": "^4.1.0",
     "jquery": "^3.6.1"
+=======
+    "bootstrap": "^5.2.3",
+    "composer": "^4.1.0"
+>>>>>>> 226d94bcdce38e195cfd8b90338cae467e2cbd3d
   }
 }
