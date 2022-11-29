@@ -33,6 +33,7 @@
             }else{
                 $('#marque').html('<option value="">Select type first</option>');
                 $('#modele').html('<option value="">Select type first</option>');
+                $('#year').html('<option value="">Select type first</option>');
 
             }
         });
@@ -49,6 +50,22 @@
                 });
             }else{
                 $('#modele').html('<option value="">Select type first</option>');
+                $('#year').html('<option value="">Select type first</option>');
+            }
+        });
+        $('#modele').on('change', function(){
+            var modeleID = $(this).val();
+            if(modeleID){
+                $.ajax({
+                    type:'POST',
+                    url:'wp-content/plugins/ajaxData.php',
+                    data:'id_ukooparts_engine='+ modeleID,
+                    success:function(html){
+                        $('#year').html(html);
+                    }
+                });
+            }else{
+                $('#year').html('<option value="">Select type first</option>');
             }
         });
     });
@@ -77,7 +94,7 @@
             echo'<option value="'.$row['id_ukooparts_engine_type'].'">'.$row['name'].'</option>';
         }
     }else{
-        echo'<option value=""> pas valide</option>';
+        echo'<option value=""> pas de type</option>';
     }
     ?>
 </select>
@@ -87,5 +104,8 @@
 </select>
 <select id="modele">
 <option value="">modele</option>
+</select>
+<select id="year">
+<option value="">année</option>
 </select>
 </div>
