@@ -34,7 +34,7 @@ function import_script(){
    //infos de connexions à la db
 function call_bdd(): PDO{
     try{
-        $db = new PDO('mysql:host=localhost;dbname=ukooparts','root','');
+        $db = new PDO('mysql:host=localhost;dbname=ukooparts','root','root');
         $db -> exec('SET NAMES "UTF8"');
         return $db;
     }catch(PDOException $e){
@@ -242,10 +242,9 @@ add_shortcode('cadeaux', 'shortcode_cadeaux');
 
 ////////////////////////////////ilyes/////////////////////////////////////////////////////
 
-function shortcode_descriptif(): void{
-
+function shortcode_descriptif(){
+    $html = '';
     if(isset($_GET['engine_id'])){
-
         $engine_id = $_GET['engine_id'];
         $query = call_bdd() -> query( "SELECT distinct TYPE_LANG.name as type_name, LANG.description AS description, ENGIN.model AS model,ENGIN.id_ukooparts_engine, ENGIN.year_start AS start, ENGIN.year_end AS end, ENGIN.image AS image, MANU.name AS manufacturer, CONCAT(MANU.name, ' ', substr(TYPE_LANG.name, 8), ' ',ENGIN.model) AS title, CONCAT(ENGIN.year_start, '-', ENGIN.year_end) AS years  
         FROM  PREFIX_ukooparts_engine ENGIN 
@@ -256,26 +255,50 @@ function shortcode_descriptif(): void{
         INNER JOIN PREFIX_ukooparts_engine_type_lang AS TYPE_LANG 
         ON ENGIN.id_ukooparts_engine_type = TYPE_LANG.id_ukooparts_engine_type
         WHERE ENGIN.id_ukooparts_engine = $engine_id AND LANG.id_lang = 1;");
-
-        $categories = call_bdd() -> query("SELECT wptm.term_id, wptm.meta_value, wpt.name, wppm.meta_key, wppm.meta_value
+// categories of the page fiche-discriptif 
+        $categories = call_bdd() -> query("SELECT wptm.term_id, wptm.meta_value, wpt.name
             FROM wp_termmeta wptm
             LEFT JOIN wp_terms wpt
             ON wpt.term_id = wptm.term_id
-            LEFT JOIN wp_postmeta wppm
-            ON wppm.post_id = wptm.meta_value 
-            AND wppm.meta_key = '_wp_attached_file'
-            WHERE wptm.meta_value != 0;")
-            
+            LEFT JOIN wp_term_taxonomy wptxm
+            ON wptxm.term_id = wpt.term_id
+            WHERE wptm.meta_value = 'subcategories'
+            AND wptxm.parent = 0;");
+
         foreach($query as $row)
         {
-            echo("<h3>" . $row['title'] . "</h3> 
+            $html = $html."<h3>" . $row['title'] . "</h3> 
                 <h4>" . $row['years'] . "</h4>
-                <p>" . $row['description'] . "</p>"
-            );
-
+                <p>" . $row['description'] . "</p>";
         }
 
+        foreach($categories as $category){
+            $parent_category_id = $category['term_id'];
+            // sub categories of each category
+            $sub_categories = call_bdd() -> query("SELECT wptm.term_id, wptm.meta_value, wpt.name, wptxm.parent
+                FROM wp_termmeta wptm
+                LEFT JOIN wp_terms wpt
+                ON wpt.term_id = wptm.term_id
+                LEFT JOIN wp_term_taxonomy wptxm
+                ON wptxm.term_id = wpt.term_id
+                WHERE wptm.meta_value = 'subcategories'
+                AND wptxm.parent = $parent_category_id;");
+
+                // to display each category name
+            $html = $html. "<ul>
+                    <li>".$category['name']. "</li> 
+                    <li>
+                        <ul>";
+                            foreach($sub_categories as $sub_category){
+                                $html = $html. "<li>".$sub_category['name']."</li>";  // to display each sub category name of the parent category
+                            }
+                        
+                        $html = $html. "</ul>
+                    </li>
+                </ul>";
+        }
     }
+    return $html;
 }
 add_shortcode('descriptif', 'shortcode_descriptif');
 
