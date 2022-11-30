@@ -46,43 +46,6 @@ function call_bdd(): PDO{
     // fonction de display des constructeurs par noms A-Z
 function shortcode_manufacturers() {
 
-    $manufacturers = (call_bdd()->query("SELECT * FROM `PREFIX_ukooparts_manufacturer` ORDER BY name ASC;"))->fetchAll();
-
-        // loop qui récupère une fois toutes les initiales des constructeurs. (ex: A B D F...)
-        $lettersList = (call_bdd()->query("SELECT distinct SUBSTRING(name, 1, 1) AS name FROM PREFIX_ukooparts_manufacturer ORDER BY name ASC;"))->fetchAll();
-        
-        // print_r($lettersList);
-    $tab_letterExists = array();    
-    foreach($lettersList as $letter) {
-        array_push($tab_letterExists, $letter[0]);
-        // print_r($tab_letterExists);
-    } 
-
-    // affiche l'alphabet entier en ligne (A B C D...)
-    $tab_alphabet = array();
-    foreach( range('A', 'Z') as $element) {          
-        array_push($tab_alphabet, $element);
-        // print_r($tab_alphabet);
-    }
-
-    $result = array_intersect($tab_alphabet, $tab_letterExists);
-     // print_r($result);
-
-    // compare les 2 arrays et indique les lettres qui sont dans $tab_letterExists
-    // le echo $abc permet de créer un href vers les ancres par lettre alphabétique
-
-     foreach( range('A', 'Z') as $abc) {
-        if (in_array($abc, $tab_letterExists)) { ?>
-             <span><a href="#<?php echo $abc ?>" style='color:black;'><?php echo $abc ?></a></span> <?php
-        } else {
-            echo "<span style='color:grey;'>$abc</span> ";
-        }
-    
-     }
-
-     ?><span><a href="#0-9" style='color:black;'><?php echo "0-9" //$abc ?></a></span> <?php
-
-
     $displayManu = '<div>
                         <form method="post" action="">
                             <input type="text" placeholder="TOUS pour tous les marques" name="key">
@@ -92,14 +55,13 @@ function shortcode_manufacturers() {
 
  // copie du code de Larbi top50 moto (pour display horizontal sur la page des constructeurs)
 
-
 // fin du code du top moto50
 
 
     if(!isset($_GET['engine_type_id'])){
         $manufacturers = (call_bdd()->query("SELECT * FROM `PREFIX_ukooparts_manufacturer` ORDER BY name ASC;"))->fetchAll();
     }else{
-        $engine_type_id = $_GET['engine_type_id'];
+        $engine_type_id = $_GET['engine_type_id']; // ici recup premiere lettre 
         $manufacturers = (call_bdd()->query("select distinct engine.id_ukooparts_manufacturer, engine.id_ukooparts_engine_type, manu.name
             FROM PREFIX_ukooparts_engine as engine
             INNER JOIN PREFIX_ukooparts_manufacturer as manu
@@ -107,10 +69,51 @@ function shortcode_manufacturers() {
             WHERE engine.id_ukooparts_engine_type = $engine_type_id ORDER BY name ASC"))->fetchAll();
     }
 
+// ici le code display_AZ pour recuperer l'info manufacturer filtrée ou non
+
+        $first_letter_manufacturer = $manufacturers[0]['name'][0];
+            //déclaration de deux arrays, un pour les lettres et un pour les chiffres
+        $array_manufacturer_list_letters = array();
+        $manufacturer_first_number = array();
+
+                //on ne vérifie que si la première donnée est numérique ou non
+            if(is_numeric($first_letter_manufacturer)) {
+                array_push($manufacturer_first_number, $first_letter_manufacturer);
+            } else {
+                array_push($array_manufacturer_list_letters, $first_letter_manufacturer);
+            }
+
+                // loop pour compléter l'array avec tous les autres caractères sans distinction
+        foreach($manufacturers as $manufacturer) {
+            if($manufacturer['name'][0] != $first_letter_manufacturer) {
+                $first_letter_manufacturer = $manufacturer['name'][0];
+                array_push($array_manufacturer_list_letters, $first_letter_manufacturer);
+            }
+        } 
+                // s'il y au moins UN chiffre, le 0-9 est activé et cliquable
+            if (count($manufacturer_first_number) > 0 ) { ?>
+                <span><a href="#0-9" style='color:black;'><?php echo "0-9" ?></a></span> <?php
+            } else {
+                ?><span><a style='color:grey;'><?php echo "0-9" ?></a></span> <?php
+            }
+                // on display l'aphabet, en vérifiant si chaque lettre est présente dans la liste manufacturers
+                // si oui, la lettre est noire et cliquable avec ancre.
+         foreach(range('A', 'Z') as $abc) {
+            if (in_array($abc, $array_manufacturer_list_letters) ) { ?>
+                 <span><a href="#<?php echo $abc ?>" style='color:black;'><?php echo $abc ?></a></span> <?php
+            } else {
+                echo "<span style='color:grey;'>$abc</span> ";
+            }
+         }
+    
+// fin du code display_AZ
+
     if($manufacturers && (!isset($_POST['submit']) || (isset($_POST['submit']) && (strtoupper($_POST['key'])=='TOUS' || !$_POST['key']) ))     ) {
         $first_letterManu = $manufacturers[0]['name'][0];
-        $displayManu = $displayManu. '<h3 id="'.$first_letterManu.'">' . $first_letterManu. '</h3><div>'; // echo $first_letterManu pour créer une ancre unique en fontion de la lettre
+        
+        $displayManu = $displayManu. '<h3 id="'.$first_letterManu.'">' . $first_letterManu. '</h3><div>'; // echo $first_letterManu pour créer une ancre unique en fonction de la lettre
 
+            // cherche la premiere lettre est differente
         foreach($manufacturers as $manufacturer) {
             $manufact_id = $manufacturer['id_ukooparts_manufacturer'];
             if($manufacturer['name'][0] != $first_letterManu) {
@@ -310,6 +313,45 @@ function shortcode_models(): string {
             $type=$models[0]['name'];
         }
 
+//Vincent code display_AZ_models
+ 
+            // récupère la première lettre des modèles dispo après filtrage sql
+    $first_letter = $models[0]['model'][0];
+    $array_models_list_letters = array();
+    $model_first_number = array();
+            // on vérifie si la première donnée est numérique ou non
+        if(is_numeric($first_letter)) {
+            array_push($model_first_number, $first_letter);
+        } else {
+            array_push($array_models_list_letters, $first_letter);
+        }
+
+            // loop pour compléter l'array avec tous les autres caractères
+    foreach($models as $model){
+        if($model['model'][0] != $first_letter){
+            $first_letter = $model['model'][0];
+            array_push($array_models_list_letters, $first_letter);
+    }
+}
+            // s'il y a un caractère dans l'array, on active l'ancre "0-9"
+        if(count($model_first_number) > 0) {
+            ?><span><a href="#0-9" style='color:black;'><?php echo " 0-9" ?></a></span><?php 
+        } else {
+            ?><span><a style='color:grey;'><?php echo " 0-9" ?></a></span><?php 
+        }
+
+            //compare les 2 arrays. $abcModels et permet de créer un href
+    foreach(range('A', 'Z') as $abcModels) {
+        if (in_array($abcModels, $array_models_list_letters)) { ?>
+            <span><a href="#<?php echo $abcModels ?>" style='color:black;'><?php echo $abcModels ?><a></span><?php
+        } else {
+            echo "<span style='color:grey;'>$abcModels</span>";
+        }
+    }
+
+
+//Vincent: fin du code display_AZ_models
+
         $html= '
                 <div class="divHeaderTypeModel">
                     <div>
@@ -334,15 +376,28 @@ function shortcode_models(): string {
                     </form>
                 </div>
 ';
+
+
         // if there is no search, or the search key word is 'tous', or search without any key word entered, the whole list will be showed
         if($models && (!isset($_POST['submit']) || (isset($_POST['submit']) && (strtoupper($_POST['key'])=='TOUS' || !$_POST['key']) ))     ) {
             $first_letter = $models[0]['model'][0];
-            $html = $html.'<h3>'.$first_letter.'</h3><div>';
+            if(!is_numeric($first_letter)) {
+                $html = $html.'<h3 id="'.$first_letter.'">'.$first_letter.'</h3><div>'; // echo $first_letter pour créer une ancre
+            } else {
+                $html = $html.'<h3 id="0-9">'.$first_letter.'</h3><div>';
+            }
+
             foreach($models as $model){
                 if($model['model'][0] != $first_letter){
                     $first_letter = $model['model'][0];
-                    $html = $html.'</div><h3>'.$first_letter.'</h3><div>';
-                    $html = $html.'<a href="fiche-descriptif/?engine_id='.$model['id_engine'].'">'.$model['display_name'].'</a>  ';
+
+                    if(!is_numeric($first_letter)) {
+                            $html = $html.'</div><h3 id="'.$first_letter.'">'.$first_letter.'</h3><div>'; //echo $first_letter pour créer une ancre
+                        } else {
+                            $html = $html.'</div><h3 id="0-9">'.$first_letter.'</h3><div>'; //echo $first_letter pour créer une ancre
+                        }
+
+                        $html = $html.'<a href="fiche-descriptif/?engine_id='.$model['id_engine'].'">'.$model['display_name'].'</a>  ';
                 }else{
                     $html = $html.'<a href="fiche-descriptif/?engine_id='.$model['id_engine'].'">'.$model['display_name'].'</a>  ';
                 }
@@ -360,7 +415,7 @@ function shortcode_models(): string {
                 }
             }
             if(sizeof($array_models_found) == 0){
-                $html = $html.'Ce modèle ne existe pas';
+                $html = $html."Ce modèle n'existe pas";
             }
             return $html.'</div>';
         }
