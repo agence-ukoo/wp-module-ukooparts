@@ -39,16 +39,18 @@ if($result->rowCount() > 0){
 }
 }elseif(!empty($_POST["id_ukooparts_engine"])){
 
-    $result = $db->query("SELECT DISTINCT MANU.id_ukooparts_manufacturer,MANU.name,ENGIN.id_ukooparts_engine,ENGIN.year_start, ENGIN.model as modele 
+    $result = $db->query("SELECT DISTINCT MANU.id_ukooparts_manufacturer,MANU.name,ENGIN.id_ukooparts_engine,ENGIN.year_start,ENGIN.year_end, ENGIN.model as modele 
     FROM PREFIX_ukooparts_engine ENGIN 
     inner join PREFIX_ukooparts_manufacturer MANU ON ENGIN.id_ukooparts_manufacturer = MANU.id_ukooparts_manufacturer
     WHERE ENGIN.id_ukooparts_engine = '".$_POST['id_ukooparts_engine']."'");
-    $start = ['year_start'];
-    var_dump($start);
+  
+
+    var_dump($end);
 if($result->rowCount() > 0){
     echo'<option value="">Select année</option>';
     while($row = $result->fetch(PDO::FETCH_ASSOC)){
-        echo'<option value"'.$row['year_start'].'">'.$row['year_start'].'</option>';    }
+        for($date= $row['year_start']; $date <= $row['year_end']; $date++) {
+        echo'<option value"'.$row['year_start'].'">'.$date.'</option>'; }   }
 }else{
     echo'<option value="">aucune année</option>';
 }
