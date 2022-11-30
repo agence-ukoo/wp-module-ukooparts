@@ -49,7 +49,7 @@ function shortcode_manufacturers() {
     $manufacturers = (call_bdd()->query("SELECT * FROM `PREFIX_ukooparts_manufacturer` ORDER BY name ASC;"))->fetchAll();
 
         // loop qui récupère une fois toutes les initiales des constructeurs. (ex: A B D F...)
-        $lettersList = (call_bdd()->query("SELECT distinct SUBSTRING(name, 1, 1) FROM PREFIX_ukooparts_manufacturer ORDER BY name ASC;"))->fetchAll();
+        $lettersList = (call_bdd()->query("SELECT distinct SUBSTRING(name, 1, 1) AS name FROM PREFIX_ukooparts_manufacturer ORDER BY name ASC;"))->fetchAll();
         
         // print_r($lettersList);
     $tab_letterExists = array();    
@@ -140,7 +140,7 @@ function shortcode_manufacturers() {
         foreach($manufacturers as $manufacturer){
             $manufact_id = $manufacturer['id_ukooparts_manufacturer'];
             if(str_contains(strtoupper($manufacturer['name']), strtoupper($key))){
-                if($_GET['engine_type_id']){
+                if(isset($_GET['engine_type_id'])){
                     $displayManu = $displayManu.'<a href="models/?manufact_id='.$manufact_id.'&engine_type_id='.$_GET['engine_type_id'].'">'.$manufacturer['name'].'</a>, ';
                 }else{
                     $displayManu = $displayManu.'<a href="models/?manufact_id='.$manufact_id.'">'.$manufacturer['name'].'</a>, ';
