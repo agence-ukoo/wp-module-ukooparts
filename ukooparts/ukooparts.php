@@ -1,4 +1,5 @@
 <?php
+use Automattic\WooCommerce\Admin\API\Reports\Query;
 
 /*
 Plugin Name: Ukooparts
@@ -349,6 +350,40 @@ function shortcode_descriptif(){
 }
 add_shortcode('descriptif', 'shortcode_descriptif');
 
+
+function shortcode_search(): void{
+
+    try{
+        $db = new PDO('mysql:host=localhost;dbname=ukooparts','root','');
+        $db -> exec('SET NAMES "UTF8"');
+    }catch(PDOException $e){
+        echo 'Erreur:'.$e ->getMessage();
+        die();
+    }
+    if(isset($_GET['$query'])){
+
+            $query = $db -> query( "SELECT LANG.description AS description, ENGIN.model AS model,ENGIN.displacement as cylindré, ENGIN.year_start AS start, ENGIN.year_end AS end, ENGIN.image AS image, MANU.name AS manufacturer,
+            CONCAT(MANU.name, ' ', ENGIN.model) AS title FROM PREFIX_ukooparts_engine_lang LANG 
+            INNER JOIN PREFIX_ukooparts_engine ENGIN on LANG.id_ukooparts_engine = ENGIN.id_ukooparts_engine 
+            INNER JOIN PREFIX_ukooparts_manufacturer MANU ON ENGIN.id_ukooparts_manufacturer = MANU.id_ukooparts_manufacturer;");
+
+
+
+                foreach($query as $row)
+                {
+                   echo("<h1>" . $row['title'] . "</h1> 
+                        <h2>" . $row['start'] . "</h2>
+                        <p>" . $row['cylindré'] . "</p>"
+                        );
+
+                }
+
+        }
+}
+add_shortcode('search', 'shortcode_search');
+
+
+
 // yuan
 function shortcode_models(): string {
     $html = null;
@@ -519,3 +554,9 @@ function shortcode_topmoto(): string{
     return "<div>Aucune moto trouvé</div>";
 }
 add_shortcode('topmoto', 'shortcode_topmoto');
+///////////////////////////adam//////////////////
+
+function droplist() {
+	include( 'wp-content/plugins/droplist.php' );
+}
+add_action( 'wp_head', 'droplist' );
