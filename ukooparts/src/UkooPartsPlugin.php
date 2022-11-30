@@ -111,7 +111,7 @@ class UkooPartsPlugin
                 'description' => __('UkooParts section', 'text_domain'),
                 'labels' => $labels,
                 'supports' => false,
-                'taxonomies' => array('category', 'post_tag'),
+            //    'taxonomies' => array('category', 'post_tag'),
                 'hierarchical' => false,
                 'public' => true,
                 'show_ui' => true,
