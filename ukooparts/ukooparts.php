@@ -246,15 +246,15 @@ function shortcode_descriptif(){
     $html = '';
     if(isset($_GET['engine_id'])){
         $engine_id = $_GET['engine_id'];
-        $query = call_bdd() -> query( "SELECT distinct TYPE_LANG.name as type_name, LANG.description AS description, ENGIN.model AS model,ENGIN.id_ukooparts_engine, ENGIN.year_start AS start, ENGIN.year_end AS end, ENGIN.image AS image, MANU.name AS manufacturer, CONCAT(MANU.name, ' ', substr(TYPE_LANG.name, 8), ' ',ENGIN.model) AS title, CONCAT(ENGIN.year_start, '-', ENGIN.year_end) AS years  
-        FROM  PREFIX_ukooparts_engine ENGIN 
-        inner join PREFIX_ukooparts_engine_lang LANG 
-        on LANG.id_ukooparts_engine = ENGIN.id_ukooparts_engine
-        INNER JOIN PREFIX_ukooparts_manufacturer MANU 
-        ON ENGIN.id_ukooparts_manufacturer = MANU.id_ukooparts_manufacturer 
-        INNER JOIN PREFIX_ukooparts_engine_type_lang AS TYPE_LANG 
-        ON ENGIN.id_ukooparts_engine_type = TYPE_LANG.id_ukooparts_engine_type
-        WHERE ENGIN.id_ukooparts_engine = $engine_id AND LANG.id_lang = 1;");
+        $query = (call_bdd() -> query( "SELECT distinct TYPE_LANG.name as type_name, LANG.description AS description, ENGIN.model AS model,ENGIN.id_ukooparts_engine, ENGIN.year_start AS start, ENGIN.year_end AS end, ENGIN.image AS image, MANU.name AS manufacturer, CONCAT(MANU.name, ' ', substr(TYPE_LANG.name, 8), ' ',ENGIN.model) AS title, CONCAT(ENGIN.year_start, '-', ENGIN.year_end) AS years  
+            FROM  PREFIX_ukooparts_engine ENGIN 
+            inner join PREFIX_ukooparts_engine_lang LANG 
+            on LANG.id_ukooparts_engine = ENGIN.id_ukooparts_engine
+            INNER JOIN PREFIX_ukooparts_manufacturer MANU 
+            ON ENGIN.id_ukooparts_manufacturer = MANU.id_ukooparts_manufacturer 
+            INNER JOIN PREFIX_ukooparts_engine_type_lang AS TYPE_LANG 
+            ON ENGIN.id_ukooparts_engine_type = TYPE_LANG.id_ukooparts_engine_type
+            WHERE ENGIN.id_ukooparts_engine = $engine_id AND LANG.id_lang = 1;"))->fetchAll();
 // categories of the page fiche-discriptif 
         $categories = call_bdd() -> query("SELECT wptm.term_id, wptm.meta_value, wpt.name
             FROM wp_termmeta wptm
@@ -266,20 +266,35 @@ function shortcode_descriptif(){
             AND wptxm.parent = 0;");
 
             // query to find all products(accessoires) and their category, parent category and Model vehicle
-        $products = call_bdd()-> query("select wpp.ID as product_id, wpp.post_author, wpp.post_title, wpp.post_status, wpp.post_type,
-            wptr.term_taxonomy_id as category_id
-            from wp_posts wpp
-            inner join wp_term_relationships wptr
-            on wptr.object_id = wpp.ID
-            where wpp.post_type = 'product'
-            and wpp.post_status = 'publish'
-            and wptr.term_taxonomy_id != wpp.post_author;")    
+        $model_name = $query[0]['model'];
+        $model_products = (call_bdd()->query("SELECT distinct wpp.ID as product_id, wpp.post_author, wpp.post_title, wpp.post_status, wpp.post_type,
+            wpt.term_id, wpt.name AS term_name, wptt.parent, wptm.meta_value
+            FROM wp_posts wpp
+            INNER JOIN wp_term_relationships wptr
+            ON wptr.object_id = wpp.ID
+            INNER JOIN wp_term_taxonomy wptt
+            ON wptt.term_taxonomy_id = wptr.term_taxonomy_id
+            INNER JOIN wp_terms wpt
+            ON wpt.term_id = wptt.term_id
+            INNER JOIN wp_termmeta wptm
+            ON wptm.term_id = wpt.term_id
+            WHERE wpp.post_type = 'product'
+            AND wpp.post_status = 'publish'
+            AND wptr.term_taxonomy_id != wpp.post_author
+            AND wptm.meta_key = 'display_type';"))->fetchAll();   
 
         foreach($query as $row)
         {
             $html = $html."<h3>" . $row['title'] . "</h3> 
                 <h4>" . $row['years'] . "</h4>
                 <p>" . $row['description'] . "</p>";
+        }
+
+        $list_model_product_ids = array();
+        foreach($model_products as $product){
+            if($product['term_name'] == $model_name){
+                array_push($list_model_product_ids, $product['product_id']);
+            }
         }
 
         foreach($categories as $category){
@@ -300,7 +315,15 @@ function shortcode_descriptif(){
                     <li>
                         <ul>";
                             foreach($sub_categories as $sub_category){
-                                $html = $html. "<li>".$sub_category['name']."</li>";  // to display each sub category name of the parent category
+                                $term_id = $sub_category['term_id'];
+                                $list_products = array();
+                                foreach($model_products as $product){
+                                    if(($product['term_id'] == $sub_category['term_id']) && in_array($product['product_id'], $list_model_product_ids)){
+                                        array_push($list_products, $product);
+                                    }
+                                } 
+                                
+                                $html = $html. "<li>".$sub_category['name'].'('.sizeof($list_products).')'."</li>";
                             }
                         
                         $html = $html. "</ul>
