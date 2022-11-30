@@ -87,7 +87,7 @@ if (isset($_COOKIE['Choix2']))
     die();
 }
 ?>
-
+<form  action = "" method="GET"> 
 <div class="container">
     <?php
     $result = $db->query("SELECT * FROM PREFIX_ukooparts_engine_type_lang WHERE id_lang = 1 ORDER BY name ASC");
@@ -106,10 +106,10 @@ if (isset($_COOKIE['Choix2']))
     ?>
 </select>
 
-<select id="marque">
+<select name="Choix1" id="marque">
 <option value="">marque</option>
 </select>
-<select id="modele">
+<select name="Choix2" id="modele">
 <option value="">modele</option>
 </select>
 <select id="year">

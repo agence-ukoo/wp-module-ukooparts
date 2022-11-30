@@ -271,7 +271,6 @@ function shortcode_descriptif(): void{
 }
 add_shortcode('descriptif', 'shortcode_descriptif');
 
-<<<<<<< HEAD
 
 function shortcode_search(): void{
 
@@ -306,8 +305,6 @@ add_shortcode('search', 'shortcode_search');
 
 
 
-=======
->>>>>>> 226d94bcdce38e195cfd8b90338cae467e2cbd3d
 // yuan
 function shortcode_models(): string {
     $html = null;
