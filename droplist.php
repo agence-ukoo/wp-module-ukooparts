@@ -1,12 +1,13 @@
 <?php     
 if (isset($_COOKIE['Choix1']))
 {
-    setcookie('Choix1', $_GET['Choix1'], time() + 31536000, null, null, false, true);
-}
-if (isset($_COOKIE['Choix2']))
+  if (isset($_COOKIE['Choix2']))
 {
-    setcookie('Choix2', $_GET['Choix2'], time() + 31536000, null, null, false, true);
+    setcookie('Choix1', $_GET['Choix1'],'Choix2', $_GET['Choix2'], time() + 31536000, null, null, false, true);
 }
+}
+session_start();
+
 ?>
 
 <!DOCTYPE html>
@@ -58,18 +59,15 @@ try{
 </select>
 <input name="Envoyer" type="submit" value="valider" />
   </form>
-
 <?php
 if (isset($_GET['Envoyer'])) {
  $_GET['Choix1']." ".$_GET['Choix2'];}
-
 $_COOKIE['Choix1'] = $_GET['Choix1'];
 $_COOKIE['Choix2'] = $_GET['Choix2'];
-echo $_COOKIE['Choix1'],$_COOKIE['Choix2'];
+echo $_COOKIE['Choix1'].','.$_COOKIE['Choix2'];
 
-
+$db->query('SELECT * FROM PREFIX_ukooparts_customer_engine')
 ?>
-
 </section>
 
 
