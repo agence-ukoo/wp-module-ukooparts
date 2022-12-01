@@ -35,7 +35,7 @@ function import_script(){
    //infos de connexions à la db
 function call_bdd(): PDO{
     try{
-        $db = new PDO('mysql:host=localhost;dbname=ukooparts','root','');
+        $db = new PDO('mysql:host=localhost;dbname=ukooparts','root','root');
         $db -> exec('SET NAMES "UTF8"');
         return $db;
     }catch(PDOException $e){
@@ -337,7 +337,7 @@ function shortcode_descriptif(){
                                 // if list of products has at least 1 item, show this sub category
                                 $sub_category_id = $sub_category['term_id'];
                                 if(sizeof($list_products)>0){
-                                    $html = $html.'<li><a href="accessoires/?engine_id='.$engine_id.'&sub_category_id='.$sub_category_id.'">'.$sub_category['name'].'('.sizeof($list_products).')'.'</a></li>';
+                                    $html = $html.'<li><a href="list-accessoires/?engine_id='.$engine_id.'&sub_category_id='.$sub_category_id.'">'.$sub_category['name'].'('.sizeof($list_products).')'.'</a></li>';
 
                                 }
                             }
@@ -355,7 +355,7 @@ add_shortcode('descriptif', 'shortcode_descriptif');
 function shortcode_search(): void{
 
     try{
-        $db = new PDO('mysql:host=localhost;dbname=ukooparts','root','');
+        $db = new PDO('mysql:host=localhost;dbname=ukooparts','root','root');
         $db -> exec('SET NAMES "UTF8"');
     }catch(PDOException $e){
         echo 'Erreur:'.$e ->getMessage();
@@ -562,7 +562,7 @@ function droplist() {
 }
 add_action( 'wp_head', 'droplist' );
 
-function shortcode_accessoires(){
+function shortcode_list_accessoires(){
     $html = '';
     $engine_id = $_GET['engine_id'];
     if(isset($_GET['engine_id']) && isset($_GET['sub_category_id'])){
@@ -610,10 +610,21 @@ function shortcode_accessoires(){
         foreach($model_products as $product){
             // if this product belong to this sub category and belong to this model
             if(($product['term_id'] == $sub_category_id) && in_array($product['product_id'], $list_model_product_ids)){
-                $html = $html.'<div>'.$product['post_title'].'</div>';
+                $html = $html.'<div><a href="#">'.$product['post_title'].'</a></div>';
             }
         }
     }
     return $html;
 }    
-add_shortcode('accessoires', 'shortcode_accessoires');
+add_shortcode('list_accessoires', 'shortcode_list_accessoires');
+
+function shortcode_accessoire(){
+    $html = '';
+    if(){
+        $model = (call_bdd()->query(";"))->fetchAll(); 
+            
+        
+    }
+    return $html;
+}    
+add_shortcode('accessoire', 'shortcode_accessoire');
