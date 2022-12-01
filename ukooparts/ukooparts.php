@@ -35,7 +35,7 @@ function import_script(){
    //infos de connexions à la db
 function call_bdd(): PDO{
     try{
-        $db = new PDO('mysql:host=localhost;dbname=ukooparts','root','');
+        $db = new PDO('mysql:host=localhost;dbname=ukooparts','root','root');
         $db -> exec('SET NAMES "UTF8"');
         return $db;
     }catch(PDOException $e){
@@ -335,8 +335,9 @@ function shortcode_descriptif(){
                                     }
                                 } 
                                 // if list of products has at least 1 item, show this sub category
+                                $sub_category_id = $sub_category['term_id'];
                                 if(sizeof($list_products)>0){
-                                    $html = $html. "<li>".$sub_category['name'].'('.sizeof($list_products).')'."</li>";
+                                    $html = $html.'<li><a href="accessoires/?model_name='.$model_name.'&sub_category_id='.$sub_category_id.'">'.$sub_category['name'].'('.sizeof($list_products).')'.'</a></li>';
 
                                 }
                             }
@@ -354,7 +355,7 @@ add_shortcode('descriptif', 'shortcode_descriptif');
 function shortcode_search(): void{
 
     try{
-        $db = new PDO('mysql:host=localhost;dbname=ukooparts','root','');
+        $db = new PDO('mysql:host=localhost;dbname=ukooparts','root','root');
         $db -> exec('SET NAMES "UTF8"');
     }catch(PDOException $e){
         echo 'Erreur:'.$e ->getMessage();
@@ -560,3 +561,42 @@ function droplist() {
 	include( 'wp-content/plugins/droplist.php' );
 }
 add_action( 'wp_head', 'droplist' );
+
+function shortcode_accessoires(){
+    $html = '';
+    if(isset($_GET['model_name']) && isset($_GET['sub_category_id'])){
+        $model_products = (call_bdd()->query("SELECT distinct wpp.ID as product_id, wpp.post_author, wpp.post_title, wpp.post_status, wpp.post_type,
+            wpt.term_id, wpt.name AS term_name, wptt.parent, wptm.meta_value
+            FROM wp_posts wpp
+            INNER JOIN wp_term_relationships wptr
+            ON wptr.object_id = wpp.ID
+            INNER JOIN wp_term_taxonomy wptt
+            ON wptt.term_taxonomy_id = wptr.term_taxonomy_id
+            INNER JOIN wp_terms wpt
+            ON wpt.term_id = wptt.term_id
+            INNER JOIN wp_termmeta wptm
+            ON wptm.term_id = wpt.term_id
+            WHERE wpp.post_type = 'product'
+            AND wpp.post_status = 'publish'
+            AND wptr.term_taxonomy_id != wpp.post_author
+            AND wptm.meta_key = 'display_type';"))->fetchAll(); 
+
+         // get accessoires(products) ids of current model
+        $list_model_product_ids = array();
+        $model_name = $_GET['model_name'];
+        foreach($model_products as $product){
+            if($product['term_name'] == $model_name){
+                array_push($list_model_product_ids, $product['product_id']);
+            }
+        }
+        $sub_category_id = $_GET['sub_category_id'];
+        foreach($model_products as $product){
+            // if this product belong to this sub category and belong to this model
+            if(($product['term_id'] == $sub_category_id) && in_array($product['product_id'], $list_model_product_ids)){
+                $html = $html.'<div>'.$product['post_title'].'</div>';
+            }
+        }
+    }
+    return $html;
+}    
+add_shortcode('accessoires', 'shortcode_accessoires');

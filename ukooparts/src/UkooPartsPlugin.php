@@ -166,7 +166,7 @@ class UkooPartsPlugin
             $this->create_ukooparts_post('fiche-descriptif','fiche descriptif', '[descriptif]'),
             $this->create_ukooparts_post('topmoto','Top 50 bécanes', '[topmoto]'),
             $this->create_ukooparts_post('search','Search', '[search]'),
-
+            $this->create_ukooparts_post('accessoires','List accessoires', '[accessoires]'),
         );
     }
     
