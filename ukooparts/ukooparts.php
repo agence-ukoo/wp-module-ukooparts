@@ -257,9 +257,9 @@ function shortcode_descriptif(){
     if(isset($_GET['engine_id'])){
         $engine_id = $_GET['engine_id'];
         // to get model info
-        $query = (call_bdd() -> query( "SELECT distinct TYPE_LANG.name as type_name, LANG.description AS description, ENGIN.model AS model,ENGIN.id_ukooparts_engine, ENGIN.year_start AS start, ENGIN.year_end AS end, ENGIN.image AS image, MANU.name AS manufacturer, CONCAT(MANU.name, ' ', substr(TYPE_LANG.name, 8), ' ',ENGIN.model) AS title, CONCAT(ENGIN.year_start, '-', ENGIN.year_end) AS years  
+        $query = (call_bdd() -> query( "SELECT distinct TYPE_LANG.name as type_name, LANG.description AS description, ENGIN.model AS model,ENGIN.id_ukooparts_engine, ENGIN.year_start AS start, ENGIN.year_end AS end, ENGIN.image AS image, MANU.name AS manufacturer, CONCAT(MANU.name, ' ', ' ',ENGIN.model) AS title, CONCAT(ENGIN.year_start, '-', ENGIN.year_end) AS years  
             FROM  PREFIX_ukooparts_engine ENGIN 
-            inner join PREFIX_ukooparts_engine_lang LANG 
+            INNER JOIN PREFIX_ukooparts_engine_lang LANG 
             on LANG.id_ukooparts_engine = ENGIN.id_ukooparts_engine
             INNER JOIN PREFIX_ukooparts_manufacturer MANU 
             ON ENGIN.id_ukooparts_manufacturer = MANU.id_ukooparts_manufacturer 
@@ -269,9 +269,9 @@ function shortcode_descriptif(){
 // main categories of the page fiche-discriptif 
         $categories = call_bdd() -> query("select distinct wptt.parent AS term_id, wpt.name
             from wp_term_taxonomy wptt
-            inner join wp_termmeta wptm
+            INNER JOIN wp_termmeta wptm
             ON wptm.term_id = wptt.parent
-            inner join wp_terms wpt
+            INNER JOIN wp_terms wpt
             on wpt.term_id = wptm.term_id;");
 
             // query to find all products(accessoires) and their category, parent category and Model vehicle
@@ -335,8 +335,9 @@ function shortcode_descriptif(){
                                     }
                                 } 
                                 // if list of products has at least 1 item, show this sub category
+                                $sub_category_id = $sub_category['term_id'];
                                 if(sizeof($list_products)>0){
-                                    $html = $html. "<li>".$sub_category['name'].'('.sizeof($list_products).')'."</li>";
+                                    $html = $html.'<li><a href="list-accessoires/?engine_id='.$engine_id.'&sub_category_id='.$sub_category_id.'">'.$sub_category['name'].'('.sizeof($list_products).')'.'</a></li>';
 
                                 }
                             }
@@ -560,3 +561,77 @@ function droplist() {
 	include( 'wp-content/plugins/droplist.php' );
 }
 add_action( 'wp_head', 'droplist' );
+
+//page list accessoire d'un category
+function shortcode_list_accessoires(){
+    $html = '';
+    $engine_id = $_GET['engine_id'];
+    if(isset($_GET['engine_id']) && isset($_GET['sub_category_id'])){
+        $model = (call_bdd()->query("SELECT distinct engine.id_ukooparts_engine, engine.model, CONCAT(substr(type.name, 8), ' ', manu.name) AS name
+            FROM PREFIX_ukooparts_engine engine
+            INNER JOIN PREFIX_ukooparts_manufacturer manu
+            ON manu.id_ukooparts_manufacturer=engine.id_ukooparts_manufacturer
+            INNER JOIN PREFIX_ukooparts_engine_type_lang type
+            ON type.id_ukooparts_engine_type=engine.id_ukooparts_engine_type
+            WHERE engine.id_ukooparts_engine=$engine_id;"))->fetchAll(); 
+            
+        $model_products = (call_bdd()->query("SELECT distinct wpp.ID as product_id, wpp.post_author, wpp.post_title, wpp.post_status, wpp.post_type,
+            wpt.term_id, wpt.name AS term_name, wptt.parent, wptm.meta_value
+            FROM wp_posts wpp
+            INNER JOIN wp_term_relationships wptr
+            ON wptr.object_id = wpp.ID
+            INNER JOIN wp_term_taxonomy wptt
+            ON wptt.term_taxonomy_id = wptr.term_taxonomy_id
+            INNER JOIN wp_terms wpt
+            ON wpt.term_id = wptt.term_id
+            INNER JOIN wp_termmeta wptm
+            ON wptm.term_id = wpt.term_id
+            WHERE wpp.post_type = 'product'
+            AND wpp.post_status = 'publish'
+            AND wptr.term_taxonomy_id != wpp.post_author
+            AND wptm.meta_key = 'display_type';"))->fetchAll(); 
+
+         // get accessoires(products) ids of current model
+        $model_manu = $model[0]['name'];
+        $list_model_product_ids = array();
+        $model_name = $model[0]['model'];
+        $sub_category_id = $_GET['sub_category_id'];
+        $sub_category_name = '';
+        foreach($model_products as $product){
+            if($product['term_name'] == $model_name){
+                array_push($list_model_product_ids, $product['product_id']);
+            }
+            if($product['term_id'] == $sub_category_id){
+                $sub_category_name = $product['term_name'];
+            }
+
+        }
+        $html = $html.'<div>'.$sub_category_name.' pour '.$model_manu.'</div>';
+        
+        foreach($model_products as $product){
+            // if this product belong to this sub category and belong to this model
+            if(($product['term_id'] == $sub_category_id) && in_array($product['product_id'], $list_model_product_ids)){
+                $product_id=$product['product_id'];
+                $html = $html.'<div><a href="accessoire/?product_id='.$product_id.'">'.$product['post_title'].'</a></div>';
+            }
+        }
+    }
+    return $html;
+}    
+add_shortcode('list_accessoires', 'shortcode_list_accessoires');
+
+// page accessoire
+function shortcode_accessoire(){
+    $html = '';
+    if(isset($_GET['product_id'])){
+        $product_id = $_GET['product_id'];
+        // get this product de la bdd
+        $product = (call_bdd()->query("SELECT *
+            FROM wp_posts
+            WHERE ID = $product_id;"))->fetchAll(); 
+        $html = $html.'<div>'.$product[0]['post_title'].'</div><h3>'.$product[0]['post_content'].'</h3>';
+        
+    }
+    return $html;
+}    
+add_shortcode('accessoire', 'shortcode_accessoire');
