@@ -66,10 +66,12 @@ $_COOKIE['Choix1'] = $_GET['Choix1'];
 $_COOKIE['Choix2'] = $_GET['Choix2'];
 echo $_COOKIE['Choix1'].','.$_COOKIE['Choix2'];
 
-$db->query('SELECT * FROM PREFIX_ukooparts_customer_engine')
+
+$requestSQL = $db -> prepare('SELECT * FROM PREFIX_ukooparts_customer_engine
+INSERT INTO PREFIX_ukooparts_customer_engine(	id_customer,id_guest,id_ukooparts_engine,owned,current,date_upd,date_add)
+VALUE(uniqid(),datetime,datetime ');
+
+$id = uniqid();
+
 ?>
 </section>
-
-
-
-
