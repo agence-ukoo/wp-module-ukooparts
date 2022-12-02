@@ -5,10 +5,7 @@ if (isset($_COOKIE['Choix1']))
 {
     setcookie('Choix1', $_GET['Choix1'],'Choix2', $_GET['Choix2'], time() + 31536000, null, null, false, true);
 }
-}
-session_start();
-
-?>
+}?>
 
 <!DOCTYPE html>
 <style>
@@ -94,7 +91,7 @@ session_start();
     $result = $db->query("SELECT * FROM PREFIX_ukooparts_engine_type_lang WHERE id_lang = 1 ORDER BY name ASC");
     ?>
 
-<select id="type">
+<select name = "Choix1" id="type">
     <option value="">select type</option>
     <?php 
     if($result->rowCount()> 0){
@@ -107,30 +104,41 @@ session_start();
     ?>
 </select>
 
-<select name="Choix1" id="marque">
+<select name="Choix2" id="marque">
 <option value="">marque</option>
 </select>
-<select name="Choix2" id="modele">
+<select name="Choix3" id="modele">
 <option value="">modele</option>
 </select>
-<select id="year">
+<select name = "Choix4" id="year">
 <option value="">année</option>
 </select>
 <input name="Envoyer" type="submit" value="valider" />
   </form>
 <?php
 if (isset($_GET['Envoyer'])) {
- $_GET['Choix1']." ".$_GET['Choix2'];}
-$_COOKIE['Choix1'] = $_GET['Choix1'];
-$_COOKIE['Choix2'] = $_GET['Choix2'];
-echo $_COOKIE['Choix1'].','.$_COOKIE['Choix2'];
+ $_GET['Choix1']." ".$_GET['Choix2']."".$_GET['Choix3']."".$_GET['Choix4'];
+
+ $_COOKIE['Choix1'] = $_GET['Choix1'];
+ $_COOKIE['Choix2'] = $_GET['Choix2'];
+ $_COOKIE['Choix3'] = $_GET['Choix3'];
+$_COOKIE['Choix4'] = $_GET['Choix4']; 
+
+echo $_COOKIE['Choix2'],-$_COOKIE['Choix3'];
+$requestSQL = $db -> prepare('SELECT '.$_COOKIE['Choix1'].' FROM PREFIX_ukooparts_customer_engine');
+$requestSQL = $db -> prepare('SELECT '.$_COOKIE['Choix2'].' FROM PREFIX_ukooparts_customer_engine');
+
+}else{
+  echo "";
+}
+
 
 
 $requestSQL = $db -> prepare('SELECT * FROM PREFIX_ukooparts_customer_engine
 INSERT INTO PREFIX_ukooparts_customer_engine(	id_customer,id_guest,id_ukooparts_engine,owned,current,date_upd,date_add)
-VALUE(uniqid(),datetime,datetime ');
+VALUE(uniqid(),uniqid(),'.$_COOKIE['Choix1'].''.$_COOKIE['Choix2'].',1,1,datetime,datetime ');
 
-$id = uniqid();
+
 
 ?>
 </section>
