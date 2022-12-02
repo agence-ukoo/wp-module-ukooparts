@@ -35,7 +35,7 @@ function import_script(){
    //infos de connexions à la db
 function call_bdd(): PDO{
     try{
-        $db = new PDO('mysql:host=localhost;dbname=ukooparts','root','root');
+        $db = new PDO('mysql:host=localhost;dbname=ukooparts','root','');
         $db -> exec('SET NAMES "UTF8"');
         return $db;
     }catch(PDOException $e){
@@ -355,7 +355,7 @@ add_shortcode('descriptif', 'shortcode_descriptif');
 function shortcode_search(): void{
 
     try{
-        $db = new PDO('mysql:host=localhost;dbname=ukooparts','root','root');
+        $db = new PDO('mysql:host=localhost;dbname=ukooparts','root','');
         $db -> exec('SET NAMES "UTF8"');
     }catch(PDOException $e){
         echo 'Erreur:'.$e ->getMessage();
@@ -562,6 +562,7 @@ function droplist() {
 }
 add_action( 'wp_head', 'droplist' );
 
+//page list accessoire d'un category
 function shortcode_list_accessoires(){
     $html = '';
     $engine_id = $_GET['engine_id'];
@@ -610,7 +611,8 @@ function shortcode_list_accessoires(){
         foreach($model_products as $product){
             // if this product belong to this sub category and belong to this model
             if(($product['term_id'] == $sub_category_id) && in_array($product['product_id'], $list_model_product_ids)){
-                $html = $html.'<div><a href="#">'.$product['post_title'].'</a></div>';
+                $product_id=$product['product_id'];
+                $html = $html.'<div><a href="accessoire/?product_id='.$product_id.'">'.$product['post_title'].'</a></div>';
             }
         }
     }
@@ -618,11 +620,16 @@ function shortcode_list_accessoires(){
 }    
 add_shortcode('list_accessoires', 'shortcode_list_accessoires');
 
+// page accessoire
 function shortcode_accessoire(){
     $html = '';
-    if(){
-        $model = (call_bdd()->query(";"))->fetchAll(); 
-            
+    if(isset($_GET['product_id'])){
+        $product_id = $_GET['product_id'];
+        // get this product de la bdd
+        $product = (call_bdd()->query("SELECT *
+            FROM wp_posts
+            WHERE ID = $product_id;"))->fetchAll(); 
+        $html = $html.'<div>'.$product[0]['post_title'].'</div><h3>'.$product[0]['post_content'].'</h3>';
         
     }
     return $html;
