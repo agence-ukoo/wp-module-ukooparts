@@ -125,8 +125,9 @@ if (isset($_GET['Envoyer'])) {
 $_COOKIE['Choix4'] = $_GET['Choix4']; 
 
 echo $_COOKIE['Choix2'],-$_COOKIE['Choix3'];
-$requestSQL = $db -> prepare('SELECT '.$_COOKIE['Choix1'].' FROM PREFIX_ukooparts_customer_engine');
-$requestSQL = $db -> prepare('SELECT '.$_COOKIE['Choix2'].' FROM PREFIX_ukooparts_customer_engine');
+$requestSQL = $db -> prepare('SELECT model FROM PREFIX_ukooparts_engine WHERE id = '.$_COOKIE['Choix3']);
+
+$requestSQL = $db -> prepare('SELECT name FROM PREFIX_ukooparts_manufacturer WHERE id = '.$_COOKIE['Choix2']);
 
 }else{
   echo "";
