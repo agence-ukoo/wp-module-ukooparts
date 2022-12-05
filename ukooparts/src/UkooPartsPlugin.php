@@ -111,7 +111,7 @@ class UkooPartsPlugin
                 'description' => __('UkooParts section', 'text_domain'),
                 'labels' => $labels,
                 'supports' => false,
-                'taxonomies' => array('category', 'post_tag'),
+            //    'taxonomies' => array('category', 'post_tag'),
                 'hierarchical' => false,
                 'public' => true,
                 'show_ui' => true,
@@ -165,6 +165,9 @@ class UkooPartsPlugin
             $this->create_ukooparts_post('models','Liste des modèles', '[models]'),
             $this->create_ukooparts_post('fiche-descriptif','fiche descriptif', '[descriptif]'),
             $this->create_ukooparts_post('topmoto','Top 50 bécanes', '[topmoto]'),
+            $this->create_ukooparts_post('search','Search', '[search]'),
+            $this->create_ukooparts_post('list-accessoires','List accessoires', '[list_accessoires]'),
+            $this->create_ukooparts_post('accessoire','Detail accessoire', '[accessoire]'),
         );
     }
     
