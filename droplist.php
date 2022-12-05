@@ -3,9 +3,16 @@ if (isset($_COOKIE['Choix1']))
 {
   if (isset($_COOKIE['Choix2']))
 {
-    setcookie('Choix1', $_GET['Choix1'],'Choix2', $_GET['Choix2'], time() + 31536000, null, null, false, true);
+    if (isset($_COOKIE['Choix3']))
+    {
+        if (isset($_COOKIE['Choix4']))
+        {
+        setcookie('Choix1', $_GET['Choix1'],'Choix2', $_GET['Choix2'],'Choix3', $_GET['Choix3'],'Choix4', $_GET['Choix4'], time() + 31536000, null, null, false, true);
+        }
+    }
+    }
 }
-}?>
+?>
 
 <!DOCTYPE html>
 <style>
@@ -118,16 +125,23 @@ if (isset($_COOKIE['Choix1']))
 <?php
 if (isset($_GET['Envoyer'])) {
  $_GET['Choix1']." ".$_GET['Choix2']."".$_GET['Choix3']."".$_GET['Choix4'];
-
  $_COOKIE['Choix1'] = $_GET['Choix1'];
  $_COOKIE['Choix2'] = $_GET['Choix2'];
  $_COOKIE['Choix3'] = $_GET['Choix3'];
-$_COOKIE['Choix4'] = $_GET['Choix4']; 
+ $_COOKIE['Choix4'] = $_GET['Choix4']; 
+ 
+    $query = $db -> query('SELECT model FROM PREFIX_ukooparts_engine WHERE id_ukooparts_engine = '.$_COOKIE['Choix3']);
+    $result = $query -> fetchAll();
 
-echo $_COOKIE['Choix2'],-$_COOKIE['Choix3'];
-$requestSQL = $db -> prepare('SELECT model FROM PREFIX_ukooparts_engine WHERE id = '.$_COOKIE['Choix3']);
+    foreach ($result[0] as $aaaah){
+        echo $aaaah ," ";
+    } 
 
-$requestSQL = $db -> prepare('SELECT name FROM PREFIX_ukooparts_manufacturer WHERE id = '.$_COOKIE['Choix2']);
+    $query = $db -> query('SELECT name FROM PREFIX_ukooparts_manufacturer WHERE id_ukooparts_manufacturer = '.$_COOKIE['Choix2']);
+    $result = $query -> fetchAll();
+    foreach ($result[0] as $b){
+        echo $b ," ";
+    } 
 
 }else{
   echo "";
@@ -137,9 +151,7 @@ $requestSQL = $db -> prepare('SELECT name FROM PREFIX_ukooparts_manufacturer WHE
 
 $requestSQL = $db -> prepare('SELECT * FROM PREFIX_ukooparts_customer_engine
 INSERT INTO PREFIX_ukooparts_customer_engine(	id_customer,id_guest,id_ukooparts_engine,owned,current,date_upd,date_add)
-VALUE(uniqid(),uniqid(),'.$_COOKIE['Choix1'].''.$_COOKIE['Choix2'].',1,1,datetime,datetime ');
-
-
+VALUE(uniqid(),uniqid(),'.$_COOKIE['Choix3'].''.$_COOKIE['Choix3'].',1,1,datetime,datetime ');
 
 ?>
 </section>
