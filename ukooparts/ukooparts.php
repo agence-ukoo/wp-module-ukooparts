@@ -72,9 +72,6 @@ function shortcode_manufacturers() {
 
 // ici le code display_AZ pour recuperer l'info manufacturer filtrée ou non
 
-
-
-
         $first_letter_manufacturer = $manufacturers[0]['name'][0];
             //déclaration de deux arrays, un pour les lettres et un pour les chiffres
         $array_manufacturer_list_letters = array();
@@ -133,16 +130,16 @@ function shortcode_manufacturers() {
                
                 if(isset($_GET['engine_type_id'])){
                     $engine_type_id = $_GET['engine_type_id'];
-                    $displayManu = $displayManu.'<a href="parts-models/?manufact_id='.$manufact_id.'&engine_type_id='.$_GET['engine_type_id'].'">'.$manufacturer['name'].'</a> ';
+                    $displayManu = $displayManu.'<a href="models/?manufact_id='.$manufact_id.'&engine_type_id='.$_GET['engine_type_id'].'">'.$manufacturer['name'].'</a> ';
                 }else{
-                    $displayManu = $displayManu.'<a href="parts-models/?manufact_id='.$manufact_id.'">'.$manufacturer['name'].'</a> ';
+                    $displayManu = $displayManu.'<a href="models/?manufact_id='.$manufact_id.'">'.$manufacturer['name'] ?><img src="../wp-content/uploads/2022/12/<?php echo $manufact_id ?>.jpg"/></a><?php
                 }
             } else {
                 if(isset($_GET['engine_type_id'])){
                     $engine_type_id = $_GET['engine_type_id'];
-                    $displayManu = $displayManu.'<a href="parts-models/?manufact_id='.$manufact_id.'&engine_type_id='.$_GET['engine_type_id'].'">'.$manufacturer['name'].'</a> ';
+                    $displayManu = $displayManu.'<a href="models/?manufact_id='.$manufact_id.'&engine_type_id='.$_GET['engine_type_id'].'">'.$manufacturer['name'] ?><img src="../wp-content/uploads/2022/12/<?php echo $manufact_id ?>.jpg"/></a><?php
                 }else{
-                    $displayManu = $displayManu.'<a href="parts-models/?manufact_id='.$manufact_id.'">'.$manufacturer['name'].'</a> ';
+                    $displayManu = $displayManu.'<a href="models/?manufact_id='.$manufact_id.'">'.$manufacturer['name'] ?><img src="../wp-content/uploads/2022/12/<?php echo $manufact_id ?>.jpg"/></a><?php
                 }
             }
         }
@@ -155,9 +152,9 @@ function shortcode_manufacturers() {
             $manufact_id = $manufacturer['id_ukooparts_manufacturer'];
             if(str_contains(strtoupper($manufacturer['name']), strtoupper($key))){
                 if(isset($_GET['engine_type_id'])){
-                    $displayManu = $displayManu.'<a href="parts-models/?manufact_id='.$manufact_id.'&engine_type_id='.$_GET['engine_type_id'].'">'.$manufacturer['name'].'</a>, ';
+                    $displayManu = $displayManu.'<a href="parts-models/?manufact_id='.$manufact_id.'&engine_type_id='.$_GET['engine_type_id'].'">'.$manufacturer['name'].'<p>Hello_1</p></a>, ';
                 }else{
-                    $displayManu = $displayManu.'<a href="parts-models/?manufact_id='.$manufact_id.'">'.$manufacturer['name'].'</a>, ';
+                    $displayManu = $displayManu.'<a href="parts-models/?manufact_id='.$manufact_id.'">'.$manufacturer['name'].'<p>Hello_2</p></a>, ';
                 }
                 array_push($array_manufacts_found, $manufacturer);
             }
