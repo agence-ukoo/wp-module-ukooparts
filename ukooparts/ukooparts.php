@@ -15,7 +15,7 @@ if (!defined('ABSPATH')) exit();
 define('UKOOPARTS_PLUGIN_DIR',plugin_dir_path(__FILE__));
 
 require UKOOPARTS_PLUGIN_DIR . 'vendor/autoload.php';
-require 'bdd.php'; // contains ukoo tables sql info
+require UKOOPARTS_PLUGIN_DIR . 'bdd.php'; // contains ukoo tables sql info
 
 $plugin = new Ukoo\Ukooparts\UkooPartsPlugin(__FILE__);
 
@@ -36,7 +36,7 @@ function import_script(){
    //infos de connexions à la db
 function call_bdd(): PDO{
     try{
-        $db = new PDO('mysql:host=localhost;dbname=ukooparts','root','root');
+        $db = new PDO('mysql:host=localhost;dbname=ukooparts','root','');
         $db -> exec('SET NAMES "UTF8"');
         return $db;
     }catch(PDOException $e){
@@ -358,7 +358,7 @@ add_shortcode('descriptif', 'shortcode_descriptif');
 function shortcode_search(): void{
 
     try{
-        $db = new PDO('mysql:host=localhost;dbname=ukooparts','root','root');
+        $db = new PDO('mysql:host=localhost;dbname=ukooparts','root','');
         $db -> exec('SET NAMES "UTF8"');
     }catch(PDOException $e){
         echo 'Erreur:'.$e ->getMessage();
