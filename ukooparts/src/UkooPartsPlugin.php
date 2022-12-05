@@ -9,7 +9,7 @@ class UkooPartsPlugin
 
     public function __construct(string  $file){
         add_action( 'plugins_loaded', array( $this, 'init' ) );
-        add_action( 'init', array( $this, 'create_ukooparts_post_type' ) );
+    //    add_action( 'init', array( $this, 'create_ukooparts_post_type' ) );
         add_action( 'init', array( $this, 'add_page_to_init' ) );
 
         register_activation_hook($file, [$this, 'PluginActivation']);
@@ -75,59 +75,59 @@ class UkooPartsPlugin
         echo  ob_get_clean();
     }
 
-    public function create_ukooparts_post_type(): void{
-        // Register Custom Post Type
-            $labels = array(
-                'name' => _x('UkooParts', 'UkooParts'),
-                'singular_name' => _x('UkooParts', 'UkooParts'),
-                'menu_name' => __('UkooParts'),
-                'name_admin_bar' => __('UkooParts'),
-                'archives' => __('Item Archives'),
-                'attributes' => __('Item Attributes'),
-                'parent_item_colon' => __('Parent Item:'),
-                'all_items' => __('All Items'),
-                'add_new_item' => __('Add New Item'),
-                'add_new' => __('Add New', 'ukooparts'),
-                'new_item' => __('New Item'),
-                'edit_item' => __('Edit Item'),
-                'update_item' => __('Update Item'),
-                'view_item' => __('View Item'),
-                'view_items' => __('View Items'),
-                'search_items' => __('Search Item'),
-                'not_found' => __('Not found'),
-                'not_found_in_trash' => __('Not found in Trash'),
-                'featured_image' => __('Featured Image'),
-                'set_featured_image' => __('Set featured image'),
-                'remove_featured_image' => __('Remove featured image'),
-                'use_featured_image' => __('Use as featured image'),
-                'insert_into_item' => __('Insert into item'),
-                'uploaded_to_this_item' => __('Uploaded to this item'),
-                'items_list' => __('Items list'),
-                'items_list_navigation' => __('Items list navigation'),
-                'filter_items_list' => __('Filter items list'),
-            );
-            $args = array(
-                'label' => __('UkooParts', 'text_domain'),
-                'description' => __('UkooParts section', 'text_domain'),
-                'labels' => $labels,
-                'supports' => false,
-            //    'taxonomies' => array('category', 'post_tag'),
-                'hierarchical' => false,
-                'public' => true,
-                'show_ui' => true,
-                'show_in_menu' => true,
-                'menu_position' => 5,
-                'show_in_admin_bar' => true,
-                'show_in_nav_menus' => true,
-                'can_export' => true,
-                'has_archive' => true,
-                'exclude_from_search' => false,
-                'publicly_queryable' => true,
-                'capability_type' => 'page',
-                'menu_icon' => 'dashicons-welcome-view-site'
-            );
-            register_post_type('parts', $args);
-        }
+    // public function create_ukooparts_post_type(): void{
+    //     // Register Custom Post Type
+    //         $labels = array(
+    //             'name' => _x('UkooParts', 'UkooParts'),
+    //             'singular_name' => _x('UkooParts', 'UkooParts'),
+    //             'menu_name' => __('UkooParts'),
+    //             'name_admin_bar' => __('UkooParts'),
+    //             'archives' => __('Item Archives'),
+    //             'attributes' => __('Item Attributes'),
+    //             'parent_item_colon' => __('Parent Item:'),
+    //             'all_items' => __('All Items'),
+    //             'add_new_item' => __('Add New Item'),
+    //             'add_new' => __('Add New', 'ukooparts'),
+    //             'new_item' => __('New Item'),
+    //             'edit_item' => __('Edit Item'),
+    //             'update_item' => __('Update Item'),
+    //             'view_item' => __('View Item'),
+    //             'view_items' => __('View Items'),
+    //             'search_items' => __('Search Item'),
+    //             'not_found' => __('Not found'),
+    //             'not_found_in_trash' => __('Not found in Trash'),
+    //             'featured_image' => __('Featured Image'),
+    //             'set_featured_image' => __('Set featured image'),
+    //             'remove_featured_image' => __('Remove featured image'),
+    //             'use_featured_image' => __('Use as featured image'),
+    //             'insert_into_item' => __('Insert into item'),
+    //             'uploaded_to_this_item' => __('Uploaded to this item'),
+    //             'items_list' => __('Items list'),
+    //             'items_list_navigation' => __('Items list navigation'),
+    //             'filter_items_list' => __('Filter items list'),
+    //         );
+    //         $args = array(
+    //             'label' => __('UkooParts', 'text_domain'),
+    //             'description' => __('UkooParts section', 'text_domain'),
+    //             'labels' => $labels,
+    //             'supports' => false,
+    //         //    'taxonomies' => array('category', 'post_tag'),
+    //             'hierarchical' => false,
+    //             'public' => true,
+    //             'show_ui' => true,
+    //             'show_in_menu' => true,
+    //             'menu_position' => 5,
+    //             'show_in_admin_bar' => true,
+    //             'show_in_nav_menus' => true,
+    //             'can_export' => true,
+    //             'has_archive' => true,
+    //             'exclude_from_search' => false,
+    //             'publicly_queryable' => true,
+    //             'capability_type' => 'page',
+    //             'menu_icon' => 'dashicons-welcome-view-site'
+    //         );
+    //         register_post_type('parts', $args);
+    // }
 
         function add_page_to_init(): void
         {
@@ -135,9 +135,9 @@ class UkooPartsPlugin
 
                 $array = extract($array_entry);
                 extract((array)$array);
-                        if (!get_page_by_path($url, OBJECT, 'parts'))
+                        if (!get_page_by_title($title, OBJECT, 'page'))
                             wp_insert_post(array(
-                                'post_type' => "parts",
+                                'post_type' => "page",
                                 'post_content' => $content,
                                 'post_title' => $title,
                                 'post_name' => $url, //this is for the URL

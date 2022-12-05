@@ -133,20 +133,16 @@ function shortcode_manufacturers() {
                
                 if(isset($_GET['engine_type_id'])){
                     $engine_type_id = $_GET['engine_type_id'];
-                   //  $displayManu = $displayManu.'<a href="models/?manufact_id='.$manufact_id.'&engine_type_id='.$_GET['engine_type_id'].'">'.$manufacturer['name'].'</a> ';
-                    $displayManu = $displayManu.'<a href="models/?manufact_id='.$manufact_id.'">'.$manufacturer['name'] ?><img src="../../wp-content/uploads/2022/12/<?php echo $manufact_id ?>.jpg"/></a><?php
+                    $displayManu = $displayManu.'<a href="parts-models/?manufact_id='.$manufact_id.'&engine_type_id='.$_GET['engine_type_id'].'">'.$manufacturer['name'].'</a> ';
                 }else{
-                    //$displayManu = $displayManu.'<a href="models/?manufact_id='.$manufact_id.'">'.$manufacturer['name'].'</a> ';
-                    $displayManu = $displayManu.'<a href="models/?manufact_id='.$manufact_id.'">'.$manufacturer['name'] ?><img src="../../wp-content/uploads/2022/12/<?php echo $manufact_id ?>.jpg"/></a><?php
+                    $displayManu = $displayManu.'<a href="parts-models/?manufact_id='.$manufact_id.'">'.$manufacturer['name'].'</a> ';
                 }
             } else {
                 if(isset($_GET['engine_type_id'])){
                     $engine_type_id = $_GET['engine_type_id'];
-                    //$displayManu = $displayManu.'<a href="models/?manufact_id='.$manufact_id.'&engine_type_id='.$_GET['engine_type_id'].'">'.$manufacturer['name'].'</a> ';
-                    $displayManu = $displayManu.'<a href="models/?manufact_id='.$manufact_id.'">'.$manufacturer['name'] ?><img src="../../wp-content/uploads/2022/12/<?php echo $manufact_id ?>.jpg"/></a><?php
+                    $displayManu = $displayManu.'<a href="parts-models/?manufact_id='.$manufact_id.'&engine_type_id='.$_GET['engine_type_id'].'">'.$manufacturer['name'].'</a> ';
                 }else{
-                    // $displayManu = $displayManu.'<a href="models/?manufact_id='.$manufact_id.'">'.$manufacturer['name'].'</a> ';
-                    $displayManu = $displayManu.'<a href="models/?manufact_id='.$manufact_id.'">'.$manufacturer['name'] ?><img src="../../wp-content/uploads/2022/12/<?php echo $manufact_id ?>.jpg"/></a><?php
+                    $displayManu = $displayManu.'<a href="parts-models/?manufact_id='.$manufact_id.'">'.$manufacturer['name'].'</a> ';
                 }
             }
         }
@@ -159,9 +155,9 @@ function shortcode_manufacturers() {
             $manufact_id = $manufacturer['id_ukooparts_manufacturer'];
             if(str_contains(strtoupper($manufacturer['name']), strtoupper($key))){
                 if(isset($_GET['engine_type_id'])){
-                    $displayManu = $displayManu.'<a href="models/?manufact_id='.$manufact_id.'&engine_type_id='.$_GET['engine_type_id'].'">'.$manufacturer['name'].'</a>, ';
+                    $displayManu = $displayManu.'<a href="parts-models/?manufact_id='.$manufact_id.'&engine_type_id='.$_GET['engine_type_id'].'">'.$manufacturer['name'].'</a>, ';
                 }else{
-                    $displayManu = $displayManu.'<a href="models/?manufact_id='.$manufact_id.'">'.$manufacturer['name'].'</a>, ';
+                    $displayManu = $displayManu.'<a href="parts-models/?manufact_id='.$manufact_id.'">'.$manufacturer['name'].'</a>, ';
                 }
                 array_push($array_manufacts_found, $manufacturer);
             }
@@ -187,22 +183,22 @@ function marque(): void{
             </div>
             <div class="container" id="containerLogo">
             <div class="logo" id="yamaha">
-            <a href="models/?manufact_id=11"><img class="logo" src="https://i.pinimg.com/originals/0b/c0/24/0bc024f240e6bec6d29df3155d487adf.png" /></a>
+            <a href="parts-models/?manufact_id=11"><img class="logo" src="https://i.pinimg.com/originals/0b/c0/24/0bc024f240e6bec6d29df3155d487adf.png" /></a>
             </div>
             <div class="logo" id="kawasaki">
-            <a href="models/?manufact_id=5"><img class="logo" src="https://www.freepnglogos.com/uploads/kawasaki-png-logo/kawasaki-green-emblem-png-logo-1.png" /></a>
+            <a href="parts-models/?manufact_id=5"><img class="logo" src="https://www.freepnglogos.com/uploads/kawasaki-png-logo/kawasaki-green-emblem-png-logo-1.png" /></a>
             </div>           
             <div class="logo" id="suzuki">
-            <a href="models/?manufact_id=9"><img class="logo" src="https://seeklogo.com/images/S/suzuki-logo-B2B31D667D-seeklogo.com.png" /></a>
+            <a href="parts-models/?manufact_id=9"><img class="logo" src="https://seeklogo.com/images/S/suzuki-logo-B2B31D667D-seeklogo.com.png" /></a>
             </div>           
             <div class="logo" id="aprilia">
-            <a href="models/?manufact_id=16"><img class="logo" src="https://www.autocollant-tuning.com/2143-home_default/autocollant-aprilia-sport.jpg" /></a>
+            <a href="parts-models/?manufact_id=16"><img class="logo" src="https://www.autocollant-tuning.com/2143-home_default/autocollant-aprilia-sport.jpg" /></a>
             </div>                       
             <div class="logo" id="bmw">
-            <a href="models/?manufact_id=15"><img class="logo" src="https://assets.stickpng.com/thumbs/580b57fcd9996e24bc43c46e.png" /></a>
+            <a href="parts-models/?manufact_id=15"><img class="logo" src="https://assets.stickpng.com/thumbs/580b57fcd9996e24bc43c46e.png" /></a>
             </div>       
             </div>                
-            <p style="text-align: center;"> voir tout les <a href="manufacturers">constructeurs </a></p>'
+            <p style="text-align: center;"> voir tout les <a href="parts-manufacturers">constructeurs </a></p>'
         );
 }
 
@@ -222,25 +218,25 @@ function types(){
     <div id="container">
         <div id="containerListTypeVehicule">
             <div class="linkImglistTypeVehicule">
-            <a class="linkTypeVehicule" href="manufacturers/?engine_type_id=1">
+            <a class="linkTypeVehicule" href="parts-manufacturers/?engine_type_id=1">
                 <img class="iconSelectTypeVehicule" src="http://imagenspng.com/wp-content/uploads/desenhos-motos-Imagem-png-para-imprimir-gratis-768x768.png" alt="">
                 <p>Pièces moto</p>
             </a>
             </div>
             <div class="linkImglistTypeVehicule">
-            <a class="linkTypeVehicule" href="manufacturers/?engine_type_id=2">
+            <a class="linkTypeVehicule" href="parts-manufacturers/?engine_type_id=2">
                 <img class="iconSelectTypeVehicule" src="http://imagenspng.com/wp-content/uploads/desenhos-motos-Imagem-png-para-imprimir-gratis-768x768.png" alt="">
                 <p>Pièces scooter</p>
             </a>
             </div>
             <div class="linkImglistTypeVehicule">
-            <a class="linkTypeVehicule" href="manufacturers/?engine_type_id=3">
+            <a class="linkTypeVehicule" href="parts-manufacturers/?engine_type_id=3">
                 <img class="iconSelectTypeVehicule" src="http://imagenspng.com/wp-content/uploads/desenhos-motos-Imagem-png-para-imprimir-gratis-768x768.png" alt="">
                 <p>Pièces quad et SSV</p>
             </a>
             </div>
             <div class="linkImglistTypeVehicule">
-            <a class="linkTypeVehicule" href="manufacturers/?engine_type_id=4">
+            <a class="linkTypeVehicule" href="parts-manufacturers/?engine_type_id=4">
                 <img class="iconSelectTypeVehicule" src="http://imagenspng.com/wp-content/uploads/desenhos-motos-Imagem-png-para-imprimir-gratis-768x768.png" alt="">
                 <p>Pièces tout terrain</p>
             </a>
@@ -345,7 +341,7 @@ function shortcode_descriptif(){
                                 // if list of products has at least 1 item, show this sub category
                                 $sub_category_id = $sub_category['term_id'];
                                 if(sizeof($list_products)>0){
-                                    $html = $html.'<li><a href="list-accessoires/?engine_id='.$engine_id.'&sub_category_id='.$sub_category_id.'">'.$sub_category['name'].'('.sizeof($list_products).')'.'</a></li>';
+                                    $html = $html.'<li><a href="parts-list-accessoires/?engine_id='.$engine_id.'&sub_category_id='.$sub_category_id.'">'.$sub_category['name'].'('.sizeof($list_products).')'.'</a></li>';
 
                                 }
                             }
@@ -511,9 +507,9 @@ function shortcode_models(): string {
                             $html = $html.'</div><h3 id="0-9">'.$first_letter.'</h3><div>'; //echo $first_letter pour créer une ancre
                         }
 
-                        $html = $html.'<a href="fiche-descriptif/?engine_id='.$model['id_engine'].'">'.$model['display_name'].'</a>  ';
+                        $html = $html.'<a href="parts-fiche-descriptif/?engine_id='.$model['id_engine'].'">'.$model['display_name'].'</a>  ';
                 }else{
-                    $html = $html.'<a href="fiche-descriptif/?engine_id='.$model['id_engine'].'">'.$model['display_name'].'</a>  ';
+                    $html = $html.'<a href="parts-fiche-descriptif/?engine_id='.$model['id_engine'].'">'.$model['display_name'].'</a>  ';
                 }
             }
             return $html.'</div>';
@@ -524,7 +520,7 @@ function shortcode_models(): string {
             $html = $html.'<div>';
             foreach($models as $model){
                 if(str_contains(strtoupper($model['model']), strtoupper($key))){
-                    $html = $html.'<a href="fiche-descriptif/?engine_id='.$model['id_engine'].'">'.$model['display_name'].'</a>  ';
+                    $html = $html.'<a href="parts-fiche-descriptif/?engine_id='.$model['id_engine'].'">'.$model['display_name'].'</a>  ';
                     array_push($array_models_found, $model);
                 }
             }
@@ -549,7 +545,7 @@ function shortcode_topmoto(): string{
         $string = "";
         $string .= "<ol id='order_list_vehicle'>";
         foreach ($motoData as $moto) {
-            $string .= "<li class='list_vehicle'><a href='fiche-descriptif/?engine_id=$moto[id_ukooparts_engine]'>" . $moto["meta_title"] . "</a></li>"; 
+            $string .= "<li class='list_vehicle'><a href='parts-fiche-descriptif/?engine_id=$moto[id_ukooparts_engine]'>" . $moto["meta_title"] . "</a></li>"; 
         }
         $string .= "<a href='#'><li>voir toutes les motos</p></li>";
         $string .= "</ol>";
@@ -620,7 +616,7 @@ function shortcode_list_accessoires(){
             // if this product belong to this sub category and belong to this model
             if(($product['term_id'] == $sub_category_id) && in_array($product['product_id'], $list_model_product_ids)){
                 $product_id=$product['product_id'];
-                $html = $html.'<div><a href="accessoire/?product_id='.$product_id.'">'.$product['post_title'].'</a></div>';
+                $html = $html.'<div><a href="parts-accessoire/?product_id='.$product_id.'">'.$product['post_title'].'</a></div>';
             }
         }
     }
@@ -634,10 +630,15 @@ function shortcode_accessoire(){
     if(isset($_GET['product_id'])){
         $product_id = $_GET['product_id'];
         // get this product de la bdd
-        $product = (call_bdd()->query("SELECT *
-            FROM wp_posts
-            WHERE ID = $product_id;"))->fetchAll(); 
-        $html = $html.'<div>'.$product[0]['post_title'].'</div><h3>'.$product[0]['post_content'].'</h3>';
+        $product = (call_bdd()->query("SELECT wpp.ID, wpp.post_content, wpp.post_title, wppm.meta_value
+            FROM wp_posts wpp
+            INNER JOIN wp_postmeta wppm
+            ON wpp.ID = wppm.post_id
+            WHERE wppm.meta_key = '_regular_price'
+            AND wpp.ID = $product_id;"))->fetchAll(); 
+        $html = $html.'<div>'.$product[0]['post_title'].'</div>
+                <h3>'.$product[0]['post_content'].'</h3>
+                <div>'.$product[0]['meta_value'].'€</div>';
         
     }
     return $html;
