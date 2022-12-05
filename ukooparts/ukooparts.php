@@ -116,7 +116,7 @@ function shortcode_manufacturers() {
         $first_letterManu = $manufacturers[0]['name'][0];
         
         $displayManu = $displayManu. '<h3 id="'.$first_letterManu.'">' . $first_letterManu. '</h3><div>'; // echo $first_letterManu pour créer une ancre unique en fonction de la lettre
-        $displayManuImg = "";
+        // $displayManuImg = "";
 
             // cherche la premiere lettre est differente
         foreach($manufacturers as $manufacturer) {
