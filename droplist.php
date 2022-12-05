@@ -129,19 +129,15 @@ if (isset($_GET['Envoyer'])) {
  $_COOKIE['Choix2'] = $_GET['Choix2'];
  $_COOKIE['Choix3'] = $_GET['Choix3'];
  $_COOKIE['Choix4'] = $_GET['Choix4']; 
+
+$query = $db -> query('SELECT name FROM PREFIX_ukooparts_manufacturer WHERE id_ukooparts_manufacturer = '.$_COOKIE['Choix2']);
+$name = $query -> fetchAll();
+echo $name[0]["name"]." ";
  
-    $query = $db -> query('SELECT model FROM PREFIX_ukooparts_engine WHERE id_ukooparts_engine = '.$_COOKIE['Choix3']);
-    $result = $query -> fetchAll();
+$query = $db -> query('SELECT model FROM PREFIX_ukooparts_engine WHERE id_ukooparts_engine = '.$_COOKIE['Choix3']);
+$model = $query -> fetchAll();
+echo $model[0]["model"];
 
-    foreach ($result[0] as $aaaah){
-        echo $aaaah ," ";
-    } 
-
-    $query = $db -> query('SELECT name FROM PREFIX_ukooparts_manufacturer WHERE id_ukooparts_manufacturer = '.$_COOKIE['Choix2']);
-    $result = $query -> fetchAll();
-    foreach ($result[0] as $b){
-        echo $b ," ";
-    } 
 
 }else{
   echo "";
