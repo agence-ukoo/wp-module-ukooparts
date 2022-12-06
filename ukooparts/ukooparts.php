@@ -36,7 +36,7 @@ function import_script(){
    //infos de connexions à la db
 function call_bdd(): PDO{
     try{
-        $db = new PDO('mysql:host=localhost;dbname=ukooparts','root','');
+        $db = new PDO('mysql:host=localhost;dbname=ukooparts','root','root');
         $db -> exec('SET NAMES "UTF8"');
         return $db;
     }catch(PDOException $e){
@@ -61,17 +61,21 @@ function shortcode_manufacturers() {
 
 // fin du code du top moto50
 
-
-    if(!isset($_GET['engine_type_id'])){
-        $manufacturers = (call_bdd()->query("SELECT * FROM `PREFIX_ukooparts_manufacturer` ORDER BY name ASC;"))->fetchAll();
-    }else{
-        $engine_type_id = $_GET['engine_type_id']; // ici recup premiere lettre 
-        $manufacturers = (call_bdd()->query("select distinct engine.id_ukooparts_manufacturer, engine.id_ukooparts_engine_type, manu.name
-            FROM PREFIX_ukooparts_engine as engine
-            INNER JOIN PREFIX_ukooparts_manufacturer as manu
-            ON manu.id_ukooparts_manufacturer = engine.id_ukooparts_manufacturer
-            WHERE engine.id_ukooparts_engine_type = $engine_type_id ORDER BY name ASC"))->fetchAll();
-    }
+    if(isset($_SESSION['id_manufacturer'])){ // if a vehicle is chosen in the header, find only the chosen manufacturer in the bdd
+        $id_manu = $_SESSION['id_manufacturer'];
+        $manufacturers = (call_bdd()->query("SELECT * FROM PREFIX_ukooparts_manufacturer WHERE id_ukooparts_manufacturer= $id_manu;"))->fetchAll();
+    } else {
+        if(!isset($_GET['engine_type_id'])){ // if a vehicle type is not chosen, find all the manufacturers 
+            $manufacturers = (call_bdd()->query("SELECT * FROM `PREFIX_ukooparts_manufacturer` ORDER BY name ASC;"))->fetchAll();
+        }else{ // vehicle type is chosen, find only the manufacturers of the chosen type
+            $engine_type_id = $_GET['engine_type_id']; // ici recup premiere lettre 
+            $manufacturers = (call_bdd()->query("select distinct engine.id_ukooparts_manufacturer, engine.id_ukooparts_engine_type, manu.name
+                FROM PREFIX_ukooparts_engine as engine
+                INNER JOIN PREFIX_ukooparts_manufacturer as manu
+                ON manu.id_ukooparts_manufacturer = engine.id_ukooparts_manufacturer
+                WHERE engine.id_ukooparts_engine_type = $engine_type_id ORDER BY name ASC"))->fetchAll();
+        }
+    }    
 
 // ici le code display_AZ pour recuperer l'info manufacturer filtrée ou non
 
@@ -358,7 +362,7 @@ add_shortcode('descriptif', 'shortcode_descriptif');
 function shortcode_search(): void{
 
     try{
-        $db = new PDO('mysql:host=localhost;dbname=ukooparts','root','');
+        $db = new PDO('mysql:host=localhost;dbname=ukooparts','root','root');
         $db -> exec('SET NAMES "UTF8"');
     }catch(PDOException $e){
         echo 'Erreur:'.$e ->getMessage();
@@ -392,14 +396,21 @@ add_shortcode('search', 'shortcode_search');
 function shortcode_models(): string {
     $html = null;
     // if manufacturer id set in url
-    if(isset($_GET['manufact_id'])){
+    if(isset($_SESSION['id_engine']) || isset($_GET['manufact_id'])){
+        if(isset($_SESSION['id_engine'])){
+            $id_engine = $_SESSION['id_engine'];
+            $models = (call_bdd()->query("SELECT engine.model, manu.name, engine.id_ukooparts_engine AS id_engine, CONCAT(manu.name, ' ', engine.model) AS display_name
+                FROM PREFIX_ukooparts_engine AS engine
+                INNER JOIN PREFIX_ukooparts_manufacturer AS manu
+                ON manu.id_ukooparts_manufacturer = engine.id_ukooparts_manufacturer
+                WHERE  engine.id_ukooparts_engine=$id_engine;"))->fetchAll();
         // if engine type id is not set in url, the list of models will be filtered only by manufacturer(brand name: example YAMAHA)
-        if(!isset($_GET['engine_type_id'])){
+        }else if(!isset($_GET['engine_type_id'])){
             $manufact_id = $_GET['manufact_id'];
 
             $models = (call_bdd()->query("SELECT engine.model, manu.name, engine.id_ukooparts_engine AS id_engine, CONCAT(manu.name, ' ', engine.model) AS display_name
                 FROM PREFIX_ukooparts_engine AS engine
-                INNER JOIN PREFIX_ukooparts_manufacturer AS manu
+               INNER JOIN PREFIX_ukooparts_manufacturer AS manu
                 ON manu.id_ukooparts_manufacturer = engine.id_ukooparts_manufacturer
                 WHERE  manu.id_ukooparts_manufacturer=$manufact_id ORDER BY model ASC;"))->fetchAll();
         // if engine type id is set, the list of models will be filtered by both manufacturer(brand name: example YAMAHA) and engine type id(type of vehicle: example scotter)
@@ -422,12 +433,12 @@ function shortcode_models(): string {
             $type=$models[0]['name'];
         }
 
-//Vincent code display_AZ_models
+        //Vincent code display_AZ_models
  
             // récupère la première lettre des modèles dispo après filtrage sql
-    $first_letter = $models[0]['model'][0];
-    $array_models_list_letters = array();
-    $model_first_number = array();
+        $first_letter = $models[0]['model'][0];
+        $array_models_list_letters = array();
+        $model_first_number = array();
             // on vérifie si la première donnée est numérique ou non
         if(is_numeric($first_letter)) {
             array_push($model_first_number, $first_letter);
@@ -436,12 +447,12 @@ function shortcode_models(): string {
         }
 
             // loop pour compléter l'array avec tous les autres caractères
-    foreach($models as $model){
-        if($model['model'][0] != $first_letter){
-            $first_letter = $model['model'][0];
-            array_push($array_models_list_letters, $first_letter);
-    }
-}
+        foreach($models as $model){
+            if($model['model'][0] != $first_letter){
+                $first_letter = $model['model'][0];
+                array_push($array_models_list_letters, $first_letter);
+            }
+        }
             // s'il y a un caractère dans l'array, on active l'ancre "0-9"
         if(count($model_first_number) > 0) {
             ?><span><a href="#0-9" style='color:black;'><?php echo " 0-9" ?></a></span><?php 
@@ -450,16 +461,16 @@ function shortcode_models(): string {
         }
 
             //compare les 2 arrays. $abcModels et permet de créer un href
-    foreach(range('A', 'Z') as $abcModels) {
-        if (in_array($abcModels, $array_models_list_letters)) { ?>
-            <span><a href="#<?php echo $abcModels ?>" style='color:black;'><?php echo $abcModels ?><a></span><?php
-        } else {
-            echo "<span style='color:grey;'>$abcModels</span>";
+        foreach(range('A', 'Z') as $abcModels) {
+            if (in_array($abcModels, $array_models_list_letters)) { ?>
+                <span><a href="#<?php echo $abcModels ?>" style='color:black;'><?php echo $abcModels ?><a></span><?php
+            } else {
+                echo "<span style='color:grey;'>$abcModels</span>";
+            }
         }
-    }
 
 
-//Vincent: fin du code display_AZ_models
+        //Vincent: fin du code display_AZ_models
 
         $html= '
                 <div class="divHeaderTypeModel">
@@ -484,7 +495,7 @@ function shortcode_models(): string {
                         <input type="submit" name="submit" value="Rechercher">
                     </form>
                 </div>
-';
+        ';
 
 
         // if there is no search, or the search key word is 'tous', or search without any key word entered, the whole list will be showed
