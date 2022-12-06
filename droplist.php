@@ -1,11 +1,16 @@
 <?php     
 if (isset($_COOKIE['Choix1']))
 {
-    setcookie('Choix1', $_GET['Choix1'], time() + 31536000, null, null, false, true);
-}
-if (isset($_COOKIE['Choix2']))
+  if (isset($_COOKIE['Choix2']))
 {
-    setcookie('Choix2', $_GET['Choix2'], time() + 31536000, null, null, false, true);
+    if (isset($_COOKIE['Choix3']))
+    {
+        if (isset($_COOKIE['Choix4']))
+        {
+        setcookie('Choix1', $_GET['Choix1'],'Choix2', $_GET['Choix2'],'Choix3', $_GET['Choix3'],'Choix4', $_GET['Choix4'], time() + 31536000, null, null, false, true);
+        }
+    }
+    }
 }
 ?>
 
@@ -93,7 +98,7 @@ if (isset($_COOKIE['Choix2']))
     $result = $db->query("SELECT * FROM PREFIX_ukooparts_engine_type_lang WHERE id_lang = 1 ORDER BY name ASC");
     ?>
 
-<select id="type">
+<select name = "Choix1" id="type">
     <option value="">select type</option>
     <?php 
     if($result->rowCount()> 0){
@@ -106,33 +111,51 @@ if (isset($_COOKIE['Choix2']))
     ?>
 </select>
 
-<select name="Choix1" id="marque">
+<select name="Choix2" id="marque">
 <option value="">marque</option>
 </select>
-<select name="Choix2" id="modele">
+<select name="Choix3" id="modele">
 <option value="">modele</option>
 </select>
-<select id="year">
+<select name = "Choix4" id="year">
 <option value="">année</option>
 </select>
 <input name="Envoyer" type="submit" value="valider" />
   </form>
-
 <?php
 if (isset($_GET['Envoyer'])) {
- $_GET['Choix1']." ".$_GET['Choix2'];
+ $_GET['Choix1']." ".$_GET['Choix2']."".$_GET['Choix3']."".$_GET['Choix4'];
  $_COOKIE['Choix1'] = $_GET['Choix1'];
  $_COOKIE['Choix2'] = $_GET['Choix2'];
- echo $_COOKIE['Choix1'],$_COOKIE['Choix2'];}else{
-    echo'pas de moto';
- }
+ $_COOKIE['Choix3'] = $_GET['Choix3'];
+ $_COOKIE['Choix4'] = $_GET['Choix4']; 
+ 
+ $query = $db -> query('SELECT name FROM PREFIX_ukooparts_manufacturer WHERE id_ukooparts_manufacturer = '.$_COOKIE['Choix2']);
+ $name = $query -> fetchAll();
+ echo "Moto séléctionné : ".$name[0]["name"]." ";
+ 
+ $query = $db -> query('SELECT model FROM PREFIX_ukooparts_engine WHERE id_ukooparts_engine = '.$_COOKIE['Choix3']);
+ $model = $query -> fetchAll();
+ echo $model[0]["model"];
+
+
+ $requestSQL = $db -> prepare('INSERT INTO PREFIX_ukooparts_customer_engine (id_customer,id_guest,id_ukooparts_engine,owned,current,date_upd,date_add)
+ VALUES (:id_customer,:id_guest,:id_ukooparts_engine,:owned,:current,now(),now())');
+ $requestSQL-> bindValue(':id_customer',1);
+ $requestSQL-> bindValue(':id_guest',1);
+ $requestSQL-> bindValue(':id_ukooparts_engine',$_COOKIE['Choix3']);
+ $requestSQL-> bindValue(':owned',1); 
+ $requestSQL-> bindValue(':current',1);
+ $requestSQL->closeCursor();
+ $requestSQL->execute();
+
+
+}else{
+  echo "";
+}
+
 
 
 
 ?>
-
 </section>
-
-
-
-
