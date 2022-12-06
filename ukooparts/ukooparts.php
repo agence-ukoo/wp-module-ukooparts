@@ -183,19 +183,19 @@ function marque(): void{
             </div>
             <div class="container" id="containerLogo">
             <div class="logo" id="yamaha">
-            <a href="models/?manufact_id=11"><img class="logo" src="../wp-content/uploads/2022/12/11.jpg" /></a>
+            <a href="models/?manufact_id=11"><img class="logo" src="http://localhost/ukooparts/wp-content/uploads/2022/12/11.jpg" /></a>
             </div>
             <div class="logo" id="kawasaki">
-            <a href="models/?manufact_id=5"><img class="logo" src="../wp-content/uploads/2022/12/5.jpg" /></a>
+            <a href="models/?manufact_id=5"><img class="logo" src="http://localhost/ukooparts/wp-content/uploads/2022/12/5.jpg" /></a>
             </div>           
             <div class="logo" id="suzuki">
-            <a href="models/?manufact_id=9"><img class="logo" src="../wp-content/uploads/2022/12/9.jpg" /></a>
+            <a href="models/?manufact_id=9"><img class="logo" src="http://localhost/ukooparts/wp-content/uploads/2022/12/9.jpg" /></a>
             </div>           
             <div class="logo" id="aprilia">
-            <a href="models/?manufact_id=16"><img class="logo" src="../wp-content/uploads/2022/12/16.jpg" /></a>
+            <a href="models/?manufact_id=16"><img class="logo" src="http://localhost/ukooparts/wp-content/uploads/2022/12/16.jpg" /></a>
             </div>                       
             <div class="logo" id="bmw">
-            <a href="models/?manufact_id=15"><img class="logo" src="../wp-content/uploads/2022/12/15.jpg" /></a>
+            <a href="models/?manufact_id=15"><img class="logo" src="http://localhost/ukooparts/wp-content/uploads/2022/12/15.jpg" /></a>
             </div>       
             </div>                
             <p style="text-align: center;"> voir tout les <a href="manufacturers">constructeurs </a></p>'
