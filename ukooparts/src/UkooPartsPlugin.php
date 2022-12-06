@@ -168,6 +168,7 @@ class UkooPartsPlugin
             $this->create_ukooparts_post('search','Search', '[search]'),
             $this->create_ukooparts_post('list-accessoires','List accessoires', '[list_accessoires]'),
             $this->create_ukooparts_post('accessoire','Detail accessoire', '[accessoire]'),
+            $this->create_ukooparts_post('garage','Mon Garage', '[mon-garge]'),
         );
     }
     

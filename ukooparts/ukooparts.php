@@ -45,7 +45,7 @@ function call_bdd(): PDO{
     }
 }
 // to create and insert ukoo tables
-call_bdd()->query($query);
+// call_bdd()->query($query);
 
     // fonction de display des constructeurs par noms A-Z
 function shortcode_manufacturers() {
@@ -643,3 +643,24 @@ function shortcode_accessoire(){
     return $html;
 }    
 add_shortcode('accessoire', 'shortcode_accessoire');
+///////////////////////Adam Garage///////////////////////////////////////////////////////
+
+function shortcode_garage(){
+    $html = '<h2>Historique de recherche :</h2>';
+
+
+    $query = call_bdd() -> query('SELECT model FROM PREFIX_ukooparts_engine WHERE id_ukooparts_engine IN 
+    (SELECT id_ukooparts_engine FROM  PREFIX_ukooparts_customer_engine)');
+    $model = $query -> fetchAll();
+// var_dump($model);
+$html = $html.'<h3>Modèle</h3>';
+    foreach ($model as $mod){
+
+        $html = $html.'<div>'.$mod['model'].'</div>';
+    }
+    
+    return $html;
+
+}
+
+add_shortcode('mon-garge', 'shortcode_garage');
