@@ -2,8 +2,7 @@
 
 
 
-$query = "DROP TABLE IF EXISTS `PREFIX_ukooparts_compatibility`;
-    CREATE TABLE `PREFIX_ukooparts_compatibility` (
+$query = "CREATE TABLE IF NOT EXISTS `PREFIX_ukooparts_compatibility` (
     `id_product` int(11) NOT NULL,
     `id_ukooparts_engine` int(11) NOT NULL,
     `year` varchar(250) COLLATE utf8_bin NOT NULL,
@@ -15,8 +14,7 @@ $query = "DROP TABLE IF EXISTS `PREFIX_ukooparts_compatibility`;
     KEY `year` (`year`)
     );
     
-    DROP TABLE IF EXISTS `PREFIX_ukooparts_customer_engine`;
-    CREATE TABLE `PREFIX_ukooparts_customer_engine` (
+    CREATE TABLE IF NOT EXISTS `PREFIX_ukooparts_customer_engine` (
     `id_customer` int(11) NOT NULL,
     `id_guest` int(11) NOT NULL,
     `id_ukooparts_engine` int(11) NOT NULL,
@@ -32,8 +30,7 @@ $query = "DROP TABLE IF EXISTS `PREFIX_ukooparts_compatibility`;
     KEY `id_ukooparts_engine` (`id_ukooparts_engine`)
     );
 
-    DROP TABLE IF EXISTS `PREFIX_ukooparts_engine`;
-    CREATE TABLE `PREFIX_ukooparts_engine` (
+    CREATE TABLE IF NOT EXISTS `PREFIX_ukooparts_engine` (
     `id_ukooparts_engine` int(11) NOT NULL AUTO_INCREMENT,
     `id_ukooparts_manufacturer` int(11) NOT NULL,
     `id_ukooparts_engine_type` int(11) NOT NULL,
@@ -56,8 +53,7 @@ $query = "DROP TABLE IF EXISTS `PREFIX_ukooparts_compatibility`;
     KEY `id_parent` (`id_parent`)
     );
 
-    DROP TABLE IF EXISTS `PREFIX_ukooparts_engine_feature`;
-    CREATE TABLE `PREFIX_ukooparts_engine_feature` (
+    CREATE TABLE IF NOT EXISTS `PREFIX_ukooparts_engine_feature` (
     `id_ukooparts_feature` int(11) NOT NULL,
     `id_ukooparts_engine` int(11) NOT NULL,
     `id_lang` int(11) NOT NULL,
@@ -67,8 +63,7 @@ $query = "DROP TABLE IF EXISTS `PREFIX_ukooparts_compatibility`;
     KEY `id_ukooparts_engine` (`id_ukooparts_engine`)
     );
 
-    DROP TABLE IF EXISTS `PREFIX_ukooparts_engine_lang`;
-    CREATE TABLE `PREFIX_ukooparts_engine_lang` (
+    CREATE TABLE IF NOT EXISTS `PREFIX_ukooparts_engine_lang` (
     `id_ukooparts_engine` int(11) NOT NULL,
     `id_lang` int(11) NOT NULL,
     `description` text COLLATE utf8_bin NOT NULL,
@@ -81,8 +76,7 @@ $query = "DROP TABLE IF EXISTS `PREFIX_ukooparts_compatibility`;
     KEY `id_ukooparts_engine` (`id_ukooparts_engine`)
     );
 
-    DROP TABLE IF EXISTS `PREFIX_ukooparts_engine_type`;
-    CREATE TABLE `PREFIX_ukooparts_engine_type` (
+    CREATE TABLE IF NOT EXISTS `PREFIX_ukooparts_engine_type` (
     `id_ukooparts_engine_type` int(11) NOT NULL AUTO_INCREMENT,
     `active` tinyint(1) NOT NULL,
     `position` tinyint(2) NOT NULL,
@@ -92,8 +86,7 @@ $query = "DROP TABLE IF EXISTS `PREFIX_ukooparts_compatibility`;
     KEY `active` (`active`)
     );
 
-    DROP TABLE IF EXISTS `PREFIX_ukooparts_engine_type_lang`;
-    CREATE TABLE `PREFIX_ukooparts_engine_type_lang` (
+    CREATE TABLE IF NOT EXISTS `PREFIX_ukooparts_engine_type_lang` (
     `id_ukooparts_engine_type` int(11) NOT NULL,
     `id_lang` int(11) NOT NULL,
     `name` varchar(250) COLLATE utf8_bin NOT NULL,
@@ -103,8 +96,7 @@ $query = "DROP TABLE IF EXISTS `PREFIX_ukooparts_compatibility`;
     KEY `id_lang` (`id_lang`) USING BTREE
     );
 
-    DROP TABLE IF EXISTS `PREFIX_ukooparts_feature`;
-    CREATE TABLE `PREFIX_ukooparts_feature` (
+    CREATE TABLE IF NOT EXISTS `PREFIX_ukooparts_feature` (
     `id_ukooparts_feature` int(11) NOT NULL AUTO_INCREMENT,
     `id_ukooparts_feature_group` int(11) NOT NULL,
     `active` tinyint(1) NOT NULL,
@@ -116,8 +108,7 @@ $query = "DROP TABLE IF EXISTS `PREFIX_ukooparts_compatibility`;
     KEY `active` (`active`)
     );
 
-    DROP TABLE IF EXISTS `PREFIX_ukooparts_feature_group`;
-    CREATE TABLE `PREFIX_ukooparts_feature_group` (
+    CREATE TABLE IF NOT EXISTS `PREFIX_ukooparts_feature_group` (
     `id_ukooparts_feature_group` int(11) NOT NULL AUTO_INCREMENT,
     `active` tinyint(1) NOT NULL,
     `position` tinyint(2) NOT NULL,
@@ -127,8 +118,7 @@ $query = "DROP TABLE IF EXISTS `PREFIX_ukooparts_compatibility`;
     KEY `active` (`active`)
     );
 
-    DROP TABLE IF EXISTS `PREFIX_ukooparts_feature_group_lang`;
-    CREATE TABLE `PREFIX_ukooparts_feature_group_lang` (
+    CREATE TABLE IF NOT EXISTS `PREFIX_ukooparts_feature_group_lang` (
     `id_ukooparts_feature_group` int(11) NOT NULL,
     `id_lang` int(11) NOT NULL,
     `name` varchar(250) COLLATE utf8_bin NOT NULL,
@@ -137,8 +127,7 @@ $query = "DROP TABLE IF EXISTS `PREFIX_ukooparts_compatibility`;
     KEY `id_lang` (`id_lang`) USING BTREE
     );
 
-    DROP TABLE IF EXISTS `PREFIX_ukooparts_feature_lang`;
-    CREATE TABLE `PREFIX_ukooparts_feature_lang` (
+    CREATE TABLE IF NOT EXISTS `PREFIX_ukooparts_feature_lang` (
     `id_ukooparts_feature` int(11) NOT NULL,
     `id_lang` int(11) NOT NULL,
     `name` varchar(250) COLLATE utf8_bin NOT NULL,
@@ -147,8 +136,7 @@ $query = "DROP TABLE IF EXISTS `PREFIX_ukooparts_compatibility`;
     KEY `id_lang` (`id_lang`) USING BTREE
     );
 
-    DROP TABLE IF EXISTS `PREFIX_ukooparts_manufacturer`;
-    CREATE TABLE `PREFIX_ukooparts_manufacturer` (
+    CREATE TABLE IF NOT EXISTS `PREFIX_ukooparts_manufacturer` (
     `id_ukooparts_manufacturer` int(11) NOT NULL AUTO_INCREMENT,
     `name` varchar(250) COLLATE utf8_bin NOT NULL,
     `image` varchar(250) COLLATE utf8_bin NOT NULL,
@@ -161,8 +149,7 @@ $query = "DROP TABLE IF EXISTS `PREFIX_ukooparts_compatibility`;
     KEY `active` (`active`)
     );
 
-    DROP TABLE IF EXISTS `PREFIX_ukooparts_manufacturer_lang`;
-    CREATE TABLE `PREFIX_ukooparts_manufacturer_lang` (
+    CREATE TABLE IF NOT EXISTS `PREFIX_ukooparts_manufacturer_lang` (
     `id_ukooparts_manufacturer` int(11) NOT NULL,
     `id_lang` int(11) NOT NULL,
     `website` varchar(250) COLLATE utf8_bin NOT NULL,
