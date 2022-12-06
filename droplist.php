@@ -120,11 +120,13 @@ if (isset($_COOKIE['Choix2']))
 
 <?php
 if (isset($_GET['Envoyer'])) {
- $_GET['Choix1']." ".$_GET['Choix2'];}
+ $_GET['Choix1']." ".$_GET['Choix2'];
+ $_COOKIE['Choix1'] = $_GET['Choix1'];
+ $_COOKIE['Choix2'] = $_GET['Choix2'];
+ echo $_COOKIE['Choix1'],$_COOKIE['Choix2'];}else{
+    echo'pas de moto';
+ }
 
-$_COOKIE['Choix1'] = $_GET['Choix1'];
-$_COOKIE['Choix2'] = $_GET['Choix2'];
-echo $_COOKIE['Choix1'],$_COOKIE['Choix2'];
 
 
 ?>

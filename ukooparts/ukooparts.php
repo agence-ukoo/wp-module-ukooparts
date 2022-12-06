@@ -180,19 +180,19 @@ function marque(): void{
             </div>
             <div class="container" id="containerLogo">
             <div class="logo" id="yamaha">
-            <a href="models/?manufact_id=11"><img class="logo" src="https://i.pinimg.com/originals/0b/c0/24/0bc024f240e6bec6d29df3155d487adf.png" /></a>
+            <a href="models/?manufact_id=11"><img class="logo" src="../wp-content/uploads/2022/12/11.jpg" /></a>
             </div>
             <div class="logo" id="kawasaki">
-            <a href="models/?manufact_id=5"><img class="logo" src="https://www.freepnglogos.com/uploads/kawasaki-png-logo/kawasaki-green-emblem-png-logo-1.png" /></a>
+            <a href="models/?manufact_id=5"><img class="logo" src="../wp-content/uploads/2022/12/5.jpg" /></a>
             </div>           
             <div class="logo" id="suzuki">
-            <a href="models/?manufact_id=9"><img class="logo" src="https://seeklogo.com/images/S/suzuki-logo-B2B31D667D-seeklogo.com.png" /></a>
+            <a href="models/?manufact_id=9"><img class="logo" src="../wp-content/uploads/2022/12/9.jpg" /></a>
             </div>           
             <div class="logo" id="aprilia">
-            <a href="models/?manufact_id=16"><img class="logo" src="https://www.autocollant-tuning.com/2143-home_default/autocollant-aprilia-sport.jpg" /></a>
+            <a href="models/?manufact_id=16"><img class="logo" src="../wp-content/uploads/2022/12/16.jpg" /></a>
             </div>                       
             <div class="logo" id="bmw">
-            <a href="models/?manufact_id=15"><img class="logo" src="https://assets.stickpng.com/thumbs/580b57fcd9996e24bc43c46e.png" /></a>
+            <a href="models/?manufact_id=15"><img class="logo" src="../wp-content/uploads/2022/12/15.jpg" /></a>
             </div>       
             </div>                
             <p style="text-align: center;"> voir tout les <a href="manufacturers">constructeurs </a></p>'
