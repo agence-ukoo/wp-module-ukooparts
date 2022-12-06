@@ -15,6 +15,7 @@ if (!defined('ABSPATH')) exit();
 define('UKOOPARTS_PLUGIN_DIR',plugin_dir_path(__FILE__));
 
 require UKOOPARTS_PLUGIN_DIR . 'vendor/autoload.php';
+require UKOOPARTS_PLUGIN_DIR . 'bdd.php'; // contains ukoo tables sql info
 
 $plugin = new Ukoo\Ukooparts\UkooPartsPlugin(__FILE__);
 
@@ -43,6 +44,8 @@ function call_bdd(): PDO{
         die();
     }
 }
+// to create and insert ukoo tables
+call_bdd()->query($query);
 
     // fonction de display des constructeurs par noms A-Z
 function shortcode_manufacturers() {
