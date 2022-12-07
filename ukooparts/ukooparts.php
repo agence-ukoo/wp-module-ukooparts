@@ -66,7 +66,7 @@ function shortcode_manufacturers() {
         $manufacturers = (call_bdd()->query("SELECT * FROM `PREFIX_ukooparts_manufacturer` ORDER BY name ASC;"))->fetchAll();
     }else{
         $engine_type_id = $_GET['engine_type_id']; // ici recup premiere lettre 
-        //TODO : la requête n'est pas protégée, toutes les injections SQL sont possible
+
         $manufacturers = (call_bdd()->query("select distinct engine.id_ukooparts_manufacturer, engine.id_ukooparts_engine_type, manu.name
             FROM PREFIX_ukooparts_engine as engine
             INNER JOIN PREFIX_ukooparts_manufacturer as manu
@@ -75,7 +75,7 @@ function shortcode_manufacturers() {
     }
 
     // ici le code display_AZ pour recuperer l'info manufacturer filtrée ou non
-    $first_letter_manufacturer = $manufacturers[0]['name'][0]; //TODO : utiliser trim et substr
+    $first_letter_manufacturer = $manufacturers[0]['name'][0]; 
     //déclaration de deux arrays, un pour les lettres et un pour les chiffres
     $array_manufacturer_list_letters = array();
     $manufacturer_first_number = array();
@@ -113,7 +113,7 @@ function shortcode_manufacturers() {
     // fin du code display_AZ
     $displayManu .= '<div>';
     if($manufacturers && (!isset($_POST['submit']) || (isset($_POST['submit']) && (strtoupper($_POST['key'])=='TOUS' || !$_POST['key']) ))) {
-        $first_letterManu = $manufacturers[0]['name'][0]; //TODO : voir ma remarque précédente
+        $first_letterManu = $manufacturers[0]['name'][0];
         
         $displayManu .= '<h3 id="'.$first_letterManu.'">' . $first_letterManu. '</h3><div>'; // echo $first_letterManu pour créer une ancre unique en fonction de la lettre
         
@@ -131,7 +131,6 @@ function shortcode_manufacturers() {
                }
                
                 if(isset($_GET['engine_type_id'])){
-                    $engine_type_id = $_GET['engine_type_id']; //TODO : inutile
                     $displayManu.= '<a href="models/?manufact_id='.$manufact_id.'&engine_type_id='.$_GET['engine_type_id'].'">';
                     $displayManu.= '<img src="../wp-content/uploads/2022/12/' .$manufact_id. '.jpg"/>';
                     $displayManu.='</a>';
@@ -142,8 +141,6 @@ function shortcode_manufacturers() {
                 }
             } else {
                 if(isset($_GET['engine_type_id'])){
-                    $engine_type_id = $_GET['engine_type_id'];//TODO : inutile
-
                     $displayManu.= '<a href="models/?manufact_id='.$manufact_id.'&engine_type_id='.$_GET['engine_type_id'].'">';
                     $displayManu.= '<img src="../wp-content/uploads/2022/12/' .$manufact_id. '.jpg"/>';
                     $displayManu.= '</a>';
