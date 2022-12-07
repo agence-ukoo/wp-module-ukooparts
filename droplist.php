@@ -130,6 +130,7 @@ if (isset($_GET['Envoyer'])) {
  $_COOKIE['Choix3'] = $_GET['Choix3'];
  $_COOKIE['Choix4'] = $_GET['Choix4']; 
  
+ 
  $query = $db -> query('SELECT name FROM PREFIX_ukooparts_manufacturer WHERE id_ukooparts_manufacturer = '.$_COOKIE['Choix2']);
  $name = $query -> fetchAll();
  echo "Moto séléctionné : ".$name[0]["name"]." ";
@@ -139,10 +140,11 @@ if (isset($_GET['Envoyer'])) {
  echo $model[0]["model"];
 
 
+$id_guest = round(rand(0, time())/500000);
  $requestSQL = $db -> prepare('INSERT INTO PREFIX_ukooparts_customer_engine (id_customer,id_guest,id_ukooparts_engine,owned,current,date_upd,date_add)
  VALUES (:id_customer,:id_guest,:id_ukooparts_engine,:owned,:current,now(),now())');
- $requestSQL-> bindValue(':id_customer',1);
- $requestSQL-> bindValue(':id_guest',1);
+ $requestSQL-> bindValue(':id_customer',0);
+ $requestSQL-> bindValue(':id_guest',$id_guest);
  $requestSQL-> bindValue(':id_ukooparts_engine',$_COOKIE['Choix3']);
  $requestSQL-> bindValue(':owned',1); 
  $requestSQL-> bindValue(':current',1);
