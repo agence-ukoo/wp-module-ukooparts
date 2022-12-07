@@ -214,45 +214,30 @@ function marque(): void{
 
 /////////////////////////////////////////larbi///////////////////////////////////////////
 
-function types(){
-    printf('
-    <div id="containerTitleSelectTypeVehicule">
-        <h3 id="titleSelectTypeVehicule"><span>sélectionnez votre type de véhicule</span></h3>
-    </div>
-    
-    <div class="triangle_container">
-            <img id="triangle" src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Red_triangle.svg/540px-Red_triangle.svg.png" />
-    </div>
+function types():void{
 
+    $type_vehicule_Db = call_bdd()->query("SELECT name FROM `PREFIX_ukooparts_engine_type_lang` WHERE id_lang = 1");
+printf('    <div id="containerTitleSelectTypeVehicule">
+<h3 id="titleSelectTypeVehicule"><span>sélectionnez votre type de véhicule</span></h3>
+</div>
+
+<div class="triangle_container">
+    <img id="triangle" src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Red_triangle.svg/540px-Red_triangle.svg.png" />
+</div>');
+   
+foreach ($type_vehicule_Db as $type_vehicule) {
+    printf('
     <div id="container">
         <div id="containerListTypeVehicule">
             <div class="linkImglistTypeVehicule">
             <a class="linkTypeVehicule" href="manufacturers/?engine_type_id=1">
                 <img class="iconSelectTypeVehicule" src="http://imagenspng.com/wp-content/uploads/desenhos-motos-Imagem-png-para-imprimir-gratis-768x768.png" alt="">
-                <p>Pièces moto</p>
+                <p>' .  $type_vehicule["name"] . '</p>
             </a>
-            </div>
-            <div class="linkImglistTypeVehicule">
-            <a class="linkTypeVehicule" href="manufacturers/?engine_type_id=2">
-                <img class="iconSelectTypeVehicule" src="http://imagenspng.com/wp-content/uploads/desenhos-motos-Imagem-png-para-imprimir-gratis-768x768.png" alt="">
-                <p>Pièces scooter</p>
-            </a>
-            </div>
-            <div class="linkImglistTypeVehicule">
-            <a class="linkTypeVehicule" href="manufacturers/?engine_type_id=3">
-                <img class="iconSelectTypeVehicule" src="http://imagenspng.com/wp-content/uploads/desenhos-motos-Imagem-png-para-imprimir-gratis-768x768.png" alt="">
-                <p>Pièces quad et SSV</p>
-            </a>
-            </div>
-            <div class="linkImglistTypeVehicule">
-            <a class="linkTypeVehicule" href="manufacturers/?engine_type_id=4">
-                <img class="iconSelectTypeVehicule" src="http://imagenspng.com/wp-content/uploads/desenhos-motos-Imagem-png-para-imprimir-gratis-768x768.png" alt="">
-                <p>Pièces tout terrain</p>
-            </a>
-            </div>
         </div>
     </div>
     ');
+   }; 
 }
 
 add_action('wp_footer', 'types');
