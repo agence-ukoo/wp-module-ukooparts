@@ -125,21 +125,22 @@ function shortcode_manufacturers() {
         
                 if(isset($_GET['engine_type_id'])){
                     $displayManu.= '<a href="models/?manufact_id='.$manufact_id.'&engine_type_id='.$_GET['engine_type_id'].'">';
-                    $displayManu.= '<img src="../wp-content/uploads/2022/12/' .$manufact_id. '.jpg"/>';
+                    $displayManu.= '<img src="../wp-content/plugins/ukooparts/views/images/manufacturer/' .$manufact_id. '.jpg"/>';
                     $displayManu.='</a>';
                 }else{
                     $displayManu.= '<a href="models/?manufact_id='.$manufact_id.'">';
-                    $displayManu.= '<img src="../wp-content/uploads/2022/12/' .$manufact_id.'.jpg"/>';
+                    $displayManu.= '<img src="../wp-content/plugins/ukooparts/views/images/manufacturer/' .$manufact_id. '.jpg"/>';
                     $displayManu.= '</a>';
                 }
             } else {
                 if(isset($_GET['engine_type_id'])){
                     $displayManu.= '<a href="models/?manufact_id='.$manufact_id.'&engine_type_id='.$_GET['engine_type_id'].'">';
-                    $displayManu.= '<img src="../wp-content/uploads/2022/12/' .$manufact_id. '.jpg"/>';
-                    $displayManu.= '</a>';    
+                    $displayManu.= '<img src="../wp-content/plugins/ukooparts/views/images/manufacturer/' .$manufact_id. '.jpg"/>';
+                    $displayManu.= '</a>';
+                
                 }else{
                     $displayManu.= '<a href="models/?manufact_id='.$manufact_id.'">';
-                    $displayManu.= '<img src="../wp-content/uploads/2022/12/' .$manufact_id. '.jpg"/>';
+                    $displayManu.=  '<img src="../wp-content/plugins/ukooparts/views/images/manufacturer/' .$manufact_id. '.jpg"/>';
                     $displayManu.= '</a>';
                     
                 }
