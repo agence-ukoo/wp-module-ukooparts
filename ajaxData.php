@@ -10,7 +10,8 @@
 }
 if(!empty($_POST["id_ukooparts_engine_type"])){
    
-    $result = $db->query("SELECT DISTINCT MANU.id_ukooparts_manufacturer, MANU.name AS manufacturer FROM PREFIX_ukooparts_engine ENGIN inner join 
+    $result = $db->query("SELECT DISTINCT MANU.id_ukooparts_manufacturer, MANU.name AS manufacturer 
+    FROM PREFIX_ukooparts_engine ENGIN inner join 
     PREFIX_ukooparts_manufacturer MANU ON ENGIN.id_ukooparts_manufacturer = MANU.id_ukooparts_manufacturer 
     WHERE id_ukooparts_engine_type = '".$_POST['id_ukooparts_engine_type']."'");
 

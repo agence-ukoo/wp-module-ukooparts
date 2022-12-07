@@ -171,31 +171,39 @@ add_shortcode('manufacturers', 'shortcode_manufacturers');
 add_action('wp_footer','marque');
 
 function marque(): void{
+    $manu = call_bdd()->query("SELECT * FROM `PREFIX_ukooparts_manufacturer` LIMIT 4");
     printf(' <div class="titrediv" id="titrecss">
             <h2 id="titre"><span> Nos constructeurs moto route </span></h2>
             </div>
             <div class="triangle_container">
             <img id="triangle" src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Red_triangle.svg/540px-Red_triangle.svg.png" />
-            </div>
-            <div class="container" id="containerLogo">
-            <div class="logo" id="yamaha">
-            <a href="parts-models/?manufact_id=11"><img class="logo" src="https://i.pinimg.com/originals/0b/c0/24/0bc024f240e6bec6d29df3155d487adf.png" /></a>
-            </div>
-            <div class="logo" id="kawasaki">
-            <a href="parts-models/?manufact_id=5"><img class="logo" src="https://www.freepnglogos.com/uploads/kawasaki-png-logo/kawasaki-green-emblem-png-logo-1.png" /></a>
-            </div>           
-            <div class="logo" id="suzuki">
-            <a href="parts-models/?manufact_id=9"><img class="logo" src="https://seeklogo.com/images/S/suzuki-logo-B2B31D667D-seeklogo.com.png" /></a>
-            </div>           
-            <div class="logo" id="aprilia">
-            <a href="parts-models/?manufact_id=16"><img class="logo" src="https://www.autocollant-tuning.com/2143-home_default/autocollant-aprilia-sport.jpg" /></a>
-            </div>                       
-            <div class="logo" id="bmw">
-            <a href="parts-models/?manufact_id=15"><img class="logo" src="https://assets.stickpng.com/thumbs/580b57fcd9996e24bc43c46e.png" /></a>
-            </div>       
-            </div>                
-            <p style="text-align: center;"> voir tout les <a href="parts-manufacturers">constructeurs </a></p>'
-        );
+            </div> ');
+
+    foreach($manu as $manufacturers){
+        printf('<div class="container" id="containerLogo">
+        <div class="logo" id="yamaha">
+        <a href="parts-models/?manufact_id=5"><img class="logo" src="https://www.freepnglogos.com/uploads/kawasaki-png-logo/kawasaki-green-emblem-png-logo-1.png" /></a>
+        <p>' .  $manufacturers["name"] . '</p>
+        </div>
+        </div>');
+    }  
+    printf('<p style="text-align: center;"> voir tout les <a href="parts-manufacturers">constructeurs </a></p>');
+            
+            // <div class="logo" id="kawasaki">
+            // <a href="parts-models/?manufact_id=5"><img class="logo" src="https://www.freepnglogos.com/uploads/kawasaki-png-logo/kawasaki-green-emblem-png-logo-1.png" /></a>
+            // </div>           
+            // <div class="logo" id="suzuki">
+            // <a href="parts-models/?manufact_id=9"><img class="logo" src="https://seeklogo.com/images/S/suzuki-logo-B2B31D667D-seeklogo.com.png" /></a>
+            // </div>           
+            // <div class="logo" id="aprilia">
+            // <a href="parts-models/?manufact_id=16"><img class="logo" src="https://www.autocollant-tuning.com/2143-home_default/autocollant-aprilia-sport.jpg" /></a>
+            // </div>                       
+            // <div class="logo" id="bmw">
+            // <a href="parts-models/?manufact_id=15"><img class="logo" src="https://assets.stickpng.com/thumbs/580b57fcd9996e24bc43c46e.png" /></a>
+            // </div>       
+            // </div>                
+        //     <p style="text-align: center;"> voir tout les <a href="parts-manufacturers">constructeurs </a></p>'
+        // );
 }
 
 
