@@ -650,7 +650,7 @@ function shortcode_garage(){
     inner join PREFIX_ukooparts_manufacturer MANU ON ENGIN.id_ukooparts_manufacturer
     = MANU.id_ukooparts_manufacturer WHERE ENGIN.id_ukooparts_engine IN
     (SELECT id_ukooparts_engine FROM  PREFIX_ukooparts_customer_engine)');
-;
+
     $model = $query -> fetchAll();
 // var_dump($model);
 $html = $html.'<h3>Nom</h3>';
@@ -662,6 +662,7 @@ $html = $html.'<h3>Nom</h3>';
 
         $html = $html.'<div>'.$mod['modele'].'</div>';
     }
+    
     
     return $html;
 
