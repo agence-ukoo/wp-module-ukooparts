@@ -22,13 +22,13 @@ $plugin = new Ukoo\Ukooparts\UkooPartsPlugin(__FILE__);
 add_action('wp_head', 'import_script');
 
 function import_script(){
-    ?>
-    <link href="<?php echo plugin_dir_url(__FILE__) ?>css/footer_manufacturers.css" rel="stylesheet">
-    <link href="<?php echo plugin_dir_url(__FILE__) ?>css/footer_types.css" rel="stylesheet">
-    <link href="<?php echo plugin_dir_url(__FILE__) ?>css/top50.css" rel="stylesheet">
-    <link href="<?php echo plugin_dir_url(__FILE__) ?>node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script type="text/javascript" src="<?php echo plugin_dir_url(__FILE__) ?>node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
-    <?php
+    echo "
+    <link href=\"".plugin_dir_url(__FILE__)."css/footer_manufacturers.css\" rel=\"stylesheet\">
+    <link href=\"".plugin_dir_url(__FILE__)."css/footer_types.css\" rel=\"stylesheet\">
+    <link href=\"".plugin_dir_url(__FILE__)."css/top50.css\" rel=\"stylesheet\">
+    <link href=\"".plugin_dir_url(__FILE__)."node_modules/bootstrap/dist/css/bootstrap.min.css\" rel=\"stylesheet\">
+    <script type=\"text/javascript\" src=\"".plugin_dir_url(__FILE__)."node_modules/bootstrap/dist/js/bootstrap.min.js\"></script>
+    ";
 }
 
 //////////////Vincent Pages ********************************
@@ -66,6 +66,7 @@ function shortcode_manufacturers() {
         $manufacturers = (call_bdd()->query("SELECT * FROM `PREFIX_ukooparts_manufacturer` ORDER BY name ASC;"))->fetchAll();
     }else{
         $engine_type_id = $_GET['engine_type_id']; // ici recup premiere lettre 
+
         $manufacturers = (call_bdd()->query("select distinct engine.id_ukooparts_manufacturer, engine.id_ukooparts_engine_type, manu.name
             FROM PREFIX_ukooparts_engine as engine
             INNER JOIN PREFIX_ukooparts_manufacturer as manu
@@ -73,50 +74,49 @@ function shortcode_manufacturers() {
             WHERE engine.id_ukooparts_engine_type = $engine_type_id ORDER BY name ASC"))->fetchAll();
     }
 
-// ici le code display_AZ pour recuperer l'info manufacturer filtrée ou non
+    // ici le code display_AZ pour recuperer l'info manufacturer filtrée ou non
+    $first_letter_manufacturer = $manufacturers[0]['name'][0]; 
+    //déclaration de deux arrays, un pour les lettres et un pour les chiffres
+    $array_manufacturer_list_letters = array();
+    $manufacturer_first_number = array();
 
-        $first_letter_manufacturer = $manufacturers[0]['name'][0];
-            //déclaration de deux arrays, un pour les lettres et un pour les chiffres
-        $array_manufacturer_list_letters = array();
-        $manufacturer_first_number = array();
+    //on ne vérifie que si la première donnée est numérique ou non
+    if(is_numeric($first_letter_manufacturer)) {
+        array_push($manufacturer_first_number, $first_letter_manufacturer);
+    } else {
+        array_push($array_manufacturer_list_letters, $first_letter_manufacturer);
+    }
 
-                //on ne vérifie que si la première donnée est numérique ou non
-            if(is_numeric($first_letter_manufacturer)) {
-                array_push($manufacturer_first_number, $first_letter_manufacturer);
-            } else {
-                array_push($array_manufacturer_list_letters, $first_letter_manufacturer);
-            }
-
-                // loop pour compléter l'array avec tous les autres caractères sans distinction
-        foreach($manufacturers as $manufacturer) {
-            if($manufacturer['name'][0] != $first_letter_manufacturer) {
-                $first_letter_manufacturer = $manufacturer['name'][0];
-                array_push($array_manufacturer_list_letters, $first_letter_manufacturer);
-            }
-        } 
-                // s'il y au moins UN chiffre, le 0-9 est activé et cliquable
-            if (count($manufacturer_first_number) > 0 ) { ?>
-                <span><a href="#0-9" style='color:black;'><?php echo "0-9" ?></a></span> <?php
-            } else {
-                ?><span><a style='color:grey;'><?php echo "0-9" ?></a></span> <?php
-            }
-                // on display l'aphabet, en vérifiant si chaque lettre est présente dans la liste manufacturers
-                // si oui, la lettre est noire et cliquable avec ancre.
-         foreach(range('A', 'Z') as $abc) {
-            if (in_array($abc, $array_manufacturer_list_letters) ) { ?>
-                 <span><a href="#<?php echo $abc ?>" style='color:black;'><?php echo $abc ?></a></span> <?php
-            } else {
-                echo "<span style='color:grey;'>$abc</span> ";
-            }
-         }
+            // loop pour compléter l'array avec tous les autres caractères sans distinction
+    foreach($manufacturers as $manufacturer) {
+        if($manufacturer['name'][0] != $first_letter_manufacturer) {
+            $first_letter_manufacturer = $manufacturer['name'][0];
+            array_push($array_manufacturer_list_letters, $first_letter_manufacturer);
+        }
+    } 
+    // s'il y au moins UN chiffre, le 0-9 est activé et cliquable
+    if (count($manufacturer_first_number) > 0 ) { 
+        $displayManu.="<span><a href=\"#0-9\" style='color:black;'>0-9</a></span>";
+    } else {
+        $displayManu.="<span><a style='color:grey;'>0-9</a></span>";
+    }
+    // on display l'aphabet, en vérifiant si chaque lettre est présente dans la liste manufacturers
+    // si oui, la lettre est noire et cliquable avec ancre.
+    foreach(range('A', 'Z') as $abc) {
+        if (in_array($abc, $array_manufacturer_list_letters) ) {
+            $displayManu.="<span><a href=\"#$abc\" style='color:black;'>$abc</a></span>";
+        } else {
+            $displayManu.="<span style='color:grey;'>$abc</span> ";
+        }
+    }
     
-// fin du code display_AZ
-
-    if($manufacturers && (!isset($_POST['submit']) || (isset($_POST['submit']) && (strtoupper($_POST['key'])=='TOUS' || !$_POST['key']) ))     ) {
+    // fin du code display_AZ
+    $displayManu .= '<div>';
+    if($manufacturers && (!isset($_POST['submit']) || (isset($_POST['submit']) && (strtoupper($_POST['key'])=='TOUS' || !$_POST['key']) ))) {
         $first_letterManu = $manufacturers[0]['name'][0];
         
-        $displayManu = $displayManu. '<h3 id="'.$first_letterManu.'">' . $first_letterManu. '</h3><div>'; // echo $first_letterManu pour créer une ancre unique en fonction de la lettre
-
+        $displayManu .= '<h3 id="'.$first_letterManu.'">' . $first_letterManu. '</h3><div>'; // echo $first_letterManu pour créer une ancre unique en fonction de la lettre
+        
             // cherche la premiere lettre est differente
         foreach($manufacturers as $manufacturer) {
             $manufact_id = $manufacturer['id_ukooparts_manufacturer'];
@@ -125,27 +125,35 @@ function shortcode_manufacturers() {
 
                 //  le if vérifie s'il s'agit d'un numéro en initiale et redirige tout vers la dernière génération de l'id"0-9". 
                if(!is_numeric($first_letterManu)) {
-                    $displayManu = $displayManu. '</div><h3 id="'.$first_letterManu.'">' .$first_letterManu. '</h3><div>'; // echo $first_letterManu pour créer une ancre unique en fontion de la lettre
+                    $displayManu.= '<div><h3 id="'.$first_letterManu.'">' .$first_letterManu. '</h3></div>'; // echo $first_letterManu pour créer une ancre unique en fontion de la lettre
                } else {
-                $displayManu = $displayManu. '</div><h3 id="0-9">' .$first_letterManu. '</h3><div>'; // tous les chiffres forment des sections différentes mais une seul id
+                    $displayManu.= '<div><h3 id="0-9">' .$first_letterManu. '</h3></div>'; // tous les chiffres forment des sections différentes mais une seul id
                }
                
                 if(isset($_GET['engine_type_id'])){
-                    $engine_type_id = $_GET['engine_type_id'];
-                    $displayManu = $displayManu.'<a href="models/?manufact_id='.$manufact_id.'&engine_type_id='.$_GET['engine_type_id'].'">'.$manufacturer['name'].'</a> ';
+                    $displayManu.= '<a href="models/?manufact_id='.$manufact_id.'&engine_type_id='.$_GET['engine_type_id'].'">';
+                    $displayManu.= '<img src="../wp-content/uploads/2022/12/' .$manufact_id. '.jpg"/>';
+                    $displayManu.='</a>';
                 }else{
-                    $displayManu = $displayManu.'<a href="models/?manufact_id='.$manufact_id.'">'.$manufacturer['name'].'</a> ';
+                    $displayManu.= '<a href="models/?manufact_id='.$manufact_id.'">';
+                    $displayManu.= '<img src="../wp-content/uploads/2022/12/' .$manufact_id.'.jpg"/>';
+                    $displayManu.= '</a>';
                 }
             } else {
                 if(isset($_GET['engine_type_id'])){
-                    $engine_type_id = $_GET['engine_type_id'];
-                    $displayManu = $displayManu.'<a href="models/?manufact_id='.$manufact_id.'&engine_type_id='.$_GET['engine_type_id'].'">'.$manufacturer['name'].'</a> ';
+                    $displayManu.= '<a href="models/?manufact_id='.$manufact_id.'&engine_type_id='.$_GET['engine_type_id'].'">';
+                    $displayManu.= '<img src="../wp-content/uploads/2022/12/' .$manufact_id. '.jpg"/>';
+                    $displayManu.= '</a>';
+                
                 }else{
-                    $displayManu = $displayManu.'<a href="models/?manufact_id='.$manufact_id.'">'.$manufacturer['name'].'</a> ';
+                    $displayManu.= '<a href="models/?manufact_id='.$manufact_id.'">';
+                    $displayManu.= '<img src="../wp-content/uploads/2022/12/' .$manufact_id. '.jpg"/>';
+                    $displayManu.= '</a>';
+                    
                 }
             }
         }
-        return $displayManu.'</div>';
+        
     }else if ($manufacturers && isset($_POST['submit']) && strtoupper($_POST['key']) !='TOUS'){
         $key = $_POST['key'];
         $array_manufacts_found = array();
@@ -154,9 +162,9 @@ function shortcode_manufacturers() {
             $manufact_id = $manufacturer['id_ukooparts_manufacturer'];
             if(str_contains(strtoupper($manufacturer['name']), strtoupper($key))){
                 if(isset($_GET['engine_type_id'])){
-                    $displayManu = $displayManu.'<a href="models/?manufact_id='.$manufact_id.'&engine_type_id='.$_GET['engine_type_id'].'">'.$manufacturer['name'].'</a>, ';
+                    $displayManu = $displayManu.'<a href="parts-models/?manufact_id='.$manufact_id.'&engine_type_id='.$_GET['engine_type_id'].'">'.$manufacturer['name'].'</a>, ';
                 }else{
-                    $displayManu = $displayManu.'<a href="models/?manufact_id='.$manufact_id.'">'.$manufacturer['name'].'</a>, ';
+                    $displayManu = $displayManu.'<a href="parts-models/?manufact_id='.$manufact_id.'">'.$manufacturer['name'].'</a>, ';
                 }
                 array_push($array_manufacts_found, $manufacturer);
             }
@@ -164,8 +172,10 @@ function shortcode_manufacturers() {
         if(sizeof($array_manufacts_found) == 0){
             $displayManu = $displayManu.'Ce modèle n\'existe pas';
         }
-        return $displayManu.'</div>';
+  
     }
+    $displayManu.='</div>';
+    return $displayManu;
 }
 
 add_shortcode('manufacturers', 'shortcode_manufacturers');
@@ -182,19 +192,19 @@ function marque(): void{
             </div>
             <div class="container" id="containerLogo">
             <div class="logo" id="yamaha">
-            <a href="models/?manufact_id=11"><img class="logo" src="https://i.pinimg.com/originals/0b/c0/24/0bc024f240e6bec6d29df3155d487adf.png" /></a>
+            <a href="models/?manufact_id=11"><img class="logo" src="http://localhost/ukooparts/wp-content/uploads/2022/12/11.jpg" /></a>
             </div>
             <div class="logo" id="kawasaki">
-            <a href="models/?manufact_id=5"><img class="logo" src="https://www.freepnglogos.com/uploads/kawasaki-png-logo/kawasaki-green-emblem-png-logo-1.png" /></a>
+            <a href="models/?manufact_id=5"><img class="logo" src="http://localhost/ukooparts/wp-content/uploads/2022/12/5.jpg" /></a>
             </div>           
             <div class="logo" id="suzuki">
-            <a href="models/?manufact_id=9"><img class="logo" src="https://seeklogo.com/images/S/suzuki-logo-B2B31D667D-seeklogo.com.png" /></a>
+            <a href="models/?manufact_id=9"><img class="logo" src="http://localhost/ukooparts/wp-content/uploads/2022/12/9.jpg" /></a>
             </div>           
             <div class="logo" id="aprilia">
-            <a href="models/?manufact_id=16"><img class="logo" src="https://www.autocollant-tuning.com/2143-home_default/autocollant-aprilia-sport.jpg" /></a>
+            <a href="models/?manufact_id=16"><img class="logo" src="http://localhost/ukooparts/wp-content/uploads/2022/12/16.jpg" /></a>
             </div>                       
             <div class="logo" id="bmw">
-            <a href="models/?manufact_id=15"><img class="logo" src="https://assets.stickpng.com/thumbs/580b57fcd9996e24bc43c46e.png" /></a>
+            <a href="models/?manufact_id=15"><img class="logo" src="http://localhost/ukooparts/wp-content/uploads/2022/12/15.jpg" /></a>
             </div>       
             </div>                
             <p style="text-align: center;"> voir tout les <a href="manufacturers">constructeurs </a></p>'
