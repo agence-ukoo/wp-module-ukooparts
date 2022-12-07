@@ -86,7 +86,7 @@ if (isset($_COOKIE['Choix1']))
     });
 </script>
 <?php
-   try  {
+try  {
     $db = new PDO('mysql:host=localhost;dbname=ukooparts','root','');
     $db -> exec('SET NAMES "UTF8"');
     $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -96,54 +96,45 @@ if (isset($_COOKIE['Choix1']))
 }
 ?>
 <form  action = "" method="GET"> 
-<div class="container">
-    <?php
-    $result = $db->query("SELECT * FROM PREFIX_ukooparts_engine_type_lang WHERE id_lang = 1 ORDER BY name ASC");
-    ?>
+    <div class="container">
+        <?php
+        $result = $db->query("SELECT * FROM PREFIX_ukooparts_engine_type_lang WHERE id_lang = 1 ORDER BY name ASC");
+        ?>
 
-<select name = "Choix1" id="type">
-    <option value="">select type</option>
-    <?php 
-    if($result->rowCount()> 0){
-        while($row = $result->fetch(PDO::FETCH_ASSOC)){
-            echo'<option value="'.$row['id_ukooparts_engine_type'].'">'.$row['name'].'</option>';
-        }
-    }else{
-        echo'<option value=""> pas de type</option>';
-    }
-    ?>
-</select>
+        <select name = "Choix1" id="type">
+            <option value="">select type</option>
+            <?php 
+            if($result->rowCount()> 0){
+                while($row = $result->fetch(PDO::FETCH_ASSOC)){
+                    echo'<option value="'.$row['id_ukooparts_engine_type'].'">'.$row['name'].'</option>';
+                }
+            }else{
+                echo'<option value=""> pas de type</option>';
+            }
+            ?>
+        </select>
 
-<select name="Choix2" id="marque">
-<option value="">marque</option>
-</select>
-<select name="Choix3" id="modele">
-<option value="">modele</option>
-</select>
-<select name = "Choix4" id="year">
-<option value="">année</option>
-</select>
-<input name="Envoyer" type="submit" value="valider" />
-  </form>
+        <select name="Choix2" id="marque">
+            <option value="">marque</option>
+        </select>
+        <select name="Choix3" id="modele">
+            <option value="">modele</option>
+        </select>
+        <select name = "Choix4" id="year">
+            <option value="">année</option>
+        </select>
+        <input name="Envoyer" type="submit" value="valider" />
+     
+</form>
 <?php
 if (isset($_GET['Envoyer'])) {
- $_GET['Choix1']." ".$_GET['Choix2']."".$_GET['Choix3']."".$_GET['Choix4'];
- $_COOKIE['Choix1'] = $_GET['Choix1'];
- $_COOKIE['Choix2'] = $_GET['Choix2'];
- $_COOKIE['Choix3'] = $_GET['Choix3'];
- $_COOKIE['Choix4'] = $_GET['Choix4']; 
-
-
-        // $query = $db -> query('SELECT name FROM PREFIX_ukooparts_manufacturer WHERE id_ukooparts_manufacturer = '.$_COOKIE['Choix2']);
-        // $name = $query -> fetchAll();
-        // echo "Moto séléctionné : ".$name[0]["name"]." ";
-
-        // $query = $db -> query('SELECT model FROM PREFIX_ukooparts_engine WHERE id_ukooparts_engine = '.$_COOKIE['Choix3']);
-        // $model = $query -> fetchAll();
-        // echo $model[0]["model"];
+    $_GET['Choix1']." ".$_GET['Choix2']."".$_GET['Choix3']."".$_GET['Choix4'];
+    $_COOKIE['Choix1'] = $_GET['Choix1'];
+    $_COOKIE['Choix2'] = $_GET['Choix2'];
+    $_COOKIE['Choix3'] = $_GET['Choix3'];
+    $_COOKIE['Choix4'] = $_GET['Choix4']; 
 
     if($_GET['Choix4'] > 0){
-
         $requestSQL = $db -> prepare('INSERT INTO PREFIX_ukooparts_customer_engine (id_customer,id_guest,id_ukooparts_engine,owned,current,date_upd,date_add)
         VALUES (:id_customer,:id_guest,:id_ukooparts_engine,:owned,:current,now(),now())');
         $requestSQL-> bindValue(':id_customer',1);
@@ -161,8 +152,7 @@ if (isset($_GET['Envoyer'])) {
             INNER JOIN PREFIX_ukooparts_manufacturer manu
             ON manu.id_ukooparts_manufacturer = engine.id_ukooparts_manufacturer
             ORDER BY cengine.date_upd DESC LIMIT 1;")->fetchAll();
-        
-
+        // set session variable to filter page manufacturer and page models
         $_SESSION['id_manufacturer'] = $_GET['Choix2'];
         $_SESSION['id_engine'] = $_GET['Choix3'];
 
@@ -173,7 +163,6 @@ if (isset($_GET['Envoyer'])) {
         $_SESSION['id_engine'] = null;
         echo "";
     }
-
 }else{
     if(isset($_SESSION['id_manufacturer'])){
         $vehicule = $db -> query("SELECT cengine.id_ukooparts_engine, engine.id_ukooparts_manufacturer, engine.model, manu.name
@@ -189,9 +178,5 @@ if (isset($_GET['Envoyer'])) {
         echo "";
     }
 }
-
-
-
-
 ?>
 </section>
