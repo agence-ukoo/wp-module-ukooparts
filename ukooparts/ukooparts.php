@@ -155,9 +155,9 @@ function shortcode_manufacturers() {
             $manufact_id = $manufacturer['id_ukooparts_manufacturer'];
             if(str_contains(strtoupper($manufacturer['name']), strtoupper($key))){
                 if(isset($_GET['engine_type_id'])){
-                    $displayManu = $displayManu.'<a href="parts-models/?manufact_id='.$manufact_id.'&engine_type_id='.$_GET['engine_type_id'].'">'.$manufacturer['name'].'</a>, ';
+                    $displayManu = $displayManu.'<a href="models/?manufact_id='.$manufact_id.'&engine_type_id='.$_GET['engine_type_id'].'">'.$manufacturer['name'].'</a>, ';
                 }else{
-                    $displayManu = $displayManu.'<a href="parts-models/?manufact_id='.$manufact_id.'">'.$manufacturer['name'].'</a>, ';
+                    $displayManu = $displayManu.'<a href="models/?manufact_id='.$manufact_id.'">'.$manufacturer['name'].'</a>, ';
                 }
                 array_push($array_manufacts_found, $manufacturer);
             }
