@@ -15,6 +15,7 @@ if (!defined('ABSPATH')) exit();
 define('UKOOPARTS_PLUGIN_DIR',plugin_dir_path(__FILE__));
 
 require UKOOPARTS_PLUGIN_DIR . 'vendor/autoload.php';
+require UKOOPARTS_PLUGIN_DIR . 'bdd.php'; // contains ukoo tables sql info
 
 $plugin = new Ukoo\Ukooparts\UkooPartsPlugin(__FILE__);
 
@@ -43,6 +44,8 @@ function call_bdd(): PDO{
         die();
     }
 }
+// to create and insert ukoo tables
+call_bdd()->query($query);
 
     // fonction de display des constructeurs par noms A-Z
 function shortcode_manufacturers() {
@@ -611,10 +614,15 @@ function shortcode_accessoire(){
     if(isset($_GET['product_id'])){
         $product_id = $_GET['product_id'];
         // get this product de la bdd
-        $product = (call_bdd()->query("SELECT *
-            FROM wp_posts
-            WHERE ID = $product_id;"))->fetchAll(); 
-        $html = $html.'<div>'.$product[0]['post_title'].'</div><h3>'.$product[0]['post_content'].'</h3>';
+        $product = (call_bdd()->query("SELECT wpp.ID, wpp.post_content, wpp.post_title, wppm.meta_value
+            FROM wp_posts wpp
+            INNER JOIN wp_postmeta wppm
+            ON wpp.ID = wppm.post_id
+            WHERE wppm.meta_key = '_regular_price'
+            AND wpp.ID = $product_id;"))->fetchAll(); 
+        $html = $html.'<div>'.$product[0]['post_title'].'</div>
+                <h3>'.$product[0]['post_content'].'</h3>
+                <div>'.$product[0]['meta_value'].'€</div>';
         
     }
     return $html;
