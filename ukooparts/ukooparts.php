@@ -641,17 +641,26 @@ add_shortcode('accessoire', 'shortcode_accessoire');
 ///////////////////////Adam Garage///////////////////////////////////////////////////////
 
 function shortcode_garage(){
+
     $html = '<h2>Historique de recherche :</h2>';
 
 
-    $query = call_bdd() -> query('SELECT model FROM PREFIX_ukooparts_engine WHERE id_ukooparts_engine IN 
+    $query = call_bdd() -> query('SELECT DISTINCT MANU.id_ukooparts_manufacturer,MANU.name,
+    ENGIN.id_ukooparts_engine, ENGIN.model as modele FROM PREFIX_ukooparts_engine ENGIN 
+    inner join PREFIX_ukooparts_manufacturer MANU ON ENGIN.id_ukooparts_manufacturer
+    = MANU.id_ukooparts_manufacturer WHERE ENGIN.id_ukooparts_engine IN
     (SELECT id_ukooparts_engine FROM  PREFIX_ukooparts_customer_engine)');
+;
     $model = $query -> fetchAll();
 // var_dump($model);
-$html = $html.'<h3>Modèle</h3>';
+$html = $html.'<h3>Nom</h3>';
+    foreach ($model as $mod){
+        $html = $html.'<div>'.$mod['name'].'</div>';
+    }
+    $html = $html.'<h3>Modèle</h3>';
     foreach ($model as $mod){
 
-        $html = $html.'<div>'.$mod['model'].'</div>';
+        $html = $html.'<div>'.$mod['modele'].'</div>';
     }
     
     return $html;
