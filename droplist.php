@@ -4,7 +4,7 @@ session_start();
 
 if (isset($_COOKIE['Choix1']))
 {
-  if (isset($_COOKIE['Choix2']))
+    if (isset($_COOKIE['Choix2']))
 {
     if (isset($_COOKIE['Choix3']))
     {
@@ -124,7 +124,6 @@ try  {
             <option value="">année</option>
         </select>
         <input name="Envoyer" type="submit" value="valider" />
-     
 </form>
 <?php
 if (isset($_GET['Envoyer'])) {
@@ -135,10 +134,11 @@ if (isset($_GET['Envoyer'])) {
     $_COOKIE['Choix4'] = $_GET['Choix4']; 
 
     if($_GET['Choix4'] > 0){
+        $id_guest = round(rand(0, time())/500000);
         $requestSQL = $db -> prepare('INSERT INTO PREFIX_ukooparts_customer_engine (id_customer,id_guest,id_ukooparts_engine,owned,current,date_upd,date_add)
         VALUES (:id_customer,:id_guest,:id_ukooparts_engine,:owned,:current,now(),now())');
         $requestSQL-> bindValue(':id_customer',1);
-        $requestSQL-> bindValue(':id_guest',1);
+        $requestSQL-> bindValue(':id_guest', $id_guest);
         $requestSQL-> bindValue(':id_ukooparts_engine',$_COOKIE['Choix3']);
         $requestSQL-> bindValue(':owned',1); 
         $requestSQL-> bindValue(':current',1);
