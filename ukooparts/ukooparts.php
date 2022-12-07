@@ -36,7 +36,7 @@ function import_script(){
    //infos de connexions à la db
 function call_bdd(): PDO{
     try{
-        $db = new PDO('mysql:host=localhost;dbname=ukooparts','root','root');
+        $db = new PDO('mysql:host=localhost;dbname=ukooparts','root','');
         $db -> exec('SET NAMES "UTF8"');
         return $db;
     }catch(PDOException $e){
@@ -361,16 +361,9 @@ add_shortcode('descriptif', 'shortcode_descriptif');
 
 function shortcode_search(): void{
 
-    try{
-        $db = new PDO('mysql:host=localhost;dbname=ukooparts','root','root');
-        $db -> exec('SET NAMES "UTF8"');
-    }catch(PDOException $e){
-        echo 'Erreur:'.$e ->getMessage();
-        die();
-    }
     if(isset($_GET['$query'])){
 
-            $query = $db -> query( "SELECT LANG.description AS description, ENGIN.model AS model,ENGIN.displacement as cylindré, ENGIN.year_start AS start, ENGIN.year_end AS end, ENGIN.image AS image, MANU.name AS manufacturer,
+            $query = call_bdd()->query( "SELECT LANG.description AS description, ENGIN.model AS model,ENGIN.displacement as cylindré, ENGIN.year_start AS start, ENGIN.year_end AS end, ENGIN.image AS image, MANU.name AS manufacturer,
             CONCAT(MANU.name, ' ', ENGIN.model) AS title FROM PREFIX_ukooparts_engine_lang LANG 
             INNER JOIN PREFIX_ukooparts_engine ENGIN on LANG.id_ukooparts_engine = ENGIN.id_ukooparts_engine 
             INNER JOIN PREFIX_ukooparts_manufacturer MANU ON ENGIN.id_ukooparts_manufacturer = MANU.id_ukooparts_manufacturer;");
